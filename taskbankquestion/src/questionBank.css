@@ -1,0 +1,473 @@
+*{
+    text-decoration: none;
+    list-style-type: none;
+    overflow: hidden;
+}
+
+
+.all-page{
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    background-color: #f3f3f3;
+    padding-top: 2px;
+}
+
+.side-bar{
+    width: 15%;
+    height: 100%;
+    background-color: #5A6276;
+}
+
+.content-side-bar ul li{
+    height: 50px;
+    width: 100%;
+    align-items: center;
+    justify-content: left;
+    display: flex;
+}
+
+.content-side-bar ul li .icon{
+    height: 30px;
+    width: 30px;
+    color: white;
+}
+
+.content-side-bar ul li a{
+    color: white;
+    margin-left: 20px;
+}
+
+.dropdown{
+    display: none;
+}
+
+.dropdown.active{
+    display: inline-block;
+    height: 100px;
+}
+
+
+.logo{
+    height: 7%;
+    width: 100%;
+    border-bottom: 1px #FFFFFF solid;
+    
+}
+
+.logo .image{
+    background-image: url('./icon/logoHachi.png');
+    height: 100px;
+    width: 100%;
+}
+
+.content-area{
+    width: 84%;
+    height: 100%;
+    margin-left: 0.3%;
+    margin-right: 0.3%;
+}
+
+.input-find input:focus{
+    outline: none;
+}
+
+.head-action{
+    height: 7%;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    position: relative;
+    box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2), 0 6px 10px 0 rgba(216, 216, 216, 0.19);
+}
+
+.head-action .btn-location{
+    width: 70%;
+    height: 100%;
+}
+
+.head-action .btn-location ul{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    margin: 0 20px;
+    
+}
+
+.head-action .btn-location ul li{
+    width: 10%;
+    height: 40px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-right: 20px;
+}
+
+.head-action .btn-location ul li a{
+    color: #008000;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.head-action .btn-location ul li nav{
+    height: 120%;
+    width: 3px;
+    background-color: #C4C4C4;
+    border-radius: 30%;
+}
+
+.head-action .btn-individual{
+    width: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    padding-right: 20px;
+}
+
+.head-action .btn-individual ul{
+    display: flex;
+    justify-content: center;
+}
+
+.head-action .btn-individual ul li{
+    width: 80px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+
+.head-action .btn-individual ul li .head-find{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.head-action .btn-individual ul li .head-find img{
+    width: 20px;
+    height: 20px;
+}
+
+.head-action .btn-individual ul li .head-noi{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.head-action .btn-individual ul li .head-noi img{
+    width: 20px;
+    height: 20px;
+}
+
+.head-action .btn-individual ul li .head-avatar{
+    height: 50px;
+    width: 50px;
+    background-color: red;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-radius: 100px;
+    background-image: url('./icon/avatar.jpg');
+    background-size: cover;
+}
+
+.head-field{
+    height: 7%;
+    width: 100%;
+    display: flex;
+    
+}
+
+.head-field .field-check{
+    height: 100%;
+    width: 70%;
+    align-items: center;
+    display: flex;
+    border-bottom: 0.5px solid #BDC2D2;
+    /* justify-content: space-between; */
+}
+
+.head-field .field-check div{
+    max-width:150px;
+    height: 28px;
+    /* border: 2px solid green; */
+    color: rgba(119, 119, 119, 0.514);
+    background-color: white;
+    border-radius: 20px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-right: 20px;
+}
+
+
+.head-field .field-check div a{
+    margin-right: 10px;
+}
+
+.head-field .field-btn{
+    height: 100%;
+    width: 30%;
+    align-items: center;
+    display: flex;
+    justify-content: right;
+    /* padding-right: 30px; */
+    margin-right: 30px;
+    border-bottom: 0.5px solid #BDC2D2;
+}
+
+.head-field .field-btn .field-uploand{
+    height: 32px;
+    width: 30px;
+    background-color: #ffffff;
+    border-radius: 3px;
+    margin-right: 20px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.head-field .field-btn .field-uploand .icon{
+    height: 30px;
+    width:30px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.head-field .field-btn .field-downloand{
+    height: 32px;
+    max-width: 200px;
+    background-color: #ffffff;
+    border-radius: 3px;
+    margin-right: 20px;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+}
+
+.head-field .field-btn .field-downloand .icon{
+    height: 20px;
+    width: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.head-field .field-btn .field-downloand icon{
+    padding: 0 10px;
+}
+
+.head-field .field-btn .field-downloand a{
+    padding-right: 10px;
+}
+
+.head-field .field-btn .field-addNew{
+    height: 34px;
+    max-width: 200px;
+    background-color: #ffffff;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1A6634;
+    color: white;
+    font-size: 20px;
+}
+
+.head-field .field-btn .field-addNew icon{
+    padding: 0 10px;
+}
+
+.head-field .field-btn .field-addNew a{
+    padding-right: 10px;
+}
+
+.body-data{
+    height: 10%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+}
+
+.body-data .data-icon{
+    width: 5%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    justify-content: left;
+    padding-bottom: 10px;
+    border-bottom: 0.5px solid #BDC2D2;
+}
+
+.body-data .data-icon .icon{
+    height: 30px;
+    width: 100%;
+    margin-top: 20px;
+    /* padding-bottom: 10px; */
+}
+
+.body-data .data-reset  {
+    display: block;
+    width: 10%;
+    height: 100%;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 0.5px solid #BDC2D2;
+}
+
+.body-data .data-reset p{
+    font-size: 18px;
+    height: 50%;
+    align-items: center;
+    display: flex;
+    justify-content: left;
+}
+
+.body-data .data-reset a{
+    font-size: 15px;
+    height: 50%;
+    align-items: right;
+    display: flex;
+    justify-content: left;
+    color: #008000;
+    text-decoration-line: underline;
+}
+
+.body-data .data-find{
+    margin-right: 30px;
+    display: block;
+    height: 100%;
+    width: 100%;
+    padding-bottom: 10px;
+    border-bottom: 0.5px solid #BDC2D2;
+}
+
+.body-data .data-find p{
+    color: #a1a1a1;
+    font-weight: 500;
+}
+
+
+.body-data .data-find div{
+    display: flex;
+    max-width: 500px;
+    height: 29px;
+}
+
+.body-data .data-find .input-find{
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.body-data .data-find .input-find .icon{
+    height: 20px;
+    width: 20px;
+    padding: 0 20px;
+}
+
+.body-data .data-find .input-find input{
+    border: 0;
+    width: 320px;
+}
+
+.body-data .data-find .btn-find{
+    height: 29px;
+    width: 80px;
+    margin-left: 20px;
+    align-items: center;
+    justify-content: space-between;
+    display: flex;
+    background-color: white;
+    border-radius:5px;
+    background-color:#008000;
+    color: white;
+}
+
+.body-data .data-find .btn-find .icon{
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 20px;
+    width: 20px;
+}
+
+.body-data .data-find .btn-find a {
+    padding-right: 10px;
+}
+
+.body-content{
+    height: 70%;
+    width: 100%;
+}
+
+.head-list{
+    display: flex;
+}
+
+.head-question{
+    width: 50%;
+    height: 50px;
+    align-items: center;
+    display: flex;
+}
+
+.head-group{
+    width: 20%;
+    height: 50px;
+}
+
+.head-time{
+    width: 15%;
+    height: 50px;
+}
+
+.head-status{
+    width: 15%;
+    height: 50px;
+}
+
+.body-list{
+    height: 100%;
+    width: 100%;
+}
+
+.list{
+    height: 100%;   
+    width: 100%;
+}
+
+.footer{
+    height: 6%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.footer-page-show{
+    padding-left: 10px;
+    width: 400px;
+    color: #5A6276;
+    align-items: center;
+    justify-content: left;
+    display: flex;
+}
+.dropup{
+    margin-left: 20px;
+}
+
+#draftCheck:checked + span{
+    background-color: #008000;
+    color: #008000;
+}
+
+
+input[type="checkbox"]:checked {
+   background-color: #008000;
+  }
+
+
