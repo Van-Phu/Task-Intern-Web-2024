@@ -1,73 +1,51 @@
-import React, { useState } from 'react';
-import { List } from 'react-virtualized';
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
 
-const MyComponent = ({ data }) => {
-  const [filterOptions, setFilterOptions] = useState({
-    option1: false,
-    option2: false,
-    option3: false,
-  });
+const App = () => {
+  const [showPopup, setShowPopup] = useState(false);
 
-  const handleCheckboxChange = (option) => {
-    setFilterOptions({
-      ...filterOptions,
-      [option]: !filterOptions[option],
-    });
+  const handleDelete = () => {
+    // Xử lý xóa câu hỏi
+    // ...
+
+    // Ẩn popup sau khi xóa
+    setShowPopup(false);
   };
 
-  const filteredData = data.filter(item => {
-    if (filterOptions.option1 && item.property === 'value1') {
-      return true;
-    }
-    if (filterOptions.option2 && item.property === 'value2') {
-      return true;
-    }
-    if (filterOptions.option3 && item.property === 'value3') {
-      return true;
-    }
-    return false;
-  });
+  const handleCancel = () => {
+    // Ẩn popup
+    setShowPopup(false);
+  };
 
   return (
     <div>
-      <label>
-        <input
-          type="checkbox"
-          checked={filterOptions.option1}
-          onChange={() => handleCheckboxChange('option1')}
-        />
-        Option 1
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          checked={filterOptions.option2}
-          onChange={() => handleCheckboxChange('option2')}
-        />
-        Option 2
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          checked={filterOptions.option3}
-          onChange={() => handleCheckboxChange('option3')}
-        />
-        Option 3
-      </label>
+      <button onClick={() => setShowPopup(true)}>Xóa câu hỏi</button>
 
-      <List
-        width={300}
-        height={300}
-        rowCount={filteredData.length}
-        rowHeight={50}
-        rowRenderer={({ index, key, style }) => (
-          <div key={key} style={style}>
-            {filteredData[index].name} - {filteredData[index].property}
+      {showPopup && (
+        <div className="popup">
+          <div className="popup-content">
+            <h2>Xóa câu hỏi</h2>
+            <p>Bạn chắc chắn muốn xóa câu hỏi này?</p>
+            <p>
+              <strong>Hệ thống cửa hàng Hachi</strong>
+              <br />
+              Hachi có mặt từ năm nào?
+            </p>
+            <p>Đơn vị bị xóa sẽ KHÔNG thể khôi phục lại.</p>
+            <div className="popup-actions">
+              <button className="button-primary" onClick={handleDelete}>
+                Xóa
+              </button>
+              <button className="button-secondary" onClick={handleCancel}>
+                Hủy
+              </button>
+            </div>
           </div>
-        )}
-      />
+        </div>
+      )}
     </div>
   );
 };
 
-export default MyComponent;
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
