@@ -15,14 +15,24 @@ import {
   faTriangleExclamation,
   faTrashCan,
   faCircleCheck,
+  faPlus,
+  faSleigh,
+  faEdit,
+  faCheck,
+  faTrash,
+  faTimes,
+  faArrowLeft,
+  faEye,
+  faX,
 } from "@fortawesome/free-solid-svg-icons";
+
 import question from "./question.json";
 
 function App() {
   const [dataQuestion, setDataQuestion] = useState();
-  const [listQuestion, setListQuestion] = useState();
+  const [listQuestion, setListQuestion] = useState(question.listQuestion);
   const [activeDropdown, setActiveDropDown] = useState(false);
-  const [draftChecked, setDraftChecked] = useState(false);
+  const [draftChecked, setDraftChecked] = useState(true);
   const [sendChecked, setSendChecked] = useState(false);
   const [browserChecked, setBrowserChecked] = useState(false);
   const [stopBrowserChecked, setStopBrowserChecked] = useState(false);
@@ -33,13 +43,16 @@ function App() {
   const [checkAllChecked, setCheckAllChecked] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [itemChoose, setItemChoose] = useState();
-  const [statusFunction, setStatusFunction] = useState();
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
-
   const [isPopStatusVisible, setIsStatusVisible] = useState(false);
-  const [status, setStatus] = useState("none");
+  const [isPopCheckedVisible, setIsCheckedVisible] = useState(false);
+  const [dataItemChecked, setDataItemChecked] = useState([]);
+  const [isStatusPopChecked, setIsStatusPopChecked] = useState(false);
+  const [isStatusHeader, setIsStatusHeader] = useState(false);
+  const [functionChecked, setFunctionChecked] = useState([]);
 
+  const [status, setStatus] = useState("none");
   const messageStatusMap = {
     delete: "Xóa thành công!",
     send: "Gửi duyệt thành công!",
@@ -50,27 +63,139 @@ function App() {
     detail: "Xem chi tiết!",
   };
 
+  const statusOptions = {
+    0: [
+      { label: "Chỉnh sửa", action: "update" },
+      { label: "Gửi duyệt", action: "send" },
+      { label: "Xóa", action: "delete" },
+    ],
+    1: [
+      { label: "Chỉnh sửa", action: "update" },
+      { label: "Phê duyệt", action: "approve" },
+      { label: "Trả về", action: "return" },
+    ],
+    2: [
+      { label: "Xem chi tiết", action: "detail" },
+      { label: "Ngưng hiển thị", action: "stopDis" },
+    ],
+    3: [
+      { label: "Xem chi tiết", action: "detail" },
+      { label: "Phê duyệt", action: "approve" },
+      { label: "Trả về", action: "return" },
+    ],
+    4: [
+      { label: "Chỉnh sửa", action: "update" },
+      { label: "Gửi duyệt", action: "send" },
+    ],
+  };
+
+  const functionIconMap = {
+    1: faEdit,
+    2: faCheck,
+    3: faTrash,
+    4: faCheck,
+    5: faArrowLeft,
+    6: faTimes,
+    7: faEye,
+  };
+
+  const functionTitleMap = {
+    1: "Chỉnh sửa",
+    2: "Gửi duyệt",
+    3: "Xóa",
+    4: "Duyệt áp dụng",
+    5: "Trả về",
+    6: "Ngưng hiển thị",
+    7: "Xem chi tiết",
+  };
+
   useEffect(() => {
-    setDataQuestion(question.listQuestion);
+    setDataQuestion(listQuestion);
     setIsDataLoaded(true);
-  }, []);
+  }, [listQuestion]);
+
+  useEffect(() => {
+    setDataItemChecked(dataQuestionChecked);
+    if (dataQuestionChecked != 0) {
+      setIsStatusPopChecked(true);
+      setIsStatusHeader(true);
+      setIsCheckedVisible(true);
+      getFunctionChecked(dataQuestionChecked);
+    } else {
+      setIsStatusPopChecked(false);
+      setIsStatusHeader(false);
+      setIsCheckedVisible(false);
+    }
+  }, [dataQuestionChecked]);
+
+  const functionMap = {
+    update: 1,
+    send: 2,
+    delete: 3,
+    approve: 4,
+    return: 5,
+    stopDis: 6,
+    detail: 7,
+  };
+
+  const Icon24px = ({ classIcon, color, size }) => {
+    const iconSize = {
+      color: color,
+      cursor: "pointer",
+      fontSize: size,
+    };
+    return <FontAwesomeIcon icon={classIcon} style={iconSize} />;
+  };
+
+  const getFunctionChecked = (data) => {
+    const selectedFunctions = [];
+    data.forEach((item) => {
+      const itemStatus = item.status;
+      if (statusOptions[itemStatus]) {
+        statusOptions[itemStatus].forEach((option) => {
+          if (functionMap[option.action]) {
+            selectedFunctions.push(functionMap[option.action]);
+          }
+        });
+      }
+    });
+    const uniqueFunctions = Array.from(new Set(selectedFunctions));
+    setFunctionChecked(uniqueFunctions);
+  };
 
   if (!isDataLoaded) {
     return <div>Loading...</div>;
+  }
+
+  function fomatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    if (minutes === 0) {
+      return `${remainingSeconds}s`;
+    } else if (remainingSeconds === 0) {
+      return `${minutes}m`;
+    } else {
+      return `${minutes}m${remainingSeconds}s`;
+    }
   }
 
   const togglePopup = () => {
     setIsPopupVisible(!isPopupVisible);
   };
 
-  const togglePopupStatus = () => {
-    setIsStatusVisible(!isPopStatusVisible);
-  };
-
   const handlePopupAction = (action) => {
     const message = messageStatusMap[action];
     if (action == "delete") {
       togglePopup();
+    } else if (action == "send") {
+      handleSendItem(itemChoose);
+    } else if (action == "approve") {
+      handleApproveItem(itemChoose);
+    } else if (action == "stopDis") {
+      handleStopApproveItem(itemChoose);
+    } else if (action == "return") {
+      handleReturnItem(itemChoose);
     } else {
       setStatus(message);
       setIsStatusVisible(true);
@@ -89,6 +214,140 @@ function App() {
       setIsStatusVisible(false);
     }, 3000);
     togglePopup();
+  };
+
+  const handleSendItem = (idItem) => {
+    const updatedItemIndex = dataQuestion.findIndex(
+      (item) => item.idQues === idItem
+    );
+    console.log(updatedItemIndex);
+    if (updatedItemIndex !== -1) {
+      const updatedItem = { ...dataQuestion[updatedItemIndex] };
+      updatedItem.status = 1;
+      const newDataQuestion = [...dataQuestion];
+      newDataQuestion[updatedItemIndex] = updatedItem;
+      setDataQuestion(newDataQuestion);
+      setStatus("Gửi duyệt thành công!");
+      setIsStatusVisible(true);
+      setTimeout(() => {
+        setIsStatusVisible(false);
+      }, 3000);
+    } else {
+      console.error("Lỗi");
+    }
+  };
+
+  const handleApproveItem = (idItem) => {
+    const updatedItemIndex = dataQuestion.findIndex(
+      (item) => item.idQues === idItem
+    );
+    if (updatedItemIndex !== -1) {
+      const updatedItem = { ...dataQuestion[updatedItemIndex] };
+      updatedItem.status = 2;
+      const newDataQuestion = [...dataQuestion];
+      newDataQuestion[updatedItemIndex] = updatedItem;
+      setDataQuestion(newDataQuestion);
+      setStatus("Phê duyệt thành công!");
+      setIsStatusVisible(true);
+      setTimeout(() => {
+        setIsStatusVisible(false);
+      }, 3000);
+    } else {
+      console.error("Lỗi");
+    }
+  };
+
+  const handleStopApproveItem = (idItem) => {
+    const updatedItemIndex = dataQuestion.findIndex(
+      (item) => item.idQues === idItem
+    );
+    console.log(updatedItemIndex);
+    if (updatedItemIndex !== -1) {
+      const updatedItem = { ...dataQuestion[updatedItemIndex] };
+      updatedItem.status = 3;
+      const newDataQuestion = [...dataQuestion];
+      newDataQuestion[updatedItemIndex] = updatedItem;
+      setDataQuestion(newDataQuestion);
+      setStatus("Ngưng hiển thị thành công!");
+      setIsStatusVisible(true);
+      setTimeout(() => {
+        setIsStatusVisible(false);
+      }, 3000);
+    } else {
+      console.error("Lỗi");
+    }
+  };
+
+  const handleFunctionClick = (action) => {
+    switch (action) {
+      case 1:
+        console.log("Update action");
+        break;
+      case 2:
+        console.log("Send action");
+        break;
+      case 3:
+        console.log("Delete action");
+        const newListItem = dataQuestion.filter((item) => item.status !== 0);
+        setDataQuestion(newListItem);
+        console.log(newListItem);
+        setStatus("Xóa thành công!");
+        setIsStatusVisible(true);
+        handleUnCheckAll();
+        setTimeout(() => {
+          setIsStatusVisible(false);
+        }, 3000);
+        break;
+      case 4:
+        console.log("Approve action");
+        break;
+      case 5:
+        console.log("Return action");
+        break;
+      case 6:
+        console.log("Stop display action");
+        break;
+      case 7:
+        console.log("Detail action");
+        break;
+      default:
+        break;
+    }
+  };
+
+  const listItems = functionChecked.map((item, index) => {
+    const functionName = functionTitleMap[item];
+    // const icon = functionIconMap[item];
+    const handleClick = () => {
+      handleFunctionClick(item);
+    };
+    return (
+      <li onClick={handleClick} className="itemsFunction" key={index}>
+        {/* <Icon24px classIcon={faTrashCan} size={20} color={"white"} /> */}
+        <p>icon</p>
+        <div>{functionName}</div>
+      </li>
+    );
+  });
+
+  const handleReturnItem = (idItem) => {
+    const updatedItemIndex = dataQuestion.findIndex(
+      (item) => item.idQues === idItem
+    );
+    if (updatedItemIndex !== -1) {
+      const updatedItem = { ...dataQuestion[updatedItemIndex] };
+      updatedItem.status = 4;
+      const newDataQuestion = [...dataQuestion];
+      newDataQuestion[updatedItemIndex] = updatedItem;
+      setDataQuestion(newDataQuestion);
+      setStatus("Trả về thành công!");
+      setIsStatusVisible(true);
+      setTimeout(() => {
+        setIsStatusVisible(false);
+      }, 3000);
+    } else {
+      console.error("Lỗi");
+    }
   };
 
   const handlePopupClick = (event) => {
@@ -125,6 +384,7 @@ function App() {
   };
 
   const handleCheckAll = () => {
+    setDataQuenstionChecked([]);
     setCheckAllChecked(!checkAllChecked);
     if (checkAllChecked == false) {
       for (let i = 0; i < dataQuestion.length; i++) {
@@ -137,12 +397,18 @@ function App() {
     }
   };
 
+  const handleUnCheckAll = () => {
+    setDataQuenstionChecked([]);
+    setCheckAllChecked(false);
+  };
+
   const filterDataByStatus = (dataList) => {
     let filteredData = dataList;
     const selectedStatus = [];
 
     if (draftChecked) {
       selectedStatus.push(0);
+      selectedStatus.push(4);
     }
     if (sendChecked) {
       selectedStatus.push(1);
@@ -171,25 +437,16 @@ function App() {
     }
   };
 
-  const Icon24px = ({ classIcon, color, size }) => {
-    const iconSize = {
-      color: color,
-      cursor: "pointer",
-      fontSize: size,
-    };
-    return <FontAwesomeIcon icon={classIcon} style={iconSize} />;
-  };
-
   const handleSearchInputChange = (event) => {
     setSearchKeyword(event.target.value);
   };
 
   function renderRows(dataList) {
-    const filteredData = filterDataByStatus(dataQuestion).filter((item) =>
+    const filteredData = filterDataByStatus(dataList).filter((item) =>
       item.question.toLowerCase().includes(searchKeyword.toLowerCase())
     );
-    const slicedData = filteredData.slice(0, numShowItem);
 
+    const slicedData = filteredData.slice(0, numShowItem);
     return slicedData.map((dataItem, index) => {
       const isChecked = dataQuestionChecked.includes(dataItem);
       const handleStatus = (status) => {
@@ -207,31 +464,6 @@ function App() {
       };
 
       const handlefunctionStatus = (status) => {
-        const statusOptions = {
-          0: [
-            { label: "Chỉnh sửa", action: "update" },
-            { label: "Gửi duyệt", action: "send" },
-            { label: "Xóa", action: "delete" },
-          ],
-          1: [
-            { label: "Chỉnh sửa", action: "update" },
-            { label: "Phê duyệt", action: "approve" },
-            { label: "Trả về", action: "return" },
-          ],
-          2: [
-            { label: "Xem chi tiết", action: "detail" },
-            { label: "Ngưng hiển thị", action: "stopDis" },
-          ],
-          3: [
-            { label: "Xem chi tiết", action: "detail" },
-            { label: "Phê duyệt", action: "approve" },
-            { label: "Trả về", action: "return" },
-          ],
-          4: [
-            { label: "Chỉnh sửa", action: "update" },
-            { label: "Gửi duyệt", action: "send" },
-          ],
-        };
         return (
           <div
             style={{
@@ -287,9 +519,10 @@ function App() {
       const handleItemChecked = (event) => {
         const itemId = filteredData[index];
         const isChecked = event.target.checked;
+
         if (isChecked) {
           setDataQuenstionChecked((prevItems) => [...prevItems, itemId]);
-          if (dataQuestionChecked.length == filteredData.length - 1) {
+          if (dataQuestionChecked.length === filteredData.length - 1) {
             setCheckAllChecked(true);
           }
         } else {
@@ -299,19 +532,20 @@ function App() {
           );
         }
       };
+
       return (
         <div
           key={index}
           className={`rowItem ${isChecked ? "selected" : ""}`}
           style={{
-            width: "100%",
+            width: "99%",
             alignItems: "center",
             display: "flex",
             padding: "0.5%",
             backgroundColor: isChecked ? "#1A6634B2" : "white",
             marginBottom: 5,
             height: 62,
-            zIndex: 1,
+            zIndex: 0,
           }}
         >
           <input
@@ -380,7 +614,7 @@ function App() {
               height: "100%",
               justifyContent: "left",
               display: "flex",
-              alignItems: "left",
+              alignItems: "center",
             }}
           >
             <div style={{}}>{dataItem.group}</div>
@@ -394,7 +628,7 @@ function App() {
               justifyContent: "center",
             }}
           >
-            <div style={{ fontWeight: "500" }}>{dataItem.time}</div>
+            <div style={{ fontWeight: "500" }}>{fomatTime(dataItem.time)}</div>
           </div>
           <div
             style={{
@@ -438,7 +672,12 @@ function App() {
                 alt="Icon Home"
               />
             </div>
-            <div style={{ position: "absolute", zIndex: 1 }}>
+            <div
+              style={{
+                position: "absolute",
+                zIndex: 1,
+              }}
+            >
               {expandedIndex === index && handlefunctionStatus(dataItem.status)}
             </div>
           </div>
@@ -539,7 +778,10 @@ function App() {
           </div>
         </div>
 
-        <div className="head-field">
+        <div
+          className="head-field"
+          style={{ pointerEvents: isStatusHeader ? "none" : "auto" }}
+        >
           <div className="field-check">
             <div
               onClick={handleDraftChecked}
@@ -605,12 +847,15 @@ function App() {
             </div>
 
             <div className="field-addNew">
-              <icon>+</icon>
+              <Icon24px classIcon={faPlus} size={20} color={"white"} />
               <a>Thêm mới</a>
             </div>
           </div>
         </div>
-        <div className="body-data">
+        <div
+          className="body-data"
+          style={{ pointerEvents: isStatusHeader ? "none" : "auto" }}
+        >
           <div className="data-icon">
             <img className="icon" src={iconFill} alt="Icon Home" />
             <div></div>
@@ -659,7 +904,6 @@ function App() {
             <p className="head-group">Phân nhóm</p>
             <p className="head-time">Thời gian</p>
             <p className="head-status">Tình trạng</p>
-            {/* <p className="head-end">Tình trạng</p> */}
           </div>
           <div className="body-list">
             <div className="list">{renderRows(dataQuestion)}</div>
@@ -671,7 +915,7 @@ function App() {
             <p>Hiển thị mỗi trang</p>
             <div class="dropup">
               <select onChange={getValueNumPage} id="numberShow">
-                <option value="1">25</option>
+                <option value="1">1</option>
                 <option value="2">50</option>
                 <option value="3">75</option>
                 <option value="4">100</option>
@@ -680,12 +924,14 @@ function App() {
           </div>
           <div className="footer-page-number">
             <div>
-              <a>Đầu</a>
+              <a className="firstNumberPage">Đầu</a>
+              <a className="itemNumber"> ... </a>
+              <a className="lastNumberPage">Cuối</a>
             </div>
           </div>
 
           {isPopupVisible && (
-            <div className="pop-area" onClick={togglePopup}>
+            <div className="pop-delete-area" onClick={togglePopup}>
               <div className="pop-up">
                 <div className="pop-content" onClick={handlePopupClick}>
                   <div className="head-pop-delete">
@@ -726,6 +972,27 @@ function App() {
                       />
                       <p>XÓA</p>
                     </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isPopCheckedVisible && (
+            <div className="pop-itemchecked-area">
+              <div className="popupItemChecked">
+                <div className="itemChecked">
+                  <div className="numberCheck">
+                    <p>{dataQuestionChecked.length}</p>
+                  </div>
+                  <div className="textCheck">
+                    <p>Đã chọn</p>
+                  </div>
+                </div>
+                <ul className="list-function">{listItems}</ul>
+                <div className="close-pop-checked" onClick={handleUnCheckAll}>
+                  <div>
+                    <Icon24px classIcon={faX} size={20} color={"#BDC2D2"} />
                   </div>
                 </div>
               </div>

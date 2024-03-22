@@ -343,6 +343,7 @@
   width: 20px;
   padding-left: 10px;
   padding-right: 10px;
+  cursor: pointer;
 }
 
 .head-field .field-btn .field-downloand {
@@ -354,6 +355,7 @@
   align-items: center;
   justify-content: space-between;
   display: flex;
+  cursor: pointer;
 }
 
 .head-field .field-btn .field-downloand .icon {
@@ -382,14 +384,17 @@
   background-color: #1a6634;
   color: white;
   font-size: 20px;
+  padding: 0 10px;
+  cursor: pointer;
 }
 
 .head-field .field-btn .field-addNew icon {
-  padding: 0 10px;
+  /* padding: 0 10px; */
 }
 
 .head-field .field-btn .field-addNew a {
-  padding-right: 10px;
+  /* padding-right: 10px; */
+  margin-left: 10px;
 }
 
 .body-data {
@@ -517,7 +522,7 @@
 }
 
 .head-question {
-  width: 52.5%;
+  width: 52%;
   height: 50px;
   align-items: center;
   display: flex;
@@ -563,13 +568,14 @@
 .body-list {
   height: 100%;
   width: 100%;
+  /* margin-bottom: 30px; */
 }
 
 .list {
-  height: 100%;
+  height: 90%;
   width: 100%;
   overflow: scroll;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .footer {
@@ -591,6 +597,44 @@
 }
 .dropup {
   margin-left: 20px;
+}
+
+.footer-page-numbe {
+  width: 200px;
+}
+
+.footer-page-number .itemNumber {
+  margin: 0 20px;
+  /* background-color: red; */
+}
+
+.footer-page-number {
+  width: 100%;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.footer-page-number div {
+  display: flex;
+}
+
+.firstNumberPage {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 50px;
+  height: 20px;
+  background-color: white;
+}
+
+.lastNumberPage {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 50px;
+  height: 20px;
+  background-color: white;
 }
 
 #numberShow {
@@ -618,7 +662,7 @@ input[type="checkbox"] {
   background-color: red;
 }
 
-.pop-area {
+.pop-delete-area {
   height: 1000vh;
   width: 90%;
   margin-right: 10%;
@@ -704,8 +748,8 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-.footer-pop-delete .btn-cancel {
-}
+/* .footer-pop-delete .btn-cancel {
+} */
 
 .footer-pop-delete .btn-delete p {
   margin-left: 15px;
@@ -737,4 +781,114 @@ input[type="checkbox"] {
 
 .popStatus p {
   padding-left: 20px;
+}
+
+.pop-item-checked {
+  height: 1000vh;
+  width: 90%;
+  margin-right: 10%;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pop-itemchecked-area {
+  height: 120px;
+  width: 85%;
+  position: absolute;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: -500px;
+}
+
+.popupItemChecked {
+  max-width: 100%;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 10px 0;
+  box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
+    0 6px 10px 0 rgba(216, 216, 216, 0.19);
+  border-radius: 15px;
+}
+
+.popupItemChecked .itemChecked {
+  height: 100%;
+  width: 100px;
+  background-color: #008000;
+  padding: 10px 10px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  margin-left: 10px;
+}
+
+.popupItemChecked .itemChecked {
+  width: 100px;
+  height: 80px;
+}
+
+.popupItemChecked .itemChecked .numberCheck {
+  color: white;
+  font-size: 30px;
+  height: 50%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.popupItemChecked .itemChecked .textCheck {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+}
+
+.list-function {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemsFunction {
+  max-width: 200px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 20px;
+  margin-left: 10px;
+}
+
+.itemsFunction div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemsFunction p {
+  align-items: center;
+  justify-content: center;
+
+  display: flex;
+}
+
+.close-pop-checked {
+  margin: 0 20px;
+  border-left: 1px solid #bdc2d2;
+  height: 100%;
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.close-pop-checked div {
+  width: 20px;
 }

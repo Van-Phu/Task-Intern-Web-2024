@@ -1,83 +1,85 @@
 {
-    "listQuestion":[
-        {
-            "id": 0,
-            "idQues": "mx01",
-            "question": "Nhớ anh Bin với những bản balad quá, theo dõi anh được 8 năm rồi chắc cũng được gọi là fan cứng ha. Nhạc của anh chạy dài theo tuổi trẻ của mình, đi theo mình từ những tình yêu non dại nhất cho đến khi trái tim mình đầy viết sước, dạo gần đây mình rất hay tìm lại nhạc cũ của anh, cũng như những bản anh live cùng đàn, thật sự mình rất nhớ anh cùng màu nhạc của anh, không mong anh thật nổi tiếng cùng những mv triệu view, chỉ mong anh luôn yêu đời, luôn yêu âm nhạc để mình luôn được nghe nhạc của anh. Âm nhạc của anh là thứ xoa dịu trái tim mình ngay lúc này.  Đà Lạt, 17/05/2023",
-            "type": "Dạng câu 1 lựa chọn",
-            "time": 30,
-            "status": 0,
-            "group": "Thương hiệu, văn hóa công ty"
-          },
-          {
-            "id": 1,
-            "idQues": "mx02",
-            "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
-            "type": "Dạng câu 1 lựa chọn",
-            "group": "Thương hiệu, văn hóa công ty",
-            "time": 30,
-            "status": 1
-          },
-          {
-            "id": 2,
-            "idQues": "mx03",
-            "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
-            "type": "Dạng câu 1 lựa chọn",
-            "group": "Thương hiệu, văn hóa công ty",
-            "time": 30,
-            "status": 2
-          },
-          {
-            "id": 3,
-            "idQues": "mx04",
-            "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
-            "type": "Dạng câu 1 lựa chọn",
-            "status": 3
-          },
-          {
-            "id": 4,
-            "idQues": "mx05",
-            "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
-            "type": "Dạng câu 1 lựa chọn",
-            "group": "Thương hiệu, văn hóa công ty",
-            "time": 30,
-            "status": 4
-          },
-          {
-            "id": 5,
-            "idQues": "mx06",
-            "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
-            "type": "Dạng câu 1 lựa chọn",
-            "group": "Thương hiệu, văn hóa công ty",
-            "time": 30,
-            "status": 0
-          },
-          {
-            "id": 4,
-            "idQues": "mx010",
-            "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
-            "type": "Dạng câu 1 lựa chọn",
-            "group": "Thương hiệu, văn hóa công ty",
-            "time": 30,
-            "status": 4
-          },
-          {
-            "id": 7,
-            "idQues": "mx08",
-            "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
-            "type": "Dạng câu 1 lựa chọn",
-            "group": "Thương hiệu, văn hóa công ty",
-            "time": 30,
-            "status": 0
-          },
-          {
-            "id": 8,
-            "idQues": "mx09",
-            "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
-            "type": "Dạng câu 1 lựa chọn",
-            "group": "Thương hiệu, văn hóa công ty",
-            "time": 30,
-            "status": 0
-          }
-    ]
+  "listQuestion": [
+    {
+      "id": 0,
+      "idQues": "mx01",
+      "question": "A anh Bin với những bản balad quá, theo dõi anh được 8 năm rồi chắc cũng được gọi là fan cứng ha. Nhạc của anh chạy dài theo tuổi trẻ của mình, đi theo mình từ những tình yêu non dại nhất cho đến khi trái tim mình đầy viết sước, dạo gần đây mình rất hay tìm lại nhạc cũ của anh, cũng như những bản anh live cùng đàn, thật sự mình rất nhớ anh cùng màu nhạc của anh, không mong anh thật nổi tiếng cùng những mv triệu view, chỉ mong anh luôn yêu đời, luôn yêu âm nhạc để mình luôn được nghe nhạc của anh. Âm nhạc của anh là thứ xoa dịu trái tim mình ngay lúc này.  Đà Lạt, 17/05/2023",
+      "type": "Dạng câu 1 lựa chọn",
+      "time": 30,
+      "status": 0,
+      "group": "Thương hiệu, văn hóa công ty"
+    },
+    {
+      "id": 1,
+      "idQues": "mx02",
+      "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
+      "type": "Dạng câu 1 lựa chọn",
+      "group": "Thương hiệu, văn hóa công ty",
+      "time": 30,
+      "status": 1
+    },
+    {
+      "id": 2,
+      "idQues": "mx03",
+      "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
+      "type": "Dạng câu 1 lựa chọn",
+      "group": "Thương hiệu, văn hóa công ty",
+      "time": 30,
+      "status": 2
+    },
+    {
+      "id": 3,
+      "idQues": "mx04",
+      "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
+      "type": "Dạng câu 1 lựa chọn",
+      "group": "Thương hiệu, văn hóa công ty",
+      "status": 3,
+      "time": 30
+    },
+    {
+      "id": 4,
+      "idQues": "mx05",
+      "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
+      "type": "Dạng câu 1 lựa chọn",
+      "group": "Thương hiệu, văn hóa công ty",
+      "time": 30,
+      "status": 4
+    },
+    {
+      "id": 5,
+      "idQues": "mx06",
+      "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
+      "type": "Dạng câu 1 lựa chọn",
+      "group": "Thương hiệu, văn hóa công ty",
+      "time": 30,
+      "status": 0
+    },
+    {
+      "id": 4,
+      "idQues": "mx010",
+      "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
+      "type": "Dạng câu 1 lựa chọn",
+      "group": "Thương hiệu, văn hóa công ty",
+      "time": 30,
+      "status": 4
+    },
+    {
+      "id": 7,
+      "idQues": "mx08",
+      "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
+      "type": "Dạng câu 1 lựa chọn",
+      "group": "Thương hiệu, văn hóa công ty",
+      "time": 30,
+      "status": 0
+    },
+    {
+      "id": 8,
+      "idQues": "mx09",
+      "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
+      "type": "Dạng câu 1 lựa chọn",
+      "group": "Thương hiệu, văn hóa công ty",
+      "time": 30,
+      "status": 0
+    }
+  ]
 }
