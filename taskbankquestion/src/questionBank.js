@@ -24,11 +24,13 @@ import {
   faArrowLeft,
   faEye,
   faX,
+  faCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
 import question from "./question.json";
 
 function App() {
+  //Data đầu
   const [dataQuestion, setDataQuestion] = useState();
   const [listQuestion, setListQuestion] = useState(question.listQuestion);
   const [activeDropdown, setActiveDropDown] = useState(false);
@@ -48,12 +50,17 @@ function App() {
   const [isPopStatusVisible, setIsStatusVisible] = useState(false);
   const [isPopCheckedVisible, setIsCheckedVisible] = useState(false);
   const [dataItemChecked, setDataItemChecked] = useState([]);
+  //status
   const [isStatusPopChecked, setIsStatusPopChecked] = useState(false);
   const [isStatusHeader, setIsStatusHeader] = useState(false);
   const [functionChecked, setFunctionChecked] = useState([]);
-
+  const [statusMessage, setStatusMessage] = useState(true);
   const [status, setStatus] = useState("none");
+  const [statusItemChecked, setStatusItemChecked] = useState(true);
   const messageStatusMap = {
+    failApprove: "Đã xảy ra lỗi khi phê duyệt: Câu hỏi phải đầy đủ thông tin!",
+    failSend: "Đã xảy ra lỗi khi gửi: Câu hỏi phải đầy đủ thông tin!",
+    faildeltete: "Đã xảy ra lỗi khi xóa: Không được phép xóa câu hỏi này",
     delete: "Xóa thành công!",
     send: "Gửi duyệt thành công!",
     update: "Cập nhật thành công!",
@@ -89,14 +96,24 @@ function App() {
     ],
   };
 
+  // const functionIconMap = {
+  //   1: { icon: faEdit, color: "red" },
+  //   2: faCheck,
+  //   3: faTrash,
+  //   4: faCheck,
+  //   5: faArrowLeft,
+  //   6: faTimes,
+  //   7: faEye,
+  // };
+
   const functionIconMap = {
-    1: faEdit,
-    2: faCheck,
-    3: faTrash,
-    4: faCheck,
-    5: faArrowLeft,
-    6: faTimes,
-    7: faEye,
+    1: { icon: faEdit, color: "#959DB3" },
+    2: { icon: faCheck, color: "#959DB3" },
+    4: { icon: faCheck, color: "#959DB3" },
+    5: { icon: faArrowLeft, color: "#959DB3" },
+    6: { icon: faTimes, color: "#959DB3" },
+    7: { icon: faEye, color: "#959DB3" },
+    3: { icon: faTrash, color: "red" },
   };
 
   const functionTitleMap = {
@@ -129,13 +146,13 @@ function App() {
   }, [dataQuestionChecked]);
 
   const functionMap = {
-    update: 1,
+    // update: 1,
     send: 2,
     delete: 3,
     approve: 4,
     return: 5,
     stopDis: 6,
-    detail: 7,
+    // detail: 7,
   };
 
   const Icon24px = ({ classIcon, color, size }) => {
@@ -184,6 +201,7 @@ function App() {
     setIsPopupVisible(!isPopupVisible);
   };
 
+  //
   const handlePopupAction = (action) => {
     const message = messageStatusMap[action];
     if (action == "delete") {
@@ -197,6 +215,7 @@ function App() {
     } else if (action == "return") {
       handleReturnItem(itemChoose);
     } else {
+      setStatusMessage(true);
       setStatus(message);
       setIsStatusVisible(true);
       setTimeout(() => {
@@ -205,10 +224,12 @@ function App() {
     }
   };
 
+  //delete 1 item
   const handleDeleteItem = (idItem) => {
     const newListItem = dataQuestion.filter((item) => item.idQues !== idItem);
     setDataQuestion(newListItem);
-    setStatus("Xóa thành công!");
+    setStatusMessage(true);
+    setStatus(messageStatusMap.delete);
     setIsStatusVisible(true);
     setTimeout(() => {
       setIsStatusVisible(false);
@@ -216,47 +237,84 @@ function App() {
     togglePopup();
   };
 
+  //send 1 item
   const handleSendItem = (idItem) => {
-    const updatedItemIndex = dataQuestion.findIndex(
-      (item) => item.idQues === idItem
-    );
-    console.log(updatedItemIndex);
-    if (updatedItemIndex !== -1) {
-      const updatedItem = { ...dataQuestion[updatedItemIndex] };
-      updatedItem.status = 1;
-      const newDataQuestion = [...dataQuestion];
-      newDataQuestion[updatedItemIndex] = updatedItem;
-      setDataQuestion(newDataQuestion);
-      setStatus("Gửi duyệt thành công!");
+    const data = dataQuestion.find((item) => item.idQues == idItem);
+    if (
+      data.idQues == undefined ||
+      data.question == undefined ||
+      data.type == undefined ||
+      data.group == undefined ||
+      data.status == undefined
+    ) {
+      setStatusMessage(false);
+      setStatus(messageStatusMap.failSend);
       setIsStatusVisible(true);
+
       setTimeout(() => {
         setIsStatusVisible(false);
       }, 3000);
     } else {
-      console.error("Lỗi");
+      const updatedItemIndex = dataQuestion.findIndex(
+        (item) => item.idQues === idItem
+      );
+      if (updatedItemIndex !== -1) {
+        const updatedItem = { ...dataQuestion[updatedItemIndex] };
+        updatedItem.status = 1;
+        const newDataQuestion = [...dataQuestion];
+        newDataQuestion[updatedItemIndex] = updatedItem;
+        setStatusMessage(true);
+        setDataQuestion(newDataQuestion);
+        setStatus("Gửi duyệt thành công!");
+        setIsStatusVisible(true);
+        setTimeout(() => {
+          setIsStatusVisible(false);
+        }, 3000);
+      } else {
+        console.error("Lỗi");
+      }
     }
   };
 
+  //approve 1 item
   const handleApproveItem = (idItem) => {
-    const updatedItemIndex = dataQuestion.findIndex(
-      (item) => item.idQues === idItem
-    );
-    if (updatedItemIndex !== -1) {
-      const updatedItem = { ...dataQuestion[updatedItemIndex] };
-      updatedItem.status = 2;
-      const newDataQuestion = [...dataQuestion];
-      newDataQuestion[updatedItemIndex] = updatedItem;
-      setDataQuestion(newDataQuestion);
-      setStatus("Phê duyệt thành công!");
+    const data = dataQuestion.find((item) => item.idQues == idItem);
+    if (
+      data.idQues == undefined ||
+      data.question == undefined ||
+      data.type == undefined ||
+      data.group == undefined ||
+      data.status == undefined
+    ) {
+      setStatusMessage(false);
+      setStatus(messageStatusMap.failApprove);
       setIsStatusVisible(true);
       setTimeout(() => {
         setIsStatusVisible(false);
       }, 3000);
     } else {
-      console.error("Lỗi");
+      const updatedItemIndex = dataQuestion.findIndex(
+        (item) => item.idQues === idItem
+      );
+      if (updatedItemIndex !== -1) {
+        const updatedItem = { ...dataQuestion[updatedItemIndex] };
+        updatedItem.status = 2;
+        const newDataQuestion = [...dataQuestion];
+        newDataQuestion[updatedItemIndex] = updatedItem;
+        setStatusMessage(true);
+        setDataQuestion(newDataQuestion);
+        setStatus(messageStatusMap.approve);
+        setIsStatusVisible(true);
+        setTimeout(() => {
+          setIsStatusVisible(false);
+        }, 3000);
+      } else {
+        console.error("Lỗi");
+      }
     }
   };
 
+  //stop display 1 item
   const handleStopApproveItem = (idItem) => {
     const updatedItemIndex = dataQuestion.findIndex(
       (item) => item.idQues === idItem
@@ -267,8 +325,9 @@ function App() {
       updatedItem.status = 3;
       const newDataQuestion = [...dataQuestion];
       newDataQuestion[updatedItemIndex] = updatedItem;
+      setStatusMessage(true);
       setDataQuestion(newDataQuestion);
-      setStatus("Ngưng hiển thị thành công!");
+      setStatus(messageStatusMap.stopDis);
       setIsStatusVisible(true);
       setTimeout(() => {
         setIsStatusVisible(false);
@@ -280,52 +339,146 @@ function App() {
 
   const handleFunctionClick = (action) => {
     switch (action) {
-      case 1:
-        console.log("Update action");
-        break;
       case 2:
-        console.log("Send action");
-        break;
-      case 3:
-        console.log("Delete action");
-        const newListItem = dataQuestion.filter((item) => item.status !== 0);
-        setDataQuestion(newListItem);
-        console.log(newListItem);
-        setStatus("Xóa thành công!");
+        //Send Action checked
+        const updatedItemsSend = dataQuestion.map((item) => {
+          if (
+            dataQuestionChecked.includes(item) &&
+            item.idQues != undefined &&
+            (item.status === 0 || item.status === 4)
+          ) {
+            return { ...item, status: 1 };
+          } else {
+            return item;
+          }
+          // return item;
+        });
+
+        setDataQuestion(updatedItemsSend);
+        setStatus(messageStatusMap.send);
         setIsStatusVisible(true);
         handleUnCheckAll();
         setTimeout(() => {
           setIsStatusVisible(false);
         }, 3000);
         break;
+      case 3:
+        //delete Action checked
+        const newListDeleted = dataQuestion.filter((item) => {
+          return item.status !== 0 || !dataQuestionChecked.includes(item);
+        });
+        setDataQuestion(newListDeleted);
+        setStatus(messageStatusMap.delete);
+        setIsStatusVisible(true);
+        handleUnCheckAll();
+        setTimeout(() => {
+          setIsStatusVisible(false);
+        }, 3000);
+        break;
+
       case 4:
-        console.log("Approve action");
+        //approve Action checked
+        for (let i = 0; i < dataQuestionChecked.length; i++) {
+          console.log(dataQuestionChecked);
+          if (
+            dataQuestionChecked[i].idQues == undefined ||
+            dataQuestionChecked[i].question == undefined ||
+            dataQuestionChecked[i].type == undefined ||
+            dataQuestionChecked[i].status == undefined ||
+            dataQuestionChecked[i].group == undefined
+          ) {
+            setStatusMessage(false);
+            setStatus(messageStatusMap.failApprove);
+            setIsStatusVisible(true);
+            handleUnCheckAll();
+            setTimeout(() => {
+              setIsStatusVisible(false);
+            }, 3000);
+            break;
+          }
+        }
+        const approveItem = dataQuestion.map((item) => {
+          if (
+            dataQuestionChecked.includes(item) &&
+            (item.status === 1 || item.status === 3)
+          ) {
+            return { ...item, status: 2 };
+          }
+          return item;
+        });
+        setStatusMessage(true);
+        setDataQuestion(approveItem);
+        setStatus(messageStatusMap.approve);
+        setIsStatusVisible(true);
+        handleUnCheckAll();
+        setTimeout(() => {
+          setIsStatusVisible(false);
+        }, 3000);
         break;
       case 5:
-        console.log("Return action");
+        //return Action checked
+        const returnItem = dataQuestion.map((item) => {
+          if (
+            dataQuestionChecked.includes(item) &&
+            (item.status === 1 || item.status === 3)
+          ) {
+            return { ...item, status: 4 };
+          }
+          return item;
+        });
+
+        setDataQuestion(returnItem);
+        setStatus(messageStatusMap.return);
+        setIsStatusVisible(true);
+        handleUnCheckAll();
+        setTimeout(() => {
+          setIsStatusVisible(false);
+        }, 3000);
         break;
       case 6:
-        console.log("Stop display action");
-        break;
-      case 7:
-        console.log("Detail action");
-        break;
-      default:
+        //stop display checked
+        const stopItem = dataQuestion.map((item) => {
+          if (dataQuestionChecked.includes(item) && item.status === 2) {
+            return { ...item, status: 3 };
+          }
+          return item;
+        });
+
+        setDataQuestion(stopItem);
+        setStatus(messageStatusMap.stopDis);
+        setIsStatusVisible(true);
+        handleUnCheckAll();
+        setTimeout(() => {
+          setIsStatusVisible(false);
+        }, 3000);
         break;
     }
   };
 
   const listItems = functionChecked.map((item, index) => {
     const functionName = functionTitleMap[item];
-    // const icon = functionIconMap[item];
+    const functionIcon = functionIconMap[item];
     const handleClick = () => {
       handleFunctionClick(item);
     };
     return (
       <li onClick={handleClick} className="itemsFunction" key={index}>
-        {/* <Icon24px classIcon={faTrashCan} size={20} color={"white"} /> */}
-        <p>icon</p>
-        <div>{functionName}</div>
+        <div>
+          {
+            <FontAwesomeIcon
+              icon={functionIcon.icon}
+              style={{
+                color: functionIcon.color,
+                fontSize: 20,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            />
+          }
+          <div className="itemFunctionName">{functionName}</div>
+        </div>
       </li>
     );
   });
@@ -339,8 +492,9 @@ function App() {
       updatedItem.status = 4;
       const newDataQuestion = [...dataQuestion];
       newDataQuestion[updatedItemIndex] = updatedItem;
+      setStatusMessage(true);
       setDataQuestion(newDataQuestion);
-      setStatus("Trả về thành công!");
+      setStatus(messageStatusMap.return);
       setIsStatusVisible(true);
       setTimeout(() => {
         setIsStatusVisible(false);
@@ -708,8 +862,15 @@ function App() {
         </div>
         {isPopStatusVisible && (
           <div className="popStatus-area">
-            <div className="popStatus">
-              <Icon24px classIcon={faCircleCheck} size={25} color={"white"} />
+            <div
+              className="popStatus"
+              style={{ backgroundColor: statusMessage ? "#1a6634" : "#FD7676" }}
+            >
+              <Icon24px
+                classIcon={statusMessage ? faCircleCheck : faCircleXmark}
+                size={25}
+                color={"white"}
+              />
               <p>{status}</p>
             </div>
           </div>

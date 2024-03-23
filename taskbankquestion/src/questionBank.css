@@ -760,7 +760,7 @@ input[type="checkbox"] {
 .popStatus-area {
   position: absolute;
   height: 150px;
-  width: 300px;
+  width: 400px;
   margin-top: -100px;
   margin-left: 100px;
   display: flex;
@@ -863,12 +863,27 @@ input[type="checkbox"] {
   cursor: pointer;
   padding: 20px;
   margin-left: 10px;
+  display: flex;
 }
 
 .itemsFunction div {
-  display: flex;
+  max-height: 100%;
+  width: 100%;
   align-items: center;
+}
+
+.iconFunctionName {
+  align-items: center;
+  display: flex;
   justify-content: center;
+}
+
+.itemFunctionName {
+  font-size: 20px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
 
 .itemsFunction p {
