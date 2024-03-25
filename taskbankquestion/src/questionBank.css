@@ -8,7 +8,7 @@
   height: 100vh;
   width: 100%;
   display: flex;
-  background-color: #f3f3f3;
+  background-color: #edeff3;
   padding-top: 2px;
   align-items: center;
   justify-content: center;
@@ -143,25 +143,51 @@
 }
 
 .head-action .btn-location ul li {
-  width: 10%;
-  height: 40px;
+  max-width: 10%;
+  height: 100%;
   align-items: center;
   display: flex;
   justify-content: space-between;
   margin-right: 20px;
 }
 
+.item-header {
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
 .head-action .btn-location ul li a {
   color: #008000;
+  width: 100%;
+  height: 100%;
   font-size: 20px;
   font-weight: 500;
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  /* background-color: red; */
 }
 
 .head-action .btn-location ul li nav {
-  height: 120%;
-  width: 3px;
+  height: 80%;
+  width: 2px;
   background-color: #c4c4c4;
   border-radius: 30%;
+}
+
+.head-action .btn-location ul li div {
+  height: 100%;
+  width: 100%;
+}
+
+.underline-title-header {
+  margin-top: 10px;
+  height: 10%;
+  width: 100%;
+  background-color: #008000;
 }
 
 .head-action .btn-individual {
@@ -388,12 +414,12 @@
   cursor: pointer;
 }
 
-.head-field .field-btn .field-addNew icon {
-  /* padding: 0 10px; */
-}
-
 .head-field .field-btn .field-addNew a {
   /* padding-right: 10px; */
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  font-size: 20px;
   margin-left: 10px;
 }
 
@@ -795,7 +821,9 @@ input[type="checkbox"] {
 
 .pop-itemchecked-area {
   height: 120px;
-  width: 85%;
+  width: 75%;
+  margin-left: 5%;
+  margin-right: 5%;
   position: absolute;
   align-items: center;
   display: flex;

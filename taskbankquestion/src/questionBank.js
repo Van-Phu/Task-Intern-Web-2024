@@ -10,6 +10,7 @@ import iconThreeDot from "./icon/three-dot.png";
 import iconDownArrow from "./icon/icon-down-arrow.png";
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Pagination from "./component/pagination";
 import {
   faPencil,
   faTriangleExclamation,
@@ -28,12 +29,12 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import question from "./question.json";
-
 function App() {
   //Data đầu
   const [dataQuestion, setDataQuestion] = useState();
   const [listQuestion, setListQuestion] = useState(question.listQuestion);
   const [activeDropdown, setActiveDropDown] = useState(false);
+  //check item
   const [draftChecked, setDraftChecked] = useState(true);
   const [sendChecked, setSendChecked] = useState(false);
   const [browserChecked, setBrowserChecked] = useState(false);
@@ -41,10 +42,11 @@ function App() {
   const [itemQuestionChecked, setItemQuestionChecked] = useState(false);
   const [dataQuestionChecked, setDataQuenstionChecked] = useState([]);
   const [expandedIndex, setExpandedIndex] = useState(null);
-  const [numShowItem, setNumShowItem] = useState(25);
   const [checkAllChecked, setCheckAllChecked] = useState(false);
+  //search
   const [searchKeyword, setSearchKeyword] = useState("");
   const [itemChoose, setItemChoose] = useState();
+  //popups
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [isPopStatusVisible, setIsStatusVisible] = useState(false);
@@ -57,6 +59,14 @@ function App() {
   const [statusMessage, setStatusMessage] = useState(true);
   const [status, setStatus] = useState("none");
   const [statusItemChecked, setStatusItemChecked] = useState(true);
+  //page
+  const [currentPage, setCurrentPage] = useState(1);
+  const [numShowItem, setNumShowItem] = useState(25);
+  const [numberPage, setNumberPage] = useState();
+  const [statusPage, setStatusPage] = useState(true);
+  const [newNumberItem, setNewNumberitem] = useState();
+  let numberItem = 0;
+
   const messageStatusMap = {
     failApprove: "Đã xảy ra lỗi khi phê duyệt: Câu hỏi phải đầy đủ thông tin!",
     failSend: "Đã xảy ra lỗi khi gửi: Câu hỏi phải đầy đủ thông tin!",
@@ -146,13 +156,15 @@ function App() {
   }, [dataQuestionChecked]);
 
   const functionMap = {
-    // update: 1,
     send: 2,
     delete: 3,
     approve: 4,
     return: 5,
     stopDis: 6,
-    // detail: 7,
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   const Icon24px = ({ classIcon, color, size }) => {
@@ -319,7 +331,6 @@ function App() {
     const updatedItemIndex = dataQuestion.findIndex(
       (item) => item.idQues === idItem
     );
-    console.log(updatedItemIndex);
     if (updatedItemIndex !== -1) {
       const updatedItem = { ...dataQuestion[updatedItemIndex] };
       updatedItem.status = 3;
@@ -345,15 +356,16 @@ function App() {
           if (
             dataQuestionChecked.includes(item) &&
             item.idQues != undefined &&
+            item.question != undefined &&
+            item.group != undefined &&
+            item.type != undefined &&
             (item.status === 0 || item.status === 4)
           ) {
             return { ...item, status: 1 };
           } else {
             return item;
           }
-          // return item;
         });
-
         setDataQuestion(updatedItemsSend);
         setStatus(messageStatusMap.send);
         setIsStatusVisible(true);
@@ -379,7 +391,6 @@ function App() {
       case 4:
         //approve Action checked
         for (let i = 0; i < dataQuestionChecked.length; i++) {
-          console.log(dataQuestionChecked);
           if (
             dataQuestionChecked[i].idQues == undefined ||
             dataQuestionChecked[i].question == undefined ||
@@ -509,18 +520,26 @@ function App() {
   };
 
   const handleDraftChecked = () => {
+    setCurrentPage(1);
     setDraftChecked(!draftChecked);
   };
 
+  // const handlePage = () => {
+  //   console.log(numberItem);
+  // };
+
   const handleSendChecked = () => {
+    setCurrentPage(1);
     setSendChecked(!sendChecked);
   };
 
   const handleBrowserChecked = () => {
+    setCurrentPage(1);
     setBrowserChecked(!browserChecked);
   };
 
   const handleStopBrowserChecked = () => {
+    setCurrentPage(1);
     setStopBrowserChecked(!stopBrowserChecked);
   };
 
@@ -541,8 +560,9 @@ function App() {
     setDataQuenstionChecked([]);
     setCheckAllChecked(!checkAllChecked);
     if (checkAllChecked == false) {
-      for (let i = 0; i < dataQuestion.length; i++) {
-        setDataQuenstionChecked((prevItems) => [...prevItems, dataQuestion[i]]);
+      const visibleItems = filterDataByStatus(dataQuestion);
+      for (let i = 0; i < visibleItems.length; i++) {
+        setDataQuenstionChecked((prevItems) => [...prevItems, visibleItems[i]]);
       }
     } else if (checkAllChecked == true) {
       for (let i = 0; i < dataQuestion.length; i++) {
@@ -584,11 +604,10 @@ function App() {
 
   const getValueNumPage = (event) => {
     const selectedValue = event.target.value;
-    if (selectedValue > numShowItem) {
-      setNumShowItem(dataQuestion.length);
-    } else {
-      setNumShowItem(selectedValue);
-    }
+    let pageNum = numberItem / selectedValue;
+    setNumberPage(pageNum);
+    setCurrentPage(1);
+    setNumShowItem(selectedValue);
   };
 
   const handleSearchInputChange = (event) => {
@@ -599,8 +618,10 @@ function App() {
     const filteredData = filterDataByStatus(dataList).filter((item) =>
       item.question.toLowerCase().includes(searchKeyword.toLowerCase())
     );
-
-    const slicedData = filteredData.slice(0, numShowItem);
+    numberItem = filteredData.length;
+    const startIndex = (currentPage - 1) * numShowItem;
+    const endIndex = Number(startIndex) + Number(numShowItem);
+    const slicedData = filteredData.slice(startIndex, endIndex);
     return slicedData.map((dataItem, index) => {
       const isChecked = dataQuestionChecked.includes(dataItem);
       const handleStatus = (status) => {
@@ -910,7 +931,10 @@ function App() {
                 <nav></nav>
               </li>
               <li>
-                <a href="">Nhân sự</a>
+                <div class="item-header">
+                  <a href="#">Nhân sự</a>
+                  <p class="underline-title-header"></p>
+                </div>
               </li>
             </ul>
           </div>
@@ -1077,17 +1101,19 @@ function App() {
             <div class="dropup">
               <select onChange={getValueNumPage} id="numberShow">
                 <option value="1">1</option>
-                <option value="2">50</option>
-                <option value="3">75</option>
-                <option value="4">100</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
               </select>
             </div>
           </div>
           <div className="footer-page-number">
             <div>
-              <a className="firstNumberPage">Đầu</a>
-              <a className="itemNumber"> ... </a>
-              <a className="lastNumberPage">Cuối</a>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={numberPage}
+                onPageChange={handlePageChange}
+              />
             </div>
           </div>
 
