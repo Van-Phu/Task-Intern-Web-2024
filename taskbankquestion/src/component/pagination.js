@@ -33,19 +33,107 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
     if (totalPages <= 1) {
       buttons.push(
         <button
+          style={{
+            backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+
+            backgroundColor: "#F4F5F7",
+            border: "none",
+            marginRight: 5,
+            borderRadius: 5,
+            fontSize: 18,
+          }}
+          key="first"
+        >
+          Đầu
+        </button>
+      );
+      buttons.push(
+        <button
+          style={{
+            backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+            border: "none",
+            marginRight: 10,
+          }}
+          key="prev"
+          onClick={handlePrevPage}
+        >
+          <Icon24px classIcon={faChevronLeft} size={20} color={"#959DB3"} />
+        </button>
+      );
+      buttons.push(
+        <button
           key={1}
           style={{
             backgroundColor: currentPage === 1 ? "#959DB3" : "",
             border: "none",
             margin: "0 5px",
             borderRadius: 5,
+            fontSize: 18,
           }}
           onClick={() => onPageChange(1)}
         >
           1
         </button>
       );
-    } else if (totalPages === 2) {
+      buttons.push(
+        <button
+          style={{
+            marginLeft: 10,
+            border: "none",
+            backgroundColor: "#F4F5F7",
+            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+          }}
+          key="next"
+          onClick={handleNextPage}
+        >
+          <Icon24px classIcon={faChevronRight} size={18} color={"#959DB3"} />
+        </button>
+      );
+      buttons.push(
+        <button
+          style={{
+            marginLeft: 10,
+            border: "none",
+            backgroundColor: "#F4F5F7",
+            borderRadius: 5,
+            fontSize: 18,
+            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+          }}
+          key="last"
+        >
+          Cuối
+        </button>
+      );
+    } else if (totalPages <= 3) {
+      buttons.push(
+        <button
+          style={{
+            backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+            border: "none",
+            marginRight: 5,
+            borderRadius: 5,
+            fontSize: 18,
+          }}
+          key="first"
+        >
+          Đầu
+        </button>
+      );
+      buttons.push(
+        <button
+          style={{
+            border: "none",
+            marginRight: 10,
+            fontSize: 18,
+            backgroundColor: "#F4F5F7",
+            backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+          }}
+          key="prev"
+          onClick={handlePrevPage}
+        >
+          <Icon24px classIcon={faChevronLeft} size={20} color={"#959DB3"} />
+        </button>
+      );
       for (let i = 1; i <= totalPages; i++) {
         buttons.push(
           <button
@@ -55,6 +143,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
               border: "none",
               margin: "0 5px",
               borderRadius: 5,
+              fontSize: 18,
             }}
             onClick={() => onPageChange(i)}
           >
@@ -62,10 +151,47 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
           </button>
         );
       }
+      buttons.push(
+        <button
+          style={{
+            marginLeft: 10,
+            border: "none",
+            backgroundColor: "#F4F5F7",
+            fontSize: 18,
+            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+          }}
+          key="next"
+          onClick={handleNextPage}
+        >
+          <Icon24px classIcon={faChevronRight} size={20} color={"#959DB3"} />
+        </button>
+      );
+      buttons.push(
+        <button
+          style={{
+            marginLeft: 10,
+            border: "none",
+            backgroundColor: "#F4F5F7",
+            borderRadius: 5,
+            fontSize: 18,
+            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+          }}
+          key="last"
+        >
+          Cuối
+        </button>
+      );
     } else {
       buttons.push(
         <button
-          style={{ backgroundColor: "#fff", border: "none", marginRight: 5 }}
+          style={{
+            backgroundColor: "#fff",
+            border: "none",
+            marginRight: 5,
+            fontSize: 18,
+            borderRadius: 5,
+            backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+          }}
           key="first"
           onClick={() => onPageChange(1)}
         >
@@ -75,7 +201,13 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
 
       buttons.push(
         <button
-          style={{ border: "none", marginRight: 10 }}
+          style={{
+            border: "none",
+            marginRight: 10,
+            backgroundColor: "#FFFFFF",
+            fontSize: 18,
+            backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+          }}
           key="prev"
           onClick={handlePrevPage}
         >
@@ -94,6 +226,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 border: "none",
                 margin: "0 5px",
                 borderRadius: 5,
+                fontSize: 18,
               }}
             >
               {i}
@@ -109,6 +242,8 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 margin: "0 5px",
                 borderRadius: 5,
                 fontSize: 20,
+                fontSize: 18,
+                backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
               }}
               key="ellipsis-start"
               disabled
@@ -128,6 +263,8 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 borderRadius: 5,
                 borderRadius: 5,
                 fontSize: 20,
+                fontSize: 18,
+                backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
               }}
               key="ellipsis-end"
               disabled
@@ -146,6 +283,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 border: "none",
                 margin: "0 5px",
                 borderRadius: 5,
+                fontSize: 18,
               }}
             >
               {i}
@@ -161,6 +299,8 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
               margin: "0 5px",
               borderRadius: 5,
               fontSize: 20,
+              fontSize: 18,
+              backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
             }}
             key="ellipsis-middle"
             disabled
@@ -178,6 +318,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 border: "none",
                 margin: "0 5px",
                 borderRadius: 5,
+                fontSize: 18,
               }}
             >
               {i}
@@ -193,6 +334,8 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 margin: "0 5px",
                 borderRadius: 5,
                 fontSize: 20,
+                fontSize: 18,
+                backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
               }}
               key="ellipsis-end"
               disabled
@@ -205,7 +348,12 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
 
       buttons.push(
         <button
-          style={{ marginLeft: 10, border: "none" }}
+          style={{
+            marginLeft: 10,
+            border: "none",
+            backgroundColor: "#FFFFFF",
+            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+          }}
           key="next"
           onClick={handleNextPage}
         >
@@ -214,7 +362,14 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
       );
       buttons.push(
         <button
-          style={{ marginLeft: 10, border: "none" }}
+          style={{
+            marginLeft: 10,
+            border: "none",
+            borderRadius: 5,
+            backgroundColor: "#FFFFFF",
+            fontSize: 18,
+            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+          }}
           key="last"
           onClick={() => onPageChange(totalPages)}
         >

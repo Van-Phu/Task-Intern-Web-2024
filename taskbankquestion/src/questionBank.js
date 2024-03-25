@@ -8,9 +8,14 @@ import iconFill from "./icon/filter-svgrepo-com.svg";
 import iconFindWhite from "./icon/find-white.svg";
 import iconThreeDot from "./icon/three-dot.png";
 import iconDownArrow from "./icon/icon-down-arrow.png";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Pagination from "./component/pagination";
+import "react-toastify/dist/ReactToastify.css";
+// import { ToastContainer } from "./component/customToast";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import {
   faPencil,
   faTriangleExclamation,
@@ -26,14 +31,20 @@ import {
   faEye,
   faX,
   faCircleXmark,
+  faL,
+  faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 import question from "./question.json";
+import { number } from "prop-types";
+import { Alert } from "bootstrap";
 function App() {
   //Data đầu
   const [dataQuestion, setDataQuestion] = useState();
   const [listQuestion, setListQuestion] = useState(question.listQuestion);
   const [activeDropdown, setActiveDropDown] = useState(false);
+  const [headerStatus, setHeaderStatus] = useState();
+  const [selectedItemHeader, setSelectedItemHeader] = useState(3);
   //check item
   const [draftChecked, setDraftChecked] = useState(true);
   const [sendChecked, setSendChecked] = useState(false);
@@ -61,10 +72,10 @@ function App() {
   const [statusItemChecked, setStatusItemChecked] = useState(true);
   //page
   const [currentPage, setCurrentPage] = useState(1);
-  const [numShowItem, setNumShowItem] = useState(25);
+  const [numShowItem, setNumShowItem] = useState(1);
   const [numberPage, setNumberPage] = useState();
-  const [statusPage, setStatusPage] = useState(true);
-  const [newNumberItem, setNewNumberitem] = useState();
+  const [newNumberItem, setNewNumberItem] = useState();
+
   let numberItem = 0;
 
   const messageStatusMap = {
@@ -79,6 +90,8 @@ function App() {
     stopDis: "Ngưng hiển thị thành công!",
     detail: "Xem chi tiết!",
   };
+
+  const items = ["Trang chủ", "Thông tin", "Tài chính", "Nhân sự"];
 
   const statusOptions = {
     0: [
@@ -106,16 +119,6 @@ function App() {
     ],
   };
 
-  // const functionIconMap = {
-  //   1: { icon: faEdit, color: "red" },
-  //   2: faCheck,
-  //   3: faTrash,
-  //   4: faCheck,
-  //   5: faArrowLeft,
-  //   6: faTimes,
-  //   7: faEye,
-  // };
-
   const functionIconMap = {
     1: { icon: faEdit, color: "#959DB3" },
     2: { icon: faCheck, color: "#959DB3" },
@@ -136,10 +139,52 @@ function App() {
     7: "Xem chi tiết",
   };
 
+  const filterData = (dataList) => {
+    let filteredData = dataList;
+    const selectedStatus = [];
+
+    if (draftChecked) {
+      selectedStatus.push(0);
+      selectedStatus.push(4);
+    }
+    if (sendChecked) {
+      selectedStatus.push(1);
+    }
+    if (browserChecked) {
+      selectedStatus.push(2);
+    }
+    if (stopBrowserChecked) {
+      selectedStatus.push(3);
+    }
+
+    if (selectedStatus.length > 0) {
+      filteredData = filteredData.filter((item) =>
+        selectedStatus.includes(item.status)
+      );
+    }
+    return filteredData;
+  };
+
+  const calculatePageNumber = (newNumberItem, numShowItem) => {
+    let pageNum = newNumberItem / numShowItem;
+    return pageNum;
+  };
+
   useEffect(() => {
     setDataQuestion(listQuestion);
     setIsDataLoaded(true);
-  }, [listQuestion]);
+    const filter = filterData(listQuestion);
+    const pageNum = calculatePageNumber(filter.length, numShowItem);
+    setNumberPage(pageNum);
+    setCurrentPage(1);
+    setNumShowItem(numShowItem);
+  }, [
+    listQuestion,
+    draftChecked,
+    sendChecked,
+    browserChecked,
+    stopBrowserChecked,
+  ]);
 
   useEffect(() => {
     setDataItemChecked(dataQuestionChecked);
@@ -161,6 +206,62 @@ function App() {
     approve: 4,
     return: 5,
     stopDis: 6,
+  };
+
+  const handleDraftChecked = async () => {
+    setCurrentPage(1);
+    setDataQuestion((prevDataQuestion) => {
+      const filteredData = filterDataByStatus(prevDataQuestion);
+      setNewNumberItem(filteredData.length);
+      return prevDataQuestion;
+    });
+    setDraftChecked(!draftChecked);
+    const pageNum = calculatePageNumber(newNumberItem, numShowItem);
+    setNumberPage(pageNum);
+    setCurrentPage(1);
+    setNumShowItem(numShowItem);
+  };
+
+  const handleSendChecked = () => {
+    setCurrentPage(1);
+    setDataQuestion((prevDataQuestion) => {
+      const filteredData = filterDataByStatus(prevDataQuestion);
+      setNewNumberItem(filteredData.length);
+      return prevDataQuestion;
+    });
+    setSendChecked(!sendChecked);
+    const pageNum = calculatePageNumber(newNumberItem, numShowItem);
+    setNumberPage(pageNum);
+    setCurrentPage(1);
+    setNumShowItem(numShowItem);
+  };
+
+  const handleBrowserChecked = () => {
+    setCurrentPage(1);
+    setBrowserChecked(!browserChecked);
+    setDataQuestion((prevDataQuestion) => {
+      const filteredData = filterDataByStatus(prevDataQuestion);
+      setNewNumberItem(filteredData.length);
+      return prevDataQuestion;
+    });
+    let pageNum = newNumberItem / numShowItem;
+    setNumberPage(pageNum);
+    setCurrentPage(1);
+    setNumShowItem(numShowItem);
+  };
+
+  const handleStopBrowserChecked = () => {
+    setCurrentPage(1);
+    setStopBrowserChecked(!stopBrowserChecked);
+    setDataQuestion((prevDataQuestion) => {
+      const filteredData = filterDataByStatus(prevDataQuestion);
+      setNewNumberItem(filteredData.length);
+      return prevDataQuestion;
+    });
+    let pageNum = newNumberItem / numShowItem;
+    setNumberPage(pageNum);
+    setCurrentPage(1);
+    setNumShowItem(numShowItem);
   };
 
   const handlePageChange = (page) => {
@@ -232,7 +333,7 @@ function App() {
       setIsStatusVisible(true);
       setTimeout(() => {
         setIsStatusVisible(false);
-      }, 3000);
+      }, 2000);
     }
   };
 
@@ -245,7 +346,7 @@ function App() {
     setIsStatusVisible(true);
     setTimeout(() => {
       setIsStatusVisible(false);
-    }, 3000);
+    }, 2000);
     togglePopup();
   };
 
@@ -265,7 +366,7 @@ function App() {
 
       setTimeout(() => {
         setIsStatusVisible(false);
-      }, 3000);
+      }, 2000);
     } else {
       const updatedItemIndex = dataQuestion.findIndex(
         (item) => item.idQues === idItem
@@ -281,7 +382,7 @@ function App() {
         setIsStatusVisible(true);
         setTimeout(() => {
           setIsStatusVisible(false);
-        }, 3000);
+        }, 2000);
       } else {
         console.error("Lỗi");
       }
@@ -303,7 +404,7 @@ function App() {
       setIsStatusVisible(true);
       setTimeout(() => {
         setIsStatusVisible(false);
-      }, 3000);
+      }, 2000);
     } else {
       const updatedItemIndex = dataQuestion.findIndex(
         (item) => item.idQues === idItem
@@ -319,7 +420,7 @@ function App() {
         setIsStatusVisible(true);
         setTimeout(() => {
           setIsStatusVisible(false);
-        }, 3000);
+        }, 2000);
       } else {
         console.error("Lỗi");
       }
@@ -342,16 +443,18 @@ function App() {
       setIsStatusVisible(true);
       setTimeout(() => {
         setIsStatusVisible(false);
-      }, 3000);
+      }, 2000);
     } else {
       console.error("Lỗi");
     }
   };
 
   const handleFunctionClick = (action) => {
+    const itemSuccess = [];
     switch (action) {
       case 2:
         //Send Action checked
+        let foundErrorSend = false;
         const updatedItemsSend = dataQuestion.map((item) => {
           if (
             dataQuestionChecked.includes(item) &&
@@ -361,71 +464,98 @@ function App() {
             item.type != undefined &&
             (item.status === 0 || item.status === 4)
           ) {
+            if (!foundErrorSend) {
+              foundErrorSend = true;
+            }
+            itemSuccess.push(item.idQues);
             return { ...item, status: 1 };
           } else {
             return item;
           }
         });
+        alert(itemSuccess);
         setDataQuestion(updatedItemsSend);
-        setStatus(messageStatusMap.send);
-        setIsStatusVisible(true);
-        handleUnCheckAll();
-        setTimeout(() => {
-          setIsStatusVisible(false);
-        }, 3000);
-        break;
+        const foundSendItem = foundErrorSend;
+
+        if (foundSendItem == true) {
+          setStatusMessage(true);
+          setStatus(messageStatusMap.send);
+          setIsStatusVisible(true);
+          handleUnCheckAll();
+          setTimeout(() => {
+            setIsStatusVisible(false);
+          }, 2000);
+          break;
+        } else {
+          setStatusMessage(false);
+          setStatus(messageStatusMap.failSend);
+          setIsStatusVisible(true);
+          handleUnCheckAll();
+          setTimeout(() => {
+            setIsStatusVisible(false);
+          }, 2000);
+          break;
+        }
+
       case 3:
         //delete Action checked
         const newListDeleted = dataQuestion.filter((item) => {
           return item.status !== 0 || !dataQuestionChecked.includes(item);
         });
-        setDataQuestion(newListDeleted);
+
+        setStatusMessage(true);
         setStatus(messageStatusMap.delete);
         setIsStatusVisible(true);
         handleUnCheckAll();
         setTimeout(() => {
           setIsStatusVisible(false);
-        }, 3000);
+        }, 2000);
+        togglePopup();
         break;
 
       case 4:
-        //approve Action checked
-        for (let i = 0; i < dataQuestionChecked.length; i++) {
-          if (
-            dataQuestionChecked[i].idQues == undefined ||
-            dataQuestionChecked[i].question == undefined ||
-            dataQuestionChecked[i].type == undefined ||
-            dataQuestionChecked[i].status == undefined ||
-            dataQuestionChecked[i].group == undefined
-          ) {
-            setStatusMessage(false);
-            setStatus(messageStatusMap.failApprove);
-            setIsStatusVisible(true);
-            handleUnCheckAll();
-            setTimeout(() => {
-              setIsStatusVisible(false);
-            }, 3000);
-            break;
-          }
-        }
+        let foundError = false;
         const approveItem = dataQuestion.map((item) => {
           if (
             dataQuestionChecked.includes(item) &&
+            item.idQues != undefined &&
+            item.question != undefined &&
+            item.group != undefined &&
+            item.type != undefined &&
             (item.status === 1 || item.status === 3)
           ) {
+            if (!foundError) {
+              foundError = true;
+            }
+            itemSuccess.push(item.idQues);
             return { ...item, status: 2 };
+          } else {
+            return item;
           }
-          return item;
         });
-        setStatusMessage(true);
+        alert(itemSuccess);
         setDataQuestion(approveItem);
-        setStatus(messageStatusMap.approve);
-        setIsStatusVisible(true);
-        handleUnCheckAll();
-        setTimeout(() => {
-          setIsStatusVisible(false);
-        }, 3000);
-        break;
+        const foundApprovedItem = foundError;
+        if (foundApprovedItem == true) {
+          setStatusMessage(true);
+          setStatus(messageStatusMap.approve);
+          setIsStatusVisible(true);
+          handleUnCheckAll();
+          setTimeout(() => {
+            setIsStatusVisible(false);
+          }, 2000);
+          break;
+        } else {
+          setStatusMessage(false);
+          setStatus(messageStatusMap.failApprove);
+          setIsStatusVisible(true);
+          handleUnCheckAll();
+          setTimeout(() => {
+            setIsStatusVisible(false);
+          }, 2000);
+          break;
+        }
+
       case 5:
         //return Action checked
         const returnItem = dataQuestion.map((item) => {
@@ -433,35 +563,39 @@ function App() {
             dataQuestionChecked.includes(item) &&
             (item.status === 1 || item.status === 3)
           ) {
+            itemSuccess.push(item.idQues);
             return { ...item, status: 4 };
           }
           return item;
         });
-
+        alert(itemSuccess);
+        setStatusMessage(true);
         setDataQuestion(returnItem);
         setStatus(messageStatusMap.return);
         setIsStatusVisible(true);
         handleUnCheckAll();
         setTimeout(() => {
           setIsStatusVisible(false);
-        }, 3000);
+        }, 2000);
         break;
       case 6:
         //stop display checked
         const stopItem = dataQuestion.map((item) => {
           if (dataQuestionChecked.includes(item) && item.status === 2) {
+            itemSuccess.push(item.idQues);
             return { ...item, status: 3 };
           }
           return item;
         });
-
+        alert(itemSuccess);
+        setStatusMessage(true);
         setDataQuestion(stopItem);
         setStatus(messageStatusMap.stopDis);
         setIsStatusVisible(true);
         handleUnCheckAll();
         setTimeout(() => {
           setIsStatusVisible(false);
-        }, 3000);
+        }, 2000);
         break;
     }
   };
@@ -509,7 +643,7 @@ function App() {
       setIsStatusVisible(true);
       setTimeout(() => {
         setIsStatusVisible(false);
-      }, 3000);
+      }, 2000);
     } else {
       console.error("Lỗi");
     }
@@ -519,36 +653,12 @@ function App() {
     event.stopPropagation();
   };
 
-  const handleDraftChecked = () => {
-    setCurrentPage(1);
-    setDraftChecked(!draftChecked);
-  };
-
-  // const handlePage = () => {
-  //   console.log(numberItem);
-  // };
-
-  const handleSendChecked = () => {
-    setCurrentPage(1);
-    setSendChecked(!sendChecked);
-  };
-
-  const handleBrowserChecked = () => {
-    setCurrentPage(1);
-    setBrowserChecked(!browserChecked);
-  };
-
-  const handleStopBrowserChecked = () => {
-    setCurrentPage(1);
-    setStopBrowserChecked(!stopBrowserChecked);
-  };
-
   const handleDropdowm = () => {
     setActiveDropDown(!activeDropdown);
   };
 
   const handleResetFilter = () => {
-    setDraftChecked(false);
+    setDraftChecked(true);
     setSendChecked(false);
     setStopBrowserChecked(false);
     setBrowserChecked(false);
@@ -556,18 +666,17 @@ function App() {
     setSearchKeyword("");
   };
 
-  const handleCheckAll = () => {
+  const handleCheckAll = (numItem) => {
     setDataQuenstionChecked([]);
     setCheckAllChecked(!checkAllChecked);
-    if (checkAllChecked == false) {
-      const visibleItems = filterDataByStatus(dataQuestion);
-      for (let i = 0; i < visibleItems.length; i++) {
-        setDataQuenstionChecked((prevItems) => [...prevItems, visibleItems[i]]);
-      }
-    } else if (checkAllChecked == true) {
-      for (let i = 0; i < dataQuestion.length; i++) {
-        setDataQuenstionChecked([]);
-      }
+    const visibleItems = filterDataByStatus(dataQuestion).slice(0, numItem);
+    if (!checkAllChecked) {
+      setDataQuenstionChecked(visibleItems);
+    } else {
+      const newDataQuestionChecked = dataQuestionChecked.filter(
+        (item) => !visibleItems.includes(item)
+      );
+      setDataQuenstionChecked(newDataQuestionChecked);
     }
   };
 
@@ -612,6 +721,10 @@ function App() {
 
   const handleSearchInputChange = (event) => {
     setSearchKeyword(event.target.value);
+  };
+
+  const handleSearchButtonClick = () => {
+    renderRows(dataQuestion);
   };
 
   function renderRows(dataList) {
@@ -661,6 +774,7 @@ function App() {
                     alignItems: "center",
                     justifyContent: "center",
                     cursor: "pointer",
+                    zIndex: 9999,
                   }}
                 >
                   <Icon24px classIcon={faPencil} color={"#FFFFFF"} />
@@ -697,7 +811,7 @@ function App() {
 
         if (isChecked) {
           setDataQuenstionChecked((prevItems) => [...prevItems, itemId]);
-          if (dataQuestionChecked.length === filteredData.length - 1) {
+          if (dataQuestionChecked.length === numShowItem - 1) {
             setCheckAllChecked(true);
           }
         } else {
@@ -719,13 +833,12 @@ function App() {
             padding: "0.5%",
             backgroundColor: isChecked ? "#1A6634B2" : "white",
             marginBottom: 5,
-            height: 62,
             zIndex: 0,
           }}
         >
           <input
             onChange={(event) => handleItemChecked(event, index)}
-            style={{ width: "1%" }}
+            style={{ width: "1%", cursor: "pointer" }}
             type="checkbox"
             checked={isChecked}
           />
@@ -741,6 +854,7 @@ function App() {
             <div style={{ height: "100%", width: "100%" }}>
               <div>
                 <div
+                  title={dataItem.question}
                   style={{
                     marginLeft: "1%",
                     fontWeight: "600",
@@ -761,7 +875,10 @@ function App() {
                 }}
               >
                 <div>
-                  <div style={{ marginLeft: 20, marginRight: 10 }}>
+                  <div
+                    title={dataItem.idQues}
+                    style={{ marginLeft: 20, marginRight: 10 }}
+                  >
                     {dataItem.idQues}
                   </div>
                 </div>
@@ -777,7 +894,7 @@ function App() {
                   }}
                 >
                   <p>Dạng câu hỏi: &nbsp;</p>
-                  <div>{dataItem.type}</div>
+                  <div title={dataItem.type}>{dataItem.type}</div>
                 </div>
               </div>
             </div>
@@ -792,7 +909,9 @@ function App() {
               alignItems: "center",
             }}
           >
-            <div style={{}}>{dataItem.group}</div>
+            <div title={dataItem.group} style={{}}>
+              {dataItem.group}
+            </div>
           </div>
           <div
             style={{
@@ -803,7 +922,9 @@ function App() {
               justifyContent: "center",
             }}
           >
-            <div style={{ fontWeight: "500" }}>{fomatTime(dataItem.time)}</div>
+            <div title={dataItem.time} style={{ fontWeight: "500" }}>
+              {fomatTime(dataItem.time)}
+            </div>
           </div>
           <div
             style={{
@@ -839,6 +960,7 @@ function App() {
                 justifyContent: "center",
                 backgroundColor: expandedIndex === index ? "#BDC2D2" : "",
                 marginLeft: 20,
+                position: "relative",
               }}
             >
               <img
@@ -850,7 +972,6 @@ function App() {
             <div
               style={{
                 position: "absolute",
-                zIndex: 1,
               }}
             >
               {expandedIndex === index && handlefunctionStatus(dataItem.status)}
@@ -860,7 +981,6 @@ function App() {
       );
     });
   }
-
   return (
     <div className="all-page">
       <div className="side-bar">
@@ -872,8 +992,16 @@ function App() {
           <ul>
             <li onClick={handleDropdowm}>
               <img className="icon" src={iconHome} alt="Icon Home" />
-
               <a>ĐÁNH GIÁ NHÂN SỰ</a>
+              <div className="iconSideBar">
+                <Icon24px
+                  className="iconSidebar"
+                  classIcon={faChevronDown}
+                  color={"white"}
+                  size={15}
+                />
+              </div>
+
               <div className={`dropdown ${activeDropdown ? "active" : ""}`}>
                 <Icon24px classIcon={faPencil} color={"#FFFFFF"} />
                 <a href="">Ngân hàng câu hỏi</a>
@@ -881,6 +1009,7 @@ function App() {
             </li>
           </ul>
         </div>
+
         {isPopStatusVisible && (
           <div className="popStatus-area">
             <div
@@ -902,51 +1031,45 @@ function App() {
         <div className="head-action">
           <div className="btn-location">
             <ul>
-              <li>
-                <a href="">------------</a>
-                <nav></nav>
-              </li>
-              <li>
-                <a href="">------------</a>
-                <nav></nav>
-              </li>
-              <li>
-                <a href="">------------</a>
-                <nav></nav>
-              </li>
-              <li>
-                <a href="">------------</a>
-                <nav></nav>
-              </li>
-              <li>
-                <a href="">------------</a>
-                <nav></nav>
-              </li>
-              <li>
-                <a href="">------------</a>
-                <nav></nav>
-              </li>
-              <li>
-                <a href="">------------</a>
-                <nav></nav>
-              </li>
-              <li>
-                <div class="item-header">
-                  <a href="#">Nhân sự</a>
-                  <p class="underline-title-header"></p>
-                </div>
-              </li>
+              {items.map((item, index) => (
+                <li key={index}>
+                  <div className="item-header">
+                    <a
+                      href="#"
+                      onClick={() =>
+                        setSelectedItemHeader(
+                          selectedItemHeader === index ? null : index
+                        )
+                      }
+                      className={selectedItemHeader === index ? "selected" : ""}
+                    >
+                      {item}
+                    </a>
+                    <p
+                      className={`underline-title-header ${
+                        selectedItemHeader === index ? "show" : ""
+                      }`}
+                      style={{
+                        backgroundColor:
+                          selectedItemHeader === index ? "#008000" : "",
+                      }}
+                    ></p>
+                  </div>
+                  {index !== items.length - 1 && <nav></nav>}
+                </li>
+              ))}
             </ul>
           </div>
+
           <div className="btn-individual">
             <ul>
-              <li>
+              <li title="Tìm kiếm">
                 <a className="head-find" href="">
                   <img className="icon" src={iconFind} alt="Icon Home" />
                 </a>
               </li>
               <div>
-                <li>
+                <li title="Thông báo">
                   <a className="head-noi" href="">
                     <img className="icon" src={iconNoi} alt="Icon Home" />
                   </a>
@@ -954,7 +1077,7 @@ function App() {
                 <div className="red-point">20</div>
               </div>
               <div>
-                <li>
+                <li title="Ảnh đại diện">
                   <a className="head-avatar" href=""></a>
                 </li>
                 <div className="green-point"></div>
@@ -1037,6 +1160,7 @@ function App() {
             </div>
           </div>
         </div>
+        <div style={{ marginBottom: -10 }} className="under-line"></div>
         <div
           className="body-data"
           style={{ pointerEvents: isStatusHeader ? "none" : "auto" }}
@@ -1064,14 +1188,14 @@ function App() {
                 />
               </div>
 
-              <div className="btn-find">
+              <div onClick={handleSearchButtonClick} className="btn-find">
                 <img className="icon" src={iconFindWhite} alt="Icon Home" />
                 <a>Tìm</a>
               </div>
             </div>
           </div>
         </div>
-
+        <div style={{ marginTop: 5 }} className="under-line"></div>
         <div className="body-content">
           <div className="head-list">
             <div className="head-question">
@@ -1079,7 +1203,7 @@ function App() {
                 <input
                   type="checkbox"
                   checked={checkAllChecked}
-                  onChange={handleCheckAll}
+                  onChange={() => handleCheckAll(numShowItem)}
                 />
               </div>
               <div>
@@ -1096,18 +1220,24 @@ function App() {
         </div>
 
         <div className="footer">
-          <div className="footer-page-show">
+          <div
+            style={{ pointerEvents: isStatusHeader ? "none" : "auto" }}
+            className="footer-page-show"
+          >
             <p>Hiển thị mỗi trang</p>
             <div class="dropup">
               <select onChange={getValueNumPage} id="numberShow">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
-                <option value="4">4</option>
+                <option value="25">25</option>
               </select>
             </div>
           </div>
-          <div className="footer-page-number">
+          <div
+            style={{ pointerEvents: isStatusHeader ? "none" : "auto" }}
+            className="footer-page-number"
+          >
             <div>
               <Pagination
                 currentPage={currentPage}

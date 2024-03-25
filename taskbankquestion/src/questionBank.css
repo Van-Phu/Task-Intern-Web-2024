@@ -2,10 +2,11 @@
   text-decoration: none;
   list-style-type: none;
   overflow: hidden;
+  user-select: none;
 }
 
 .all-page {
-  height: 100vh;
+  height: calc(100vh);
   width: 100%;
   display: flex;
   background-color: #edeff3;
@@ -24,6 +25,12 @@
   width: 15%;
   height: 100%;
   background-color: #5a6276;
+}
+
+.under-line {
+  width: 100%;
+  height: 1px;
+  background-color: #bdc2d2;
 }
 
 .logo {
@@ -60,14 +67,14 @@
   padding: 0;
   margin: 0;
   height: 100vh;
-  width: 100vh;
+  width: 100%;
 }
 
 .content-side-bar ul li {
   height: 50px;
-  width: 100%;
+  max-width: 100%;
   align-items: center;
-  justify-content: left;
+  justify-content: space-between;
   display: flex;
   border-left: 5px solid #5cb800;
 }
@@ -81,12 +88,22 @@
 
 .content-side-bar ul li a {
   color: white;
-  margin-left: 20px;
   position: relative;
+}
+
+.content-side-bar ul li .iconSideBar {
+  margin-right: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .dropdown {
   display: none;
+}
+
+.dropdown a {
+  margin-left: 40px;
 }
 
 .dropdown.active {
@@ -120,7 +137,7 @@
 }
 
 .head-action {
-  height: 7%;
+  height: 50px;
   width: 100%;
   background-color: rgb(255, 255, 255);
   display: flex;
@@ -130,7 +147,7 @@
 }
 
 .head-action .btn-location {
-  width: 70%;
+  width: calc(70%);
   height: 100%;
 }
 
@@ -139,55 +156,57 @@
   display: flex;
   align-items: center;
   padding: 0;
-  margin: 0 20px;
+  margin: 0 10px;
+  margin-left: 20px;
 }
 
 .head-action .btn-location ul li {
-  max-width: 10%;
+  max-width: 100%;
   height: 100%;
   align-items: center;
   display: flex;
   justify-content: space-between;
-  margin-right: 20px;
 }
 
 .item-header {
-  height: 100%;
   width: 100%;
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .head-action .btn-location ul li a {
   color: #008000;
   width: 100%;
   height: 100%;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 500;
-  margin-right: 5px;
   display: flex;
   align-items: center;
-  justify-content: end;
-  /* background-color: red; */
+  justify-content: space-around;
 }
 
 .head-action .btn-location ul li nav {
   height: 80%;
-  width: 2px;
+  width: 3px;
   background-color: #c4c4c4;
   border-radius: 30%;
+  margin-left: 30px;
+  margin-right: 30px;
 }
 
 .head-action .btn-location ul li div {
   height: 100%;
   width: 100%;
+  position: relative;
 }
 
 .underline-title-header {
-  margin-top: 10px;
-  height: 10%;
+  height: 5px;
   width: 100%;
-  background-color: #008000;
+  border-radius: 20px;
+  position: absolute;
+  top: 60%;
 }
 
 .head-action .btn-individual {
@@ -196,6 +215,23 @@
   align-items: center;
   justify-content: right;
   padding-right: 20px;
+}
+
+.rowItem {
+  max-height: 62px;
+  cursor: pointer;
+}
+
+.rowItem:hover::before {
+  content: attr(title);
+  position: absolute;
+  background-color: black;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .head-action .btn-individual ul {
@@ -208,6 +244,19 @@
   align-items: center;
   justify-content: center;
   display: flex;
+  position: relative;
+}
+
+head-action .btn-individual ul li:hover::before {
+  content: attr(title);
+  position: absolute;
+  background-color: black;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .head-action .btn-individual ul li .head-find {
@@ -235,8 +284,8 @@
 }
 
 .head-action .btn-individual ul li .head-find img {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
 .head-action .btn-individual ul li .head-noi {
@@ -247,13 +296,13 @@
 }
 
 .head-action .btn-individual ul li .head-noi img {
-  width: 25px;
-  height: 25px;
+  width: 18px;
+  height: 18px;
 }
 
 .head-action .btn-individual ul li .head-avatar {
-  height: 50px;
-  width: 50px;
+  height: 35px;
+  width: 35px;
   background-color: red;
   align-items: center;
   justify-content: center;
@@ -265,17 +314,17 @@
 }
 
 .head-action .btn-individual ul div .green-point {
-  height: 15px;
-  width: 15px;
+  height: 10px;
+  width: 10px;
   background-color: #05d103;
   border-radius: 100px;
   position: absolute;
-  margin-top: 40px;
-  margin-left: 35px;
+  margin-top: 30px;
+  margin-left: 25px;
 }
 
 .head-field {
-  height: 7%;
+  height: 60px;
   width: 100%;
   display: flex;
 }
@@ -285,13 +334,12 @@
   width: 70%;
   align-items: center;
   display: flex;
-  border-bottom: 0.5px solid #bdc2d2;
   position: relative;
 }
 
 .head-field .field-check div {
   max-width: 150px;
-  height: 28px;
+  height: 30px;
   background-color: white;
   border-radius: 20px;
   align-items: center;
@@ -303,6 +351,8 @@
   border-style: solid;
   border-color: white;
   cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
+    0 6px 10px 0 rgba(216, 216, 216, 0.19);
 }
 
 .head-field .field-check div input {
@@ -339,7 +389,7 @@
 }
 
 .head-field .field-check div a {
-  margin-right: 10px;
+  margin-right: 15px;
   color: #959db3;
 }
 
@@ -350,7 +400,6 @@
   display: flex;
   justify-content: right;
   margin-right: 30px;
-  border-bottom: 0.5px solid #bdc2d2;
 }
 
 .head-field .field-btn .field-uploand {
@@ -361,6 +410,8 @@
   margin-right: 20px;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
+    0 6px 10px 0 rgba(216, 216, 216, 0.19);
   display: flex;
 }
 
@@ -381,6 +432,8 @@
   align-items: center;
   justify-content: space-between;
   display: flex;
+  box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
+    0 6px 10px 0 rgba(216, 216, 216, 0.19);
   cursor: pointer;
 }
 
@@ -397,6 +450,7 @@
 
 .head-field .field-btn .field-downloand a {
   padding-right: 10px;
+  font-size: 16px;
 }
 
 .head-field .field-btn .field-addNew {
@@ -409,22 +463,22 @@
   justify-content: center;
   background-color: #1a6634;
   color: white;
-  font-size: 20px;
+  box-shadow: 0 1px 2px 0 rgba(173, 220, 246, 0.2),
+    0 6px 10px 0 rgba(0, 217, 255, 0.19);
   padding: 0 10px;
   cursor: pointer;
 }
 
 .head-field .field-btn .field-addNew a {
-  /* padding-right: 10px; */
   align-items: center;
   justify-content: center;
   display: flex;
-  font-size: 20px;
+  font-size: 16px;
   margin-left: 10px;
 }
 
 .body-data {
-  height: 10%;
+  height: 90px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -436,7 +490,6 @@
   justify-content: center;
   align-items: center;
   justify-content: left;
-  border-bottom: 0.5px solid #bdc2d2;
 }
 
 .body-data .data-icon .icon {
@@ -450,7 +503,6 @@
   width: 10%;
   height: 100%;
   align-items: center;
-  border-bottom: 0.5px solid #bdc2d2;
 }
 
 .body-data .data-reset p {
@@ -477,7 +529,6 @@
   display: block;
   height: 100%;
   width: 100%;
-  border-bottom: 0.5px solid #bdc2d2;
 }
 
 .body-data .data-find p {
@@ -496,6 +547,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 30px;
 }
 
 .body-data .data-find .input-find .icon {
@@ -520,11 +572,12 @@
   border-radius: 5px;
   background-color: #008000;
   color: white;
+  box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
+    0 6px 10px 0 rgba(216, 216, 216, 0.19);
 }
 
 .body-data .data-find .btn-find .icon {
   padding-left: 10px;
-  padding-right: 10px;
   height: 20px;
   width: 20px;
 }
@@ -534,7 +587,7 @@
 }
 
 .body-content {
-  height: 70vh;
+  height: calc(100% - 100px - 60px - 90px);
   width: 100%;
 }
 
@@ -605,7 +658,7 @@
 }
 
 .footer {
-  height: 6%;
+  height: 50px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -621,8 +674,16 @@
   justify-content: left;
   display: flex;
 }
+
+.footer-page-show p {
+  font-size: 18px;
+}
 .dropup {
   margin-left: 20px;
+}
+
+.dropup option {
+  font-size: 18px;
 }
 
 .footer-page-numbe {
@@ -720,7 +781,6 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid #dbdee7;
 }
 
 .head-pop-delete p {
@@ -736,7 +796,6 @@ input[type="checkbox"] {
   align-items: center;
   justify-content: center;
   align-items: center;
-  border-bottom: 1px solid #dbdee7;
 }
 
 .body-pop-delete p {
@@ -791,6 +850,7 @@ input[type="checkbox"] {
   margin-left: 100px;
   display: flex;
   justify-content: center;
+  z-index: 99999;
 }
 
 .popStatus {
