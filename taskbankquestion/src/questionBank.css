@@ -335,6 +335,8 @@ head-action .btn-individual ul li:hover::before {
   align-items: center;
   display: flex;
   position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .head-field .field-check div {

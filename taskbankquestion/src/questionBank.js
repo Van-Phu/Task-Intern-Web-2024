@@ -29,13 +29,10 @@ import {
   faEye,
   faX,
   faCircleXmark,
-  faL,
   faChevronDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 import question from "./question.json";
-import { number } from "prop-types";
-import { Alert } from "bootstrap";
 function App() {
   //Data đầu
   const [dataQuestion, setDataQuestion] = useState();
@@ -73,6 +70,7 @@ function App() {
   const [newNumberItem, setNewNumberItem] = useState();
 
   let numberItem = 0;
+  console.log(dataQuestionChecked);
 
   const messageStatusMap = {
     failApprove: "Đã xảy ra lỗi khi phê duyệt: Câu hỏi phải đầy đủ thông tin!",
@@ -469,7 +467,7 @@ function App() {
             return item;
           }
         });
-        alert(itemSuccess);
+        console.log(itemSuccess);
         setDataQuestion(updatedItemsSend);
         const foundSendItem = foundErrorSend;
 
@@ -529,7 +527,7 @@ function App() {
             return item;
           }
         });
-        alert(itemSuccess);
+        console.log(itemSuccess);
         setDataQuestion(approveItem);
         const foundApprovedItem = foundError;
         if (foundApprovedItem == true) {
@@ -564,7 +562,7 @@ function App() {
           }
           return item;
         });
-        alert(itemSuccess);
+        console.log(itemSuccess);
         setStatusMessage(true);
         setDataQuestion(returnItem);
         setStatus(messageStatusMap.return);
@@ -583,7 +581,7 @@ function App() {
           }
           return item;
         });
-        alert(itemSuccess);
+        console.log(itemSuccess);
         setStatusMessage(true);
         setDataQuestion(stopItem);
         setStatus(messageStatusMap.stopDis);
@@ -732,6 +730,50 @@ function App() {
     const startIndex = (currentPage - 1) * numShowItem;
     const endIndex = Number(startIndex) + Number(numShowItem);
     const slicedData = filteredData.slice(startIndex, endIndex);
+    const handlefunctionStatus = (status) => {
+      return (
+        <div
+          style={{
+            width: "100%",
+            marginRight: 220,
+            marginTop: status === 2 || status == 4 ? 60 : 110,
+            zIndex: 9999,
+          }}
+        >
+          <ul>
+            {statusOptions[status].map((option, index) => (
+              <li
+                key={index}
+                onClick={() => handlePopupAction(option.action)}
+                style={{
+                  backgroundColor: "#BDC2D2",
+                  width: 170,
+                  height: 50,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  zIndex: 9999,
+                }}
+              >
+                <Icon24px classIcon={faPencil} color={"#FFFFFF"} />
+                <a
+                  style={{
+                    color: "white",
+                    marginLeft: 10,
+                    fontSize: 18,
+                    cursor: "pointer",
+                  }}
+                >
+                  {option.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    };
+
     return slicedData.map((dataItem, index) => {
       const isChecked = dataQuestionChecked.includes(dataItem);
       const handleStatus = (status) => {
@@ -748,50 +790,6 @@ function App() {
         }
       };
 
-      const handlefunctionStatus = (status) => {
-        return (
-          <div
-            style={{
-              width: "100%",
-              marginRight: 220,
-              marginTop: status === 2 || status == 4 ? 60 : 110,
-              zIndex: 9999,
-            }}
-          >
-            <ul>
-              {statusOptions[status].map((option, index) => (
-                <li
-                  key={index}
-                  onClick={() => handlePopupAction(option.action)}
-                  style={{
-                    backgroundColor: "#BDC2D2",
-                    width: 170,
-                    height: 50,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    zIndex: 9999,
-                  }}
-                >
-                  <Icon24px classIcon={faPencil} color={"#FFFFFF"} />
-                  <a
-                    style={{
-                      color: "white",
-                      marginLeft: 10,
-                      fontSize: 18,
-                      cursor: "pointer",
-                    }}
-                  >
-                    {option.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-      };
-
       const handleItemClick = () => {
         if (expandedIndex === index) {
           setExpandedIndex(null);
@@ -802,19 +800,18 @@ function App() {
         }
       };
 
-      const handleItemChecked = (event) => {
-        const itemId = filteredData[index];
+      const handleItemChecked = (event, item) => {
         const isChecked = event.target.checked;
 
         if (isChecked) {
-          setDataQuenstionChecked((prevItems) => [...prevItems, itemId]);
+          setDataQuenstionChecked((prevItems) => [...prevItems, item]);
           if (dataQuestionChecked.length === numShowItem - 1) {
             setCheckAllChecked(true);
           }
         } else {
           setCheckAllChecked(false);
           setDataQuenstionChecked((prevItems) =>
-            prevItems.filter((item) => item !== itemId)
+            prevItems.filter((checkedItem) => checkedItem.id !== item.id)
           );
         }
       };
@@ -835,7 +832,7 @@ function App() {
           }}
         >
           <input
-            onChange={(event) => handleItemChecked(event, index)}
+            onChange={(event) => handleItemChecked(event, dataItem)}
             style={{ width: "1%", cursor: "pointer" }}
             type="checkbox"
             checked={isChecked}
@@ -875,13 +872,22 @@ function App() {
                 <div>
                   <div
                     title={dataItem.idQues}
-                    style={{ marginLeft: 20, marginRight: 10 }}
+                    style={{
+                      marginLeft: 0,
+                      marginRight: 10,
+                      display: dataItem.idQues != undefined ? "block" : "none",
+                    }}
                   >
                     {dataItem.idQues}
                   </div>
                 </div>
                 <div
-                  style={{ height: 20, width: 1, backgroundColor: "#C4C4C4" }}
+                  style={{
+                    height: 20,
+                    width: 1,
+                    backgroundColor: "#C4C4C4",
+                    display: dataItem.idQues != undefined ? "block" : "none",
+                  }}
                 ></div>
                 <div
                   style={{
