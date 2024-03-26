@@ -8,12 +8,10 @@ import iconFill from "./icon/filter-svgrepo-com.svg";
 import iconFindWhite from "./icon/find-white.svg";
 import iconThreeDot from "./icon/three-dot.png";
 import iconDownArrow from "./icon/icon-down-arrow.png";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Pagination from "./component/pagination";
 import "react-toastify/dist/ReactToastify.css";
-// import { ToastContainer } from "./component/customToast";
-import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import {
@@ -43,7 +41,6 @@ function App() {
   const [dataQuestion, setDataQuestion] = useState();
   const [listQuestion, setListQuestion] = useState(question.listQuestion);
   const [activeDropdown, setActiveDropDown] = useState(false);
-  const [headerStatus, setHeaderStatus] = useState();
   const [selectedItemHeader, setSelectedItemHeader] = useState(3);
   //check item
   const [draftChecked, setDraftChecked] = useState(true);
@@ -69,7 +66,6 @@ function App() {
   const [functionChecked, setFunctionChecked] = useState([]);
   const [statusMessage, setStatusMessage] = useState(true);
   const [status, setStatus] = useState("none");
-  const [statusItemChecked, setStatusItemChecked] = useState(true);
   //page
   const [currentPage, setCurrentPage] = useState(1);
   const [numShowItem, setNumShowItem] = useState(1);
@@ -139,6 +135,14 @@ function App() {
     7: "Xem chi tiết",
   };
 
+  const functionMap = {
+    send: 2,
+    delete: 3,
+    approve: 4,
+    return: 5,
+    stopDis: 6,
+  };
+
   const filterData = (dataList) => {
     let filteredData = dataList;
     const selectedStatus = [];
@@ -179,7 +183,7 @@ function App() {
     setCurrentPage(1);
     setNumShowItem(numShowItem);
   }, [
-    listQuestion,
+    // listQuestion,
     draftChecked,
     sendChecked,
     browserChecked,
@@ -199,14 +203,6 @@ function App() {
       setIsCheckedVisible(false);
     }
   }, [dataQuestionChecked]);
-
-  const functionMap = {
-    send: 2,
-    delete: 3,
-    approve: 4,
-    return: 5,
-    stopDis: 6,
-  };
 
   const handleDraftChecked = async () => {
     setCurrentPage(1);
@@ -664,6 +660,7 @@ function App() {
     setBrowserChecked(false);
     setStopBrowserChecked(false);
     setSearchKeyword("");
+    setSearchKeyword("");
   };
 
   const handleCheckAll = (numItem) => {
@@ -758,7 +755,7 @@ function App() {
               width: "100%",
               marginRight: 220,
               marginTop: status === 2 || status == 4 ? 60 : 110,
-              zIndex: 999,
+              zIndex: 9999,
             }}
           >
             <ul>
@@ -834,6 +831,7 @@ function App() {
             backgroundColor: isChecked ? "#1A6634B2" : "white",
             marginBottom: 5,
             zIndex: 0,
+            position: "relative",
           }}
         >
           <input
@@ -1035,7 +1033,7 @@ function App() {
                 <li key={index}>
                   <div className="item-header">
                     <a
-                      href="#"
+                      href=""
                       onClick={() =>
                         setSelectedItemHeader(
                           selectedItemHeader === index ? null : index
@@ -1181,6 +1179,8 @@ function App() {
               <div className="input-find">
                 <img className="icon" src={iconFind} alt="Icon Home" />
                 <input
+                  value={searchKeyword}
+                  id="inputSearch"
                   className="input-find"
                   onChange={handleSearchInputChange}
                   placeholder="Tìm theo mã và câu hỏi"

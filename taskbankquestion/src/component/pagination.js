@@ -35,7 +35,6 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
         <button
           style={{
             backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
-
             backgroundColor: "#F4F5F7",
             border: "none",
             marginRight: 5,
@@ -53,6 +52,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
             border: "none",
             marginRight: 10,
+            cursor: "default",
           }}
           key="prev"
           onClick={handlePrevPage}
@@ -82,11 +82,17 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             border: "none",
             backgroundColor: "#F4F5F7",
             backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+            cursor: "alias",
           }}
           key="next"
           onClick={handleNextPage}
         >
-          <Icon24px classIcon={faChevronRight} size={18} color={"#959DB3"} />
+          <Icon24px
+            style={{ cursor: "default" }}
+            classIcon={faChevronRight}
+            size={18}
+            color={"#959DB3"}
+          />
         </button>
       );
       buttons.push(
