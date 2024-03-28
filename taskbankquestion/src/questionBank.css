@@ -37,25 +37,32 @@
   height: 7vh;
   width: 99.5%;
   border-bottom: 1px #ffffff solid;
-  background-color: white;
   border-top: 1px solid black;
   border-right: 1px solid black;
+  background-color: white;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 
 .logo-arrow {
   width: 20px;
   height: 20px;
-  margin-left: 50px;
+  margin-right: 10px;
 }
 
-.logo .image {
+.logo-image {
+  width: 70%;
+  height: 100%;
+  margin-left: 10px;
+}
+
+.image {
   background-image: url("./icon/logoHachi.png");
   height: 100%;
-  width: 60%;
-  background-size: cover;
+  width: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .content-side-bar {
@@ -176,6 +183,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  cursor: pointer;
 }
 
 .head-action .btn-location ul li a {
@@ -455,7 +463,7 @@ head-action .btn-individual ul li:hover::before {
 
 .head-field .field-btn .field-uploand {
   height: 32px;
-  width: 40px;
+  width: 32px;
   background-color: #ffffff;
   border-radius: 3px;
   margin-right: 20px;
@@ -488,9 +496,7 @@ head-action .btn-individual ul li:hover::before {
   cursor: pointer;
 }
 
-.head-field .field-btn .field-downloand .icon {
-  height: 20px;
-  width: 20px;
+.head-field .field-btn .field-downloand div {
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -505,7 +511,7 @@ head-action .btn-individual ul li:hover::before {
 }
 
 .head-field .field-btn .field-addNew {
-  height: 34px;
+  height: 32px;
   max-width: 200px;
   background-color: #ffffff;
   border-radius: 3px;
@@ -665,6 +671,10 @@ head-action .btn-individual ul li:hover::before {
   width: 100%;
   margin-top: 10px;
   /* margin-bottom: 1%; */
+}
+
+.head-question-input {
+  margin-right: 10px;
 }
 
 .head-question {
@@ -949,7 +959,7 @@ input[type="checkbox"] {
 }
 
 .pop-itemchecked-area {
-  height: 120px;
+  max-height: 120px;
   width: 75%;
   margin-left: 5%;
   margin-right: 5%;
@@ -957,7 +967,7 @@ input[type="checkbox"] {
   align-items: center;
   display: flex;
   justify-content: center;
-  margin-top: -500px;
+  margin-top: -20%;
 }
 
 .popupItemChecked {
@@ -1068,9 +1078,13 @@ input[type="checkbox"] {
 }
 
 .itemChoose {
-  margin-left: 40px;
-  margin-right: 40px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 80%;
+  margin-left: 10%;
   color: #36c8cf;
   text-overflow: ellipsis;
   white-space: nowrap;
+  overflow: hide;
 }

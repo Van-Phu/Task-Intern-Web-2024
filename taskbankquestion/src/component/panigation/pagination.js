@@ -7,6 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function Pagination({ currentPage, totalPages, onPageChange }) {
+  totalPages = Math.ceil(totalPages);
   const Icon24px = ({ classIcon, color, size }) => {
     const iconSize = {
       color: color,

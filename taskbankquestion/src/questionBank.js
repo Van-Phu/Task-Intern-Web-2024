@@ -31,6 +31,11 @@ import {
   faCircleXmark,
   faChevronDown,
   faListCheck,
+  faChevronUp,
+  faArrowUpFromBracket,
+  faArrowDownTo,
+  faDownload,
+  faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 
 import question from "./question.json";
@@ -40,6 +45,7 @@ function App() {
   const [listQuestion, setListQuestion] = useState(question.listQuestion);
   const [activeDropdown, setActiveDropDown] = useState(true);
   const [selectedItemHeader, setSelectedItemHeader] = useState(3);
+  const [selectedSidebar, setSelectedSidebar] = useState(0);
   //check item
   const [draftChecked, setDraftChecked] = useState(true);
   const [sendChecked, setSendChecked] = useState(false);
@@ -75,8 +81,30 @@ function App() {
   const handlefunctionStatusRef = useRef(null);
   const [itemDelete, setItemDelete] = useState();
   const [dataItemDelete, setDataItemDelete] = useState([]);
+  const [dataCheckAllPage, setDataCheckAllPage] = useState([]);
+  const [pageChecked, setPageChecked] = useState({});
+  const [checkedPages, setCheckedPages] = useState([]);
+  const [showCheckAll, setShowCheckAll] = useState(true);
 
   let numberItem = 0;
+
+  const [sidebarItems, setSidebarItems] = useState([
+    {
+      label: "Đánh giá nhân sự",
+      icon: faListCheck,
+      link: "/danh-gia-nhan-su",
+      dropdowns: [{ label: "Ngân hàng câu hỏi", link: "/ngan-hang-cau-hoi" }],
+    },
+    {
+      label: "Mục khác",
+      icon: faCheck,
+      link: "/other-link",
+      dropdowns: [
+        { label: "Dropdown Label A", link: "/dropdown-a" },
+        { label: "Dropdown Label B", link: "/dropdown-b" },
+      ],
+    },
+  ]);
   const messageStatusMap = {
     failApprove: "Đã xảy ra lỗi khi phê duyệt: Câu hỏi phải đầy đủ thông tin!",
     failSend: "Đã xảy ra lỗi khi gửi: Câu hỏi phải đầy đủ thông tin!",
@@ -216,6 +244,12 @@ function App() {
     };
   }, []);
 
+  const changeHeaderFunction = (fun) => {
+    setSelectedItemHeader(fun);
+    setSelectedSidebar(-1);
+    setActiveDropDown(false);
+  };
+
   const handleDraftChecked = async () => {
     setCurrentPage(1);
     setDataQuestion((prevDataQuestion) => {
@@ -272,10 +306,6 @@ function App() {
     setNumShowItem(numShowItem);
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
   const Icon24px = ({ classIcon, color, size }) => {
     const iconSize = {
       color: color,
@@ -326,11 +356,19 @@ function App() {
     setIsCheckedVisible(true);
     setIsPopDeleteChecked(!isPopDeleteChecked);
   };
-
   const getItemDeleteChecked = () => {
     let result = "";
     for (let i = 0; i < dataItemChecked.length; i++) {
-      result += dataItemChecked[i].idQues + " ,";
+      if (dataItemChecked[i].status === 0) {
+        if (dataItemChecked[i].idQues == undefined) {
+          result += "Không xác định";
+        } else {
+          result += dataItemChecked[i].idQues;
+        }
+        if (i < dataItemChecked.length - 1) {
+          result += " ,";
+        }
+      }
     }
     return result;
   };
@@ -603,7 +641,6 @@ function App() {
         }, 2000);
         break;
       case 6:
-        //stop display checked
         const stopItem = dataQuestion.map((item) => {
           if (dataQuestionChecked.includes(item) && item.status === 2) {
             itemSuccess.push(item.idQues);
@@ -681,26 +718,36 @@ function App() {
     setActiveDropDown(!activeDropdown);
   };
 
-  const handleResetFilter = () => {
-    setDraftChecked(true);
-    setSendChecked(false);
-    setStopBrowserChecked(false);
-    setBrowserChecked(false);
-    setStopBrowserChecked(false);
-    setSearchKeyword("");
+  const handlePageChange = (page) => {
+    //  setCheckAllChecked(dataCheckAllPage.includes(page));
+    // setCheckAllChecked(false);
+    setCurrentPage(page);
   };
 
   const handleCheckAll = (numItem) => {
-    setDataQuenstionChecked([]);
+    let startIndex = Number(numItem) * Number(currentPage) - Number(numItem);
     setCheckAllChecked(!checkAllChecked);
-    const visibleItems = filterDataByStatus(dataQuestion).slice(0, numItem);
+    const visibleItems = filterDataByStatus(dataQuestion).slice(
+      startIndex,
+      startIndex + Number(numItem)
+    );
+
     if (!checkAllChecked) {
-      setDataQuenstionChecked(visibleItems);
+      setDataQuenstionChecked((prevItems) => [...prevItems, ...visibleItems]);
+      const allItemsChecked = visibleItems.every((item) =>
+        dataQuestionChecked.includes(item)
+      );
+      if (allItemsChecked) {
+        setShowCheckAll(true);
+      } else {
+        setShowCheckAll(false);
+      }
     } else {
       const newDataQuestionChecked = dataQuestionChecked.filter(
         (item) => !visibleItems.includes(item)
       );
       setDataQuenstionChecked(newDataQuestionChecked);
+      setShowCheckAll(true);
     }
   };
 
@@ -738,6 +785,8 @@ function App() {
   const getValueNumPage = (event) => {
     const selectedValue = event.target.value;
     let pageNum = numberItem / selectedValue;
+    pageNum = Math.ceil(pageNum);
+    console.log(pageNum);
     setNumberPage(pageNum);
     setCurrentPage(1);
     setNumShowItem(selectedValue);
@@ -747,13 +796,27 @@ function App() {
     setSearchKeyword(event.target.value);
   };
 
-  const handleSearchButtonClick = () => {
+  const handleSearchButtonClick = (searchKeyword) => {
     setSearchKey(searchKeyword);
+  };
+
+  const handleResetFilter = () => {
+    setDraftChecked(true);
+    setSendChecked(false);
+    setStopBrowserChecked(false);
+    setBrowserChecked(false);
+    setStopBrowserChecked(false);
+    setSearchKeyword("");
+    handleSearchButtonClick("");
   };
 
   function renderRows(dataList) {
     const filteredData = filterDataByStatus(dataList).filter((item) =>
-      item.question.toLowerCase().includes(searchKey.toLowerCase())
+      Object.values(item).some(
+        (value) =>
+          typeof value === "string" &&
+          value.toLowerCase().includes(searchKey.toLowerCase())
+      )
     );
 
     numberItem = filteredData.length;
@@ -837,6 +900,8 @@ function App() {
         if (isChecked) {
           setDataQuenstionChecked((prevItems) => [...prevItems, item]);
           if (dataQuestionChecked.length === numShowItem - 1) {
+            setCheckAllChecked(true);
+          } else if (filteredData.length === dataQuestionChecked.length + 1) {
             setCheckAllChecked(true);
           }
         } else {
@@ -984,7 +1049,12 @@ function App() {
               alignItems: "center",
               display: "flex",
               justifyContent: "center",
-              width: "7%",
+              width: "5%",
+              // borderLeft: "solid",
+              marginLeft: "2%",
+              paddingTop: 10,
+              borderColor: "#BDC2D2",
+              paddingBottom: 10,
             }}
           >
             <div
@@ -1019,42 +1089,55 @@ function App() {
       );
     });
   }
+
   return (
     <div className="all-page">
       <div className="side-bar">
         <div className="logo">
-          <div className="image"></div>
+          <div className="logo-image">
+            <div className="image"></div>
+          </div>
+
           <img className="logo-arrow" src={iconDownArrow} />
         </div>
-        <div className="content-side-bar">
-          <ul>
-            <li onClick={handleDropdowm}>
-              <div style={{ marginLeft: 10 }}>
-                <Icon24px
-                  classIcon={faListCheck}
-                  color={activeDropdown ? "#5CB800" : "white"}
-                  size={20}
-                />
-              </div>
-
-              <a style={{ color: activeDropdown ? "#5CB800" : "white" }}>
-                ĐÁNH GIÁ NHÂN SỰ
-              </a>
-              <div className="iconSideBar">
-                <Icon24px
-                  className="iconSidebar"
-                  classIcon={faChevronDown}
-                  color={"white"}
-                  size={15}
-                />
-              </div>
-
-              <div className={`dropdown ${activeDropdown ? "active" : ""}`}>
-                <Icon24px classIcon={faPencil} color={"#FFFFFF"} />
-                <a href="">Ngân hàng câu hỏi</a>
-              </div>
-            </li>
-          </ul>
+        <div
+          style={{ display: selectedItemHeader == 3 ? "" : "none" }}
+          className="content-side-bar"
+        >
+          {sidebarItems.map((item, index) => (
+            <div key={index}>
+              <ul>
+                <li onClick={handleDropdowm}>
+                  <div style={{ marginLeft: 10 }}>
+                    <Icon24px
+                      classIcon={item.icon}
+                      color={activeDropdown ? "#5CB800" : "white"}
+                      size={20}
+                    />
+                  </div>
+                  <a style={{ color: activeDropdown ? "#5CB800" : "white" }}>
+                    {item.label}
+                  </a>
+                  <div className="iconSideBar">
+                    <Icon24px
+                      className="iconSidebar"
+                      classIcon={activeDropdown ? faChevronDown : faChevronUp}
+                      color={activeDropdown ? "#5CB800" : "white"}
+                      size={15}
+                    />
+                  </div>
+                  <div className={`dropdown ${activeDropdown ? "active" : ""}`}>
+                    {item.dropdowns.map((dropdown, idx) => (
+                      <div onClick={() => setSelectedSidebar(idx)} key={idx}>
+                        <Icon24px classIcon={faPencil} color={"#FFFFFF"} />
+                        <a>{dropdown.label}</a>
+                      </div>
+                    ))}
+                  </div>
+                </li>
+              </ul>
+            </div>
+          ))}
         </div>
 
         {isPopStatusVisible && (
@@ -1082,12 +1165,7 @@ function App() {
                 <li key={index}>
                   <div className="item-header">
                     <a
-                      href=""
-                      onClick={() =>
-                        setSelectedItemHeader(
-                          selectedItemHeader === index ? null : index
-                        )
-                      }
+                      onClick={() => changeHeaderFunction(index)}
                       className={selectedItemHeader === index ? "selected" : ""}
                       style={{
                         color:
@@ -1139,7 +1217,10 @@ function App() {
 
         <div
           className="head-field"
-          style={{ pointerEvents: isStatusHeader ? "none" : "auto" }}
+          style={{
+            pointerEvents: isStatusHeader ? "none" : "auto",
+            display: selectedSidebar == 0 ? "" : "none",
+          }}
         >
           <div className="field-check">
             <div
@@ -1204,11 +1285,13 @@ function App() {
           </div>
           <div className="field-btn">
             <div className="field-uploand">
-              <img className="icon" src={iconExport} alt="Icon Home" />
+              <Icon24px classIcon={faUpload} size={14} color={"#959DB3"} />
             </div>
 
             <div className="field-downloand">
-              <img className="icon" src={iconImport} alt="Icon Home" />
+              <div>
+                <Icon24px classIcon={faDownload} size={14} color={"#959DB3"} />
+              </div>
               <a>Template</a>
             </div>
 
@@ -1221,7 +1304,10 @@ function App() {
         <div style={{ marginBottom: -10 }} className="under-line"></div>
         <div
           className="body-data"
-          style={{ pointerEvents: isStatusHeader ? "none" : "auto" }}
+          style={{
+            pointerEvents: isStatusHeader ? "none" : "auto",
+            display: selectedSidebar == 0 ? "" : "none",
+          }}
         >
           <div className="data-icon">
             <img className="icon" src={iconFill} alt="Icon Home" />
@@ -1247,13 +1333,16 @@ function App() {
                   type="text"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
-                      handleSearchInputChange();
+                      handleSearchButtonClick(searchKeyword);
                     }
                   }}
                 />
               </div>
 
-              <div onClick={handleSearchButtonClick} className="btn-find">
+              <div
+                onClick={() => handleSearchButtonClick(searchKeyword)}
+                className="btn-find"
+              >
                 <img className="icon" src={iconFindWhite} alt="Icon Home" />
                 <a>Tìm</a>
               </div>
@@ -1261,7 +1350,10 @@ function App() {
           </div>
         </div>
         <div style={{ marginTop: 5 }} className="under-line"></div>
-        <div className="body-content">
+        <div
+          style={{ display: selectedSidebar == 0 ? "" : "none" }}
+          className="body-content"
+        >
           <div className="head-list">
             <div className="head-question">
               <div className="head-question-input">
@@ -1284,7 +1376,10 @@ function App() {
           </div>
         </div>
 
-        <div className="footer">
+        <div
+          style={{ display: selectedSidebar == 0 ? "" : "none" }}
+          className="footer"
+        >
           <div
             style={{ pointerEvents: isStatusHeader ? "none" : "auto" }}
             className="footer-page-show"
@@ -1294,7 +1389,7 @@ function App() {
               <select onChange={getValueNumPage} id="numberShow">
                 <option value="1">1</option>
                 <option value="2">2</option>
-                <option value="3">3</option>
+                <option value="5">5</option>
                 <option value="25">25</option>
               </select>
             </div>
@@ -1327,7 +1422,9 @@ function App() {
                   <div className="body-pop-delete" onClick={handlePopupClick}>
                     <div>
                       <p>Bạn có chắc chắn muốn xóa phân nhóm</p>
-                      <p className="itemChoose">{itemDelete.question}</p>
+                      <div className="itemChoose" title={itemDelete.question}>
+                        {itemDelete.question}
+                      </div>
                     </div>
                     <div>
                       <p>
@@ -1375,7 +1472,7 @@ function App() {
                   <div className="body-pop-delete" onClick={handlePopupClick}>
                     <div>
                       <p>Bạn có chắc chắn muốn xóa phân nhóm</p>
-                      <p className="itemChoose">{getItemDeleteChecked()}</p>
+                      <div className="itemChoose">{getItemDeleteChecked()}</div>
                     </div>
                     <div>
                       <p>
