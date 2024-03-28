@@ -22,7 +22,7 @@
 }
 
 .side-bar {
-  width: 15%;
+  width: 220px;
   height: 100%;
   background-color: #5a6276;
 }
@@ -89,6 +89,7 @@
 .content-side-bar ul li a {
   color: white;
   position: relative;
+  font-size: 13px;
 }
 
 .content-side-bar ul li .iconSideBar {
@@ -103,7 +104,7 @@
 }
 
 .dropdown a {
-  margin-left: 40px;
+  margin-left: 10px;
 }
 
 .dropdown.active {
@@ -118,11 +119,11 @@
   margin-top: 100px;
   margin-left: -5px;
   border-left: 5px solid white;
-  width: 280px;
+  max-width: 100%;
 }
 
 .content-area {
-  width: 84%;
+  width: calc(100% - 220px);
   height: 100%;
   margin-left: 0.3%;
   margin-right: 0.3%;
@@ -149,6 +150,7 @@
 .head-action .btn-location {
   width: calc(70%);
   height: 100%;
+  overflow-x: auto;
 }
 
 .head-action .btn-location ul {
@@ -166,6 +168,7 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
+  white-space: nowrap;
 }
 
 .item-header {
@@ -218,8 +221,22 @@
 }
 
 .rowItem {
-  max-height: 62px;
+  max-height: 500px;
+  width: 99%;
+  align-items: center;
+  display: flex;
+  padding: 0.5%;
   cursor: pointer;
+  margin-top: 5px;
+  background-color: white;
+}
+
+.rowItem:hover {
+  background-color: #1a6634b2;
+}
+
+.input-item:hover {
+  background: #008000;
 }
 
 .rowItem:hover::before {
@@ -327,21 +344,26 @@ head-action .btn-individual ul li:hover::before {
   height: 60px;
   width: 100%;
   display: flex;
+  white-space: nowrap;
 }
 
 .head-field .field-check {
+  min-width: 60%;
   height: 99%;
-  width: 70%;
+  width: 60%;
   align-items: center;
   display: flex;
   position: relative;
   overflow-x: auto;
   overflow-y: hidden;
+  margin-right: 5%;
+  white-space: nowrap;
 }
 
 .head-field .field-check div {
-  max-width: 150px;
-  height: 30px;
+  /* max-width: 200px;
+  min-width: 120px; */
+  height: 28px;
   background-color: white;
   border-radius: 20px;
   align-items: center;
@@ -355,10 +377,43 @@ head-action .btn-individual ul li:hover::before {
   cursor: pointer;
   box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
     0 6px 10px 0 rgba(216, 216, 216, 0.19);
+  border-width: 2px;
+  white-space: nowrap;
+}
+
+.head-field .field-check div a {
+  margin-right: 5px;
+  color: #959db3;
+  font-size: 13px;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.head-field .field-check div:hover {
+  border-color: #008000;
+}
+
+.head-field .field-check div:hover input {
 }
 
 .head-field .field-check div input {
   cursor: pointer;
+}
+
+.draftChecked {
+  min-width: 120px;
+}
+
+.sendChecked {
+  min-width: 80px;
+}
+
+.stopBrowserChecked {
+  min-width: 120px;
+}
+
+.browserChecked {
+  min-width: 80px;
 }
 
 #draftChecked {
@@ -390,23 +445,17 @@ head-action .btn-individual ul li:hover::before {
   background-color: red;
 }
 
-.head-field .field-check div a {
-  margin-right: 15px;
-  color: #959db3;
-}
-
 .head-field .field-btn {
   height: 99%;
-  width: 30%;
+  width: 40%;
   align-items: center;
   display: flex;
   justify-content: right;
-  margin-right: 30px;
 }
 
 .head-field .field-btn .field-uploand {
   height: 32px;
-  max-width: 200px;
+  width: 40px;
   background-color: #ffffff;
   border-radius: 3px;
   margin-right: 20px;
@@ -427,7 +476,7 @@ head-action .btn-individual ul li:hover::before {
 
 .head-field .field-btn .field-downloand {
   height: 32px;
-  max-width: 200px;
+  width: 100px;
   background-color: #ffffff;
   border-radius: 3px;
   margin-right: 20px;
@@ -452,7 +501,7 @@ head-action .btn-individual ul li:hover::before {
 
 .head-field .field-btn .field-downloand a {
   padding-right: 10px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .head-field .field-btn .field-addNew {
@@ -475,8 +524,9 @@ head-action .btn-individual ul li:hover::before {
   align-items: center;
   justify-content: center;
   display: flex;
-  font-size: 16px;
+  font-size: 14px;
   margin-left: 10px;
+  white-space: nowrap;
 }
 
 .body-data {
@@ -487,7 +537,7 @@ head-action .btn-individual ul li:hover::before {
 }
 
 .body-data .data-icon {
-  width: 5%;
+  width: 3%;
   height: 100%;
   justify-content: center;
   align-items: center;
@@ -495,28 +545,31 @@ head-action .btn-individual ul li:hover::before {
 }
 
 .body-data .data-icon .icon {
-  height: 30px;
+  height: 20px;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .body-data .data-reset {
-  display: block;
-  width: 10%;
+  display: flex;
+  width: 100px;
   height: 100%;
   align-items: center;
+  justify-content: left;
+  /* margin-right: 1%; */
 }
 
 .body-data .data-reset p {
-  font-size: 18px;
+  font-size: 14px;
   height: 50%;
   align-items: center;
   display: flex;
   justify-content: left;
+  white-space: nowrap;
 }
 
 .body-data .data-reset a {
-  font-size: 15px;
+  font-size: 14px;
   height: 50%;
   align-items: right;
   display: flex;
@@ -524,11 +577,16 @@ head-action .btn-individual ul li:hover::before {
   color: #008000;
   text-decoration-line: underline;
   cursor: pointer;
+  white-space: nowrap;
+}
+
+.body-data .data-reset a:hover {
+  color: blue;
 }
 
 .body-data .data-find {
-  margin-right: 30px;
-  display: block;
+  margin-top: 15px;
+  margin-left: 10px;
   height: 100%;
   width: 100%;
 }
@@ -536,6 +594,7 @@ head-action .btn-individual ul li:hover::before {
 .body-data .data-find p {
   color: #a1a1a1;
   font-weight: 500;
+  font-size: 14px;
 }
 
 .body-data .data-find div {
@@ -576,6 +635,11 @@ head-action .btn-individual ul li:hover::before {
   color: white;
   box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
     0 6px 10px 0 rgba(216, 216, 216, 0.19);
+  cursor: pointer;
+}
+
+.body-data .data-find .btn-find:hover {
+  background-color: rgba(80, 153, 20, 0.801);
 }
 
 .body-data .data-find .btn-find .icon {
@@ -586,6 +650,7 @@ head-action .btn-individual ul li:hover::before {
 
 .body-data .data-find .btn-find a {
   padding-right: 10px;
+  font-size: 14px;
 }
 
 .body-content {
@@ -595,68 +660,70 @@ head-action .btn-individual ul li:hover::before {
 
 .head-list {
   display: flex;
-
-  justify-content: left;
+  align-items: center;
   height: 50px;
   width: 100%;
-  padding: 0.5% 0;
+  margin-top: 10px;
+  /* margin-bottom: 1%; */
 }
 
 .head-question {
-  width: 52%;
-  height: 50px;
-  align-items: center;
+  width: 51%;
+  height: 100%;
   display: flex;
+  align-items: center;
   color: #5a6276;
   font-weight: 500;
-}
-
-.head-question div input {
-  margin-right: 20px;
-  margin-left: 10px;
+  margin-left: 1%;
 }
 
 .head-group {
-  width: 14%;
+  width: 15%;
   height: 100%;
   color: #5a6276;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: left;
 }
 
 .head-time {
-  width: 13%;
-  height: 50px;
-  justify-content: center;
+  width: 10%;
+  height: 100%;
   display: flex;
+  align-items: center;
+  justify-content: center;
   color: #5a6276;
   font-weight: 500;
+  margin-left: 1%;
 }
 
 .head-status {
-  width: 13.5%;
-  height: 50px;
+  width: 14%;
+  height: 100%;
   display: flex;
-  padding-right: 100px;
+  align-items: center;
   justify-content: right;
   color: #5a6276;
   font-weight: 500;
+  margin-right: 5%;
 }
 
 .head-end {
-  width: 7%;
+  width: 5%;
 }
 
 .body-list {
   height: 100%;
   width: 100%;
-  /* margin-bottom: 30px; */
 }
 
 .list {
   height: 90%;
   width: 100%;
-  overflow: scroll;
+  overflow-y: scroll;
   margin-bottom: 30px;
+  position: relative;
 }
 
 .footer {
@@ -895,12 +962,11 @@ input[type="checkbox"] {
 
 .popupItemChecked {
   max-width: 100%;
-  height: 90%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  padding: 10px 0;
   box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
     0 6px 10px 0 rgba(216, 216, 216, 0.19);
   border-radius: 15px;
@@ -910,10 +976,10 @@ input[type="checkbox"] {
   height: 100%;
   width: 100px;
   background-color: #008000;
-  padding: 10px 10px;
+  padding: 20px 10px;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
-  margin-left: 10px;
+  /* margin-left: 10px; */
 }
 
 .popupItemChecked .itemChecked {
@@ -984,7 +1050,7 @@ input[type="checkbox"] {
 }
 
 .close-pop-checked {
-  margin: 0 20px;
+  margin-left: 20px;
   border-left: 1px solid #bdc2d2;
   height: 100%;
   width: 80px;
@@ -995,5 +1061,16 @@ input[type="checkbox"] {
 }
 
 .close-pop-checked div {
-  width: 20px;
+  /* width: 20px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.itemChoose {
+  margin-left: 40px;
+  margin-right: 40px;
+  color: #36c8cf;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

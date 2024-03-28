@@ -1,5 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./pagination.css";
 import {
   faChevronLeft,
   faChevronRight,
@@ -27,6 +28,22 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
     }
   };
 
+  const handleEllipsisNextClick = () => {
+    let nextPage = 0;
+    if (currentPage == 1) {
+      nextPage += currentPage + 4;
+    } else {
+      nextPage += currentPage + 3;
+    }
+
+    onPageChange(nextPage);
+  };
+
+  const handleEllipsisPrevClick = () => {
+    let nextPage = currentPage - 3;
+    onPageChange(nextPage);
+  };
+
   const renderPaginationButtons = () => {
     const buttons = [];
 
@@ -39,7 +56,12 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             border: "none",
             marginRight: 5,
             borderRadius: 5,
-            fontSize: 18,
+            fontSize: 14,
+            padding: 10,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 30,
           }}
           key="first"
         >
@@ -52,12 +74,12 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
             border: "none",
             marginRight: 10,
-            cursor: "default",
+            cursor: "poiter",
           }}
           key="prev"
           onClick={handlePrevPage}
         >
-          <Icon24px classIcon={faChevronLeft} size={20} color={"#959DB3"} />
+          <Icon24px classIcon={faChevronLeft} size={14} color={"#959DB3"} />
         </button>
       );
       buttons.push(
@@ -68,7 +90,11 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             border: "none",
             margin: "0 5px",
             borderRadius: 5,
-            fontSize: 18,
+            fontSize: 14,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 30,
           }}
           onClick={() => onPageChange(1)}
         >
@@ -81,8 +107,8 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             marginLeft: 10,
             border: "none",
             backgroundColor: "#F4F5F7",
-            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
-            cursor: "alias",
+            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#F4F5F7",
+            cursor: "default",
           }}
           key="next"
           onClick={handleNextPage}
@@ -90,7 +116,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
           <Icon24px
             style={{ cursor: "default" }}
             classIcon={faChevronRight}
-            size={18}
+            size={14}
             color={"#959DB3"}
           />
         </button>
@@ -102,8 +128,13 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             border: "none",
             backgroundColor: "#F4F5F7",
             borderRadius: 5,
-            fontSize: 18,
-            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+            fontSize: 14,
+            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#F4F5F7",
+            cursor: "default",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 30,
           }}
           key="last"
         >
@@ -118,9 +149,15 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             border: "none",
             marginRight: 5,
             borderRadius: 5,
-            fontSize: 18,
+            fontSize: 14,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 30,
           }}
           key="first"
+          onClick={() => onPageChange(1)}
         >
           Đầu
         </button>
@@ -130,14 +167,15 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
           style={{
             border: "none",
             marginRight: 10,
-            fontSize: 18,
+            fontSize: 14,
             backgroundColor: "#F4F5F7",
             backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+            cursor: "pointer",
           }}
           key="prev"
           onClick={handlePrevPage}
         >
-          <Icon24px classIcon={faChevronLeft} size={20} color={"#959DB3"} />
+          <Icon24px classIcon={faChevronLeft} size={14} color={"#959DB3"} />
         </button>
       );
       for (let i = 1; i <= totalPages; i++) {
@@ -149,7 +187,12 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
               border: "none",
               margin: "0 5px",
               borderRadius: 5,
-              fontSize: 18,
+              fontSize: 14,
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: 30,
             }}
             onClick={() => onPageChange(i)}
           >
@@ -163,13 +206,14 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             marginLeft: 10,
             border: "none",
             backgroundColor: "#F4F5F7",
-            fontSize: 18,
-            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+            fontSize: 14,
+            backgroundColor: currentPage == totalPages ? "#FFFFFF" : "#FFFFFF",
+            cursor: "pointer",
           }}
           key="next"
           onClick={handleNextPage}
         >
-          <Icon24px classIcon={faChevronRight} size={20} color={"#959DB3"} />
+          <Icon24px classIcon={faChevronRight} size={14} color={"#959DB3"} />
         </button>
       );
       buttons.push(
@@ -181,8 +225,14 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             borderRadius: 5,
             fontSize: 18,
             backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 30,
           }}
           key="last"
+          onClick={() => onPageChange(totalPages)}
         >
           Cuối
         </button>
@@ -194,9 +244,14 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             backgroundColor: "#fff",
             border: "none",
             marginRight: 5,
-            fontSize: 18,
+            fontSize: 14,
             borderRadius: 5,
             backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 30,
           }}
           key="first"
           onClick={() => onPageChange(1)}
@@ -211,13 +266,14 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             border: "none",
             marginRight: 10,
             backgroundColor: "#FFFFFF",
-            fontSize: 18,
+            fontSize: 14,
             backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+            cursor: "pointer",
           }}
           key="prev"
           onClick={handlePrevPage}
         >
-          <Icon24px classIcon={faChevronLeft} size={20} color={"#959DB3"} />
+          <Icon24px classIcon={faChevronLeft} size={14} color={"#959DB3"} />
         </button>
       );
 
@@ -232,7 +288,12 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 border: "none",
                 margin: "0 5px",
                 borderRadius: 5,
-                fontSize: 18,
+                fontSize: 14,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 30,
               }}
             >
               {i}
@@ -248,11 +309,17 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 margin: "0 5px",
                 borderRadius: 5,
                 fontSize: 20,
-                fontSize: 18,
-                backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+                fontSize: 14,
+                backgroundColor: currentPage == 1 ? "#FFFFFF" : "#FFFFFF",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 30,
               }}
               key="ellipsis-start"
-              disabled
+              // disabled
+              onClick={handleEllipsisNextClick}
             >
               ...
             </button>
@@ -268,12 +335,17 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 margin: "0 5px",
                 borderRadius: 5,
                 borderRadius: 5,
-                fontSize: 20,
-                fontSize: 18,
+                fontSize: 14,
                 backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 30,
               }}
               key="ellipsis-end"
-              disabled
+              // disabled
+              onClick={handleEllipsisPrevClick}
             >
               ...
             </button>
@@ -289,7 +361,12 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 border: "none",
                 margin: "0 5px",
                 borderRadius: 5,
-                fontSize: 18,
+                fontSize: 14,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 30,
               }}
             >
               {i}
@@ -304,12 +381,17 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
               background: "#edeff3",
               margin: "0 5px",
               borderRadius: 5,
-              fontSize: 20,
-              fontSize: 18,
+              fontSize: 14,
               backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: 30,
             }}
             key="ellipsis-middle"
-            disabled
+            // disabled
+            onClick={handleEllipsisPrevClick}
           >
             ...
           </button>
@@ -324,7 +406,12 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 border: "none",
                 margin: "0 5px",
                 borderRadius: 5,
-                fontSize: 18,
+                fontSize: 14,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 30,
               }}
             >
               {i}
@@ -339,12 +426,16 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
                 background: "#edeff3",
                 margin: "0 5px",
                 borderRadius: 5,
-                fontSize: 20,
-                fontSize: 18,
+                fontSize: 14,
                 backgroundColor: currentPage == 1 ? "#F4F5F7" : "#FFFFFF",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 30,
               }}
               key="ellipsis-end"
-              disabled
+              onClick={handleEllipsisNextClick}
             >
               ...
             </button>
@@ -359,11 +450,16 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             border: "none",
             backgroundColor: "#FFFFFF",
             backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 30,
           }}
           key="next"
           onClick={handleNextPage}
         >
-          <Icon24px classIcon={faChevronRight} size={20} color={"#959DB3"} />
+          <Icon24px classIcon={faChevronRight} size={14} color={"#959DB3"} />
         </button>
       );
       buttons.push(
@@ -373,8 +469,13 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             border: "none",
             borderRadius: 5,
             backgroundColor: "#FFFFFF",
-            fontSize: 18,
+            fontSize: 14,
             backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: 30,
           }}
           key="last"
           onClick={() => onPageChange(totalPages)}

@@ -8,9 +8,9 @@ import iconFill from "./icon/filter-svgrepo-com.svg";
 import iconFindWhite from "./icon/find-white.svg";
 import iconThreeDot from "./icon/three-dot.png";
 import iconDownArrow from "./icon/icon-down-arrow.png";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Pagination from "./component/pagination";
+import Pagination from "./component/panigation/pagination";
 import "react-toastify/dist/ReactToastify.css";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -30,6 +30,7 @@ import {
   faX,
   faCircleXmark,
   faChevronDown,
+  faListCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 import question from "./question.json";
@@ -37,7 +38,7 @@ function App() {
   //Data đầu
   const [dataQuestion, setDataQuestion] = useState();
   const [listQuestion, setListQuestion] = useState(question.listQuestion);
-  const [activeDropdown, setActiveDropDown] = useState(false);
+  const [activeDropdown, setActiveDropDown] = useState(true);
   const [selectedItemHeader, setSelectedItemHeader] = useState(3);
   //check item
   const [draftChecked, setDraftChecked] = useState(true);
@@ -50,28 +51,32 @@ function App() {
   const [checkAllChecked, setCheckAllChecked] = useState(false);
   //search
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [itemChoose, setItemChoose] = useState();
+  const [itemChoose, setItemChoose] = useState("hello");
+  const [searchKey, setSearchKey] = useState("");
   //popups
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [isPopStatusVisible, setIsStatusVisible] = useState(false);
   const [isPopCheckedVisible, setIsCheckedVisible] = useState(false);
   const [dataItemChecked, setDataItemChecked] = useState([]);
+  const [isPopDeleteChecked, setIsPopDeleteChecked] = useState(false);
   //status
   const [isStatusPopChecked, setIsStatusPopChecked] = useState(false);
   const [isStatusHeader, setIsStatusHeader] = useState(false);
   const [functionChecked, setFunctionChecked] = useState([]);
   const [statusMessage, setStatusMessage] = useState(true);
   const [status, setStatus] = useState("none");
+  const [comfirmDeleteChecked, setComfimDeleteChecked] = useState(false);
   //page
   const [currentPage, setCurrentPage] = useState(1);
   const [numShowItem, setNumShowItem] = useState(1);
   const [numberPage, setNumberPage] = useState();
   const [newNumberItem, setNewNumberItem] = useState();
+  const handlefunctionStatusRef = useRef(null);
+  const [itemDelete, setItemDelete] = useState();
+  const [dataItemDelete, setDataItemDelete] = useState([]);
 
   let numberItem = 0;
-  console.log(dataQuestionChecked);
-
   const messageStatusMap = {
     failApprove: "Đã xảy ra lỗi khi phê duyệt: Câu hỏi phải đầy đủ thông tin!",
     failSend: "Đã xảy ra lỗi khi gửi: Câu hỏi phải đầy đủ thông tin!",
@@ -180,13 +185,7 @@ function App() {
     setNumberPage(pageNum);
     setCurrentPage(1);
     setNumShowItem(numShowItem);
-  }, [
-    // listQuestion,
-    draftChecked,
-    sendChecked,
-    browserChecked,
-    stopBrowserChecked,
-  ]);
+  }, [draftChecked, sendChecked, browserChecked, stopBrowserChecked]);
 
   useEffect(() => {
     setDataItemChecked(dataQuestionChecked);
@@ -201,6 +200,21 @@ function App() {
       setIsCheckedVisible(false);
     }
   }, [dataQuestionChecked]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        handlefunctionStatusRef.current &&
+        !handlefunctionStatusRef.current.contains(event.target)
+      ) {
+        setExpandedIndex(null);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const handleDraftChecked = async () => {
     setCurrentPage(1);
@@ -308,7 +322,34 @@ function App() {
     setIsPopupVisible(!isPopupVisible);
   };
 
-  //
+  const togglePopupDeleteChecked = () => {
+    setIsCheckedVisible(true);
+    setIsPopDeleteChecked(!isPopDeleteChecked);
+  };
+
+  const getItemDeleteChecked = () => {
+    let result = "";
+    for (let i = 0; i < dataItemChecked.length; i++) {
+      result += dataItemChecked[i].idQues + " ,";
+    }
+    return result;
+  };
+
+  const handleDeleteItemChecked = () => {
+    const deletedItems = dataQuestion.filter((item) => {
+      return !dataQuestionChecked.includes(item) || item.status !== 0;
+    });
+    setDataQuestion(deletedItems);
+    handleUnCheckAll();
+    setStatusMessage(true);
+    setStatus(messageStatusMap.delete);
+    setIsStatusVisible(true);
+    setTimeout(() => {
+      setIsStatusVisible(false);
+    }, 2000);
+    togglePopupDeleteChecked();
+  };
+
   const handlePopupAction = (action) => {
     const message = messageStatusMap[action];
     if (action == "delete") {
@@ -492,19 +533,8 @@ function App() {
         }
 
       case 3:
-        //delete Action checked
-        const newListDeleted = dataQuestion.filter((item) => {
-          return item.status !== 0 || !dataQuestionChecked.includes(item);
-        });
-
-        setStatusMessage(true);
-        setStatus(messageStatusMap.delete);
-        setIsStatusVisible(true);
-        handleUnCheckAll();
-        setTimeout(() => {
-          setIsStatusVisible(false);
-        }, 2000);
-        togglePopup();
+        togglePopupDeleteChecked();
+        setIsCheckedVisible(false);
         break;
 
       case 4:
@@ -658,7 +688,6 @@ function App() {
     setBrowserChecked(false);
     setStopBrowserChecked(false);
     setSearchKeyword("");
-    setSearchKeyword("");
   };
 
   const handleCheckAll = (numItem) => {
@@ -719,13 +748,14 @@ function App() {
   };
 
   const handleSearchButtonClick = () => {
-    renderRows(dataQuestion);
+    setSearchKey(searchKeyword);
   };
 
   function renderRows(dataList) {
     const filteredData = filterDataByStatus(dataList).filter((item) =>
-      item.question.toLowerCase().includes(searchKeyword.toLowerCase())
+      item.question.toLowerCase().includes(searchKey.toLowerCase())
     );
+
     numberItem = filteredData.length;
     const startIndex = (currentPage - 1) * numShowItem;
     const endIndex = Number(startIndex) + Number(numShowItem);
@@ -733,6 +763,7 @@ function App() {
     const handlefunctionStatus = (status) => {
       return (
         <div
+          // ref={handlefunctionStatusRef}
           style={{
             width: "100%",
             marginRight: 220,
@@ -791,6 +822,7 @@ function App() {
       };
 
       const handleItemClick = () => {
+        setItemDelete(dataItem);
         if (expandedIndex === index) {
           setExpandedIndex(null);
           setItemQuestionChecked(!itemQuestionChecked);
@@ -802,7 +834,6 @@ function App() {
 
       const handleItemChecked = (event, item) => {
         const isChecked = event.target.checked;
-
         if (isChecked) {
           setDataQuenstionChecked((prevItems) => [...prevItems, item]);
           if (dataQuestionChecked.length === numShowItem - 1) {
@@ -821,17 +852,11 @@ function App() {
           key={index}
           className={`rowItem ${isChecked ? "selected" : ""}`}
           style={{
-            width: "99%",
-            alignItems: "center",
-            display: "flex",
-            padding: "0.5%",
-            backgroundColor: isChecked ? "#1A6634B2" : "white",
-            marginBottom: 5,
-            zIndex: 0,
-            position: "relative",
+            backgroundColor: isChecked ? "#1A6634B2" : "",
           }}
         >
           <input
+            className="input-item"
             onChange={(event) => handleItemChecked(event, dataItem)}
             style={{ width: "1%", cursor: "pointer" }}
             type="checkbox"
@@ -839,11 +864,12 @@ function App() {
           />
           <div
             style={{
-              width: "54%",
+              width: "52%",
               display: "flex",
               alignItems: "center",
               justifyContent: "left",
               height: 62,
+              marginRight: "2%",
             }}
           >
             <div style={{ height: "100%", width: "100%" }}>
@@ -851,6 +877,7 @@ function App() {
                 <div
                   title={dataItem.question}
                   style={{
+                    fontSize: 14,
                     marginLeft: "1%",
                     fontWeight: "600",
                     textOverflow: "ellipsis",
@@ -864,6 +891,7 @@ function App() {
               </div>
               <div
                 style={{
+                  fontSize: 14,
                   display: "flex",
                   alignItems: "center",
                   justifyItems: "center",
@@ -873,7 +901,8 @@ function App() {
                   <div
                     title={dataItem.idQues}
                     style={{
-                      marginLeft: 0,
+                      fontSize: 14,
+                      marginLeft: 10,
                       marginRight: 10,
                       display: dataItem.idQues != undefined ? "block" : "none",
                     }}
@@ -883,14 +912,16 @@ function App() {
                 </div>
                 <div
                   style={{
+                    fontSize: 14,
                     height: 20,
                     width: 1,
-                    backgroundColor: "#C4C4C4",
+
                     display: dataItem.idQues != undefined ? "block" : "none",
                   }}
                 ></div>
                 <div
                   style={{
+                    fontSize: 14,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -906,24 +937,27 @@ function App() {
 
           <div
             style={{
-              width: "15%",
+              width: "13%",
               height: "100%",
               justifyContent: "left",
               display: "flex",
               alignItems: "center",
+              marginRight: "2%",
             }}
           >
-            <div title={dataItem.group} style={{}}>
+            <div title={dataItem.group} style={{ fontSize: 14 }}>
               {dataItem.group}
             </div>
           </div>
           <div
             style={{
-              width: "13%",
+              width: "10%",
               height: "100%",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              fontSize: 14,
+              marginLeft: "3%",
             }}
           >
             <div title={dataItem.time} style={{ fontWeight: "500" }}>
@@ -937,7 +971,9 @@ function App() {
               display: "flex",
               alignItems: "center",
               justifyContent: "right",
+              fontSize: 14,
             }}
+            title={dataItem.status}
           >
             {handleStatus(dataItem.status)}
           </div>
@@ -951,9 +987,6 @@ function App() {
               width: "7%",
             }}
           >
-            <div
-              style={{ height: "100%", width: 1, backgroundColor: "#C4C4C4" }}
-            ></div>
             <div
               onClick={() => setItemChoose(dataItem.idQues)}
               style={{
@@ -974,6 +1007,7 @@ function App() {
               />
             </div>
             <div
+              className="itemAbsolute"
               style={{
                 position: "absolute",
               }}
@@ -995,8 +1029,17 @@ function App() {
         <div className="content-side-bar">
           <ul>
             <li onClick={handleDropdowm}>
-              <img className="icon" src={iconHome} alt="Icon Home" />
-              <a>ĐÁNH GIÁ NHÂN SỰ</a>
+              <div style={{ marginLeft: 10 }}>
+                <Icon24px
+                  classIcon={faListCheck}
+                  color={activeDropdown ? "#5CB800" : "white"}
+                  size={20}
+                />
+              </div>
+
+              <a style={{ color: activeDropdown ? "#5CB800" : "white" }}>
+                ĐÁNH GIÁ NHÂN SỰ
+              </a>
               <div className="iconSideBar">
                 <Icon24px
                   className="iconSidebar"
@@ -1046,6 +1089,10 @@ function App() {
                         )
                       }
                       className={selectedItemHeader === index ? "selected" : ""}
+                      style={{
+                        color:
+                          selectedItemHeader === index ? "#008000" : "#C4C4C4",
+                      }}
                     >
                       {item}
                     </a>
@@ -1098,6 +1145,7 @@ function App() {
             <div
               onClick={handleDraftChecked}
               id={draftChecked && "draftChecked"}
+              className="draftChecked"
             >
               <a>Đang soạn thảo</a>
               <input
@@ -1109,7 +1157,11 @@ function App() {
               />
             </div>
 
-            <div onClick={handleSendChecked} id={sendChecked && "sendChecked"}>
+            <div
+              className="sendChecked"
+              onClick={handleSendChecked}
+              id={sendChecked && "sendChecked"}
+            >
               <a>Gửi duyệt</a>
               <input
                 checked={sendChecked}
@@ -1121,6 +1173,7 @@ function App() {
             </div>
 
             <div
+              className="browserChecked"
               onClick={handleBrowserChecked}
               id={browserChecked && "browserChecked"}
             >
@@ -1135,6 +1188,7 @@ function App() {
             </div>
 
             <div
+              className="stopBrowserChecked"
               onClick={handleStopBrowserChecked}
               id={stopBrowserChecked && "stopBrowserChecked"}
             >
@@ -1159,7 +1213,7 @@ function App() {
             </div>
 
             <div className="field-addNew">
-              <Icon24px classIcon={faPlus} size={20} color={"white"} />
+              <Icon24px classIcon={faPlus} size={14} color={"white"} />
               <a>Thêm mới</a>
             </div>
           </div>
@@ -1176,7 +1230,7 @@ function App() {
           <div className="data-reset">
             <div>
               <p>Lọc dữ liệu</p>
-              <a onClick={handleResetFilter}>Reset bộ lộc</a>
+              <a onClick={handleResetFilter}>Reset bộ lộc</a>
             </div>
           </div>
           <div className="data-find">
@@ -1191,6 +1245,11 @@ function App() {
                   onChange={handleSearchInputChange}
                   placeholder="Tìm theo mã và câu hỏi"
                   type="text"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSearchInputChange();
+                    }
+                  }}
                 />
               </div>
 
@@ -1241,7 +1300,7 @@ function App() {
             </div>
           </div>
           <div
-            style={{ pointerEvents: isStatusHeader ? "none" : "auto" }}
+            // style={{ pointerEvents: isStatusHeader ? "none" : "auto" }}
             className="footer-page-number"
           >
             <div>
@@ -1268,7 +1327,7 @@ function App() {
                   <div className="body-pop-delete" onClick={handlePopupClick}>
                     <div>
                       <p>Bạn có chắc chắn muốn xóa phân nhóm</p>
-                      <p className="itemChoose">HachaHahca</p>
+                      <p className="itemChoose">{itemDelete.question}</p>
                     </div>
                     <div>
                       <p>
@@ -1287,6 +1346,57 @@ function App() {
                     <button
                       className="btn-delete"
                       onClick={() => handleDeleteItem(itemChoose)}
+                    >
+                      <Icon24px
+                        classIcon={faTrashCan}
+                        size={25}
+                        color={"white"}
+                      />
+                      <p>XÓA</p>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {isPopDeleteChecked && (
+            <div className="pop-delete-area" onClick={togglePopupDeleteChecked}>
+              <div className="pop-up">
+                <div className="pop-content" onClick={handlePopupClick}>
+                  <div className="head-pop-delete">
+                    <Icon24px
+                      classIcon={faTriangleExclamation}
+                      color={"#FD7676"}
+                      size={20}
+                    />
+                    <p>Xóa câu hỏi</p>
+                  </div>
+                  <div className="body-pop-delete" onClick={handlePopupClick}>
+                    <div>
+                      <p>Bạn có chắc chắn muốn xóa phân nhóm</p>
+                      <p className="itemChoose">{getItemDeleteChecked()}</p>
+                    </div>
+                    <div>
+                      <p>
+                        Đơn vị bạn xóa sẽ{" "}
+                        <span style={{ color: "#fd7676" }}>
+                          &#160; KHÔNG &#160;
+                        </span>{" "}
+                        thể khôi phục lại
+                      </p>
+                    </div>
+                  </div>
+                  <div className="footer-pop-delete">
+                    <button
+                      className="btn-cancel"
+                      onClick={togglePopupDeleteChecked}
+                    >
+                      KHÔNG XÓA
+                    </button>
+                    <button
+                      className="btn-delete"
+                      onClick={handleDeleteItemChecked}
                     >
                       <Icon24px
                         classIcon={faTrashCan}

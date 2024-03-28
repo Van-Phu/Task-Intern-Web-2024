@@ -53,7 +53,7 @@
     },
     {
       "id": 6,
-      "idQues": "mx010",
+      "idQues": "mx07",
       "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
       "type": "Dạng câu 1 lựa chọn",
       "group": "Thương hiệu, văn hóa công ty",
@@ -88,7 +88,7 @@
     },
     {
       "id": 10,
-      "idQues": "mx02",
+      "idQues": "mx10",
       "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
       "type": "Dạng câu 1 lựa chọn",
       "time": 30,
@@ -96,7 +96,7 @@
     },
     {
       "id": 11,
-      "idQues": "mx03",
+      "idQues": "mx11",
       "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
       "type": "Dạng câu 1 lựa chọn",
       "time": 30,
@@ -104,7 +104,7 @@
     },
     {
       "id": 12,
-      "idQues": "mx04",
+      "idQues": "mx12",
       "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
       "type": "Dạng câu 1 lựa chọn",
       "group": "Thương hiệu, văn hóa công ty",
@@ -113,7 +113,7 @@
     },
     {
       "id": 13,
-      "idQues": "mx05",
+      "idQues": "mx13",
       "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
       "type": "Dạng câu 1 lựa chọn",
       "group": "Thương hiệu, văn hóa công ty",
@@ -122,7 +122,7 @@
     },
     {
       "id": 14,
-      "idQues": "mx06",
+      "idQues": "mx14",
       "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
       "type": "Dạng câu 1 lựa chọn",
       "group": "Thương hiệu, văn hóa công ty",
@@ -131,7 +131,7 @@
     },
     {
       "id": 15,
-      "idQues": "mx010",
+      "idQues": "mx015",
       "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
       "type": "Dạng câu 1 lựa chọn",
       "group": "Thương hiệu, văn hóa công ty",
@@ -140,7 +140,7 @@
     },
     {
       "id": 16,
-      "idQues": "mx08",
+      "idQues": "mx16",
       "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
       "type": "Dạng câu 1 lựa chọn",
       "group": "Thương hiệu, văn hóa công ty",
@@ -149,7 +149,7 @@
     },
     {
       "id": 17,
-      "idQues": "mx09",
+      "idQues": "mx17",
       "question": "Đơn phương, ai cũng có cho mình một câu chuyện để kể",
       "type": "Dạng câu 1 lựa chọn",
       "group": "Thương hiệu, văn hóa công ty",
