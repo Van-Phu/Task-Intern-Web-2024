@@ -142,7 +142,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
           Cuối
         </button>
       );
-    } else if (totalPages <= 3) {
+    } else if (totalPages <= 2) {
       buttons.push(
         <button
           style={{
@@ -301,7 +301,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             </button>
           );
         }
-        if (currentPage !== 0 && totalPages > 5) {
+        if (currentPage !== 0 && totalPages > 4) {
           buttons.push(
             <button
               style={{
@@ -327,7 +327,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
           );
         }
       } else if (currentPage >= totalPages - 2) {
-        if (totalPages > 5) {
+        if (totalPages >= 4) {
           buttons.push(
             <button
               style={{
@@ -419,7 +419,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             </button>
           );
         }
-        if (totalPages > 4) {
+        if (totalPages > 3) {
           buttons.push(
             <button
               style={{

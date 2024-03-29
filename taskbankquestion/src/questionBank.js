@@ -38,6 +38,7 @@ import {
   faUpload,
   faArrowRight,
   faBan,
+  faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
 
 import question from "./question.json";
@@ -83,13 +84,15 @@ function App() {
   const handlefunctionStatusRef = useRef(null);
   const [itemDelete, setItemDelete] = useState();
   const [showCheckAll, setShowCheckAll] = useState(true);
-  const [slicedData, setSlicedData] = useState([]);
+  const [numberItemList, setNumberItemList] = useState();
+  const [statusPageItem, setStatusPageItem] = useState();
 
-  let numberItem = 0;
+  let numberItem = 0; //total Item in list
   let itemSliceShow = 0;
   let StartIndex = 0;
   let EndIndex = 0;
   let CheckedStatus = false;
+  let itemSlice = 0;
 
   const [sidebarItems, setSidebarItems] = useState([
     {
@@ -208,21 +211,34 @@ function App() {
     return pageNum;
   };
 
+  const togglePopupStatusItem = () => {
+    setStatusPageItem(!statusPageItem);
+  };
+
   const handlePageChange = (page) => {
-    //  setCheckAllChecked(dataCheckAllPage.includes(page));;
     setCurrentPage(page);
   };
 
-  // const checkIfAllItemsChecked = () => {
-  //   const allItemsChecked = slicedData.every((item) =>
-  //     dataQuestionChecked.includes(item)
-  //   );
-  //   setCheckAllChecked(allItemsChecked);
-  // };;
+  const handleSetPage = () => {
+    const pageNumSend = Math.ceil(numberItem / numShowItem);
+    console.log(currentPage);
+    console.log(pageNumSend);
+    setNumberPage(pageNumSend);
+    if (currentPage >= pageNumSend) {
+      setCurrentPage(1);
+    }
+  };
+
+  useEffect(() => {
+    handleSetPage();
+  }, [statusPageItem]);
 
   useEffect(() => {
     setDataQuestion(listQuestion);
     setIsDataLoaded(true);
+  }, [listQuestion]);
+
+  useEffect(() => {
     const filter = filterData(listQuestion);
     const pageNum = calculatePageNumber(filter.length, numShowItem);
     setNumberPage(pageNum);
@@ -273,13 +289,15 @@ function App() {
     setActiveDropDown(false);
   };
 
-  const handleDraftChecked = async () => {
+  const handleDraftChecked = () => {
     setCurrentPage(1);
     setDataQuestion((prevDataQuestion) => {
       const filteredData = filterDataByStatus(prevDataQuestion);
+      // console.log(filteredData);
       setNewNumberItem(filteredData.length);
       return prevDataQuestion;
     });
+    console.log(dataQuestion);
     setDraftChecked(!draftChecked);
     const pageNum = calculatePageNumber(newNumberItem, numShowItem);
     setNumberPage(pageNum);
@@ -436,6 +454,7 @@ function App() {
   //delete 1 item
   const handleDeleteItem = (idItem) => {
     const newListItem = dataQuestion.filter((item) => item.idQues !== idItem);
+    togglePopupStatusItem();
     setDataQuestion(newListItem);
     setStatusMessage(true);
     setStatus(messageStatusMap.delete);
@@ -474,6 +493,7 @@ function App() {
         newDataQuestion[updatedItemIndex] = updatedItem;
         setStatusMessage(true);
         setDataQuestion(newDataQuestion);
+        console.log(dataQuestion);
         setStatus("Gửi duyệt thành công!");
         setIsStatusVisible(true);
         setTimeout(() => {
@@ -572,8 +592,10 @@ function App() {
         console.log(itemSuccess);
         setDataQuestion(updatedItemsSend);
         const foundSendItem = foundErrorSend;
+        handleSetPage();
 
         if (foundSendItem == true) {
+          togglePopupStatusItem();
           setStatusMessage(true);
           setStatus(messageStatusMap.send);
           setIsStatusVisible(true);
@@ -622,6 +644,7 @@ function App() {
         setDataQuestion(approveItem);
         const foundApprovedItem = foundError;
         if (foundApprovedItem == true) {
+          togglePopupStatusItem();
           setStatusMessage(true);
           setStatus(messageStatusMap.approve);
           setIsStatusVisible(true);
@@ -653,7 +676,9 @@ function App() {
           }
           return item;
         });
+        togglePopupStatusItem();
         console.log(itemSuccess);
+        handleSetPage();
         setStatusMessage(true);
         setDataQuestion(returnItem);
         setStatus(messageStatusMap.return);
@@ -671,7 +696,9 @@ function App() {
           }
           return item;
         });
+        togglePopupStatusItem();
         console.log(itemSuccess);
+        handleSetPage();
         setStatusMessage(true);
         setDataQuestion(stopItem);
         setStatus(messageStatusMap.stopDis);
@@ -750,10 +777,23 @@ function App() {
     );
 
     if (!checkAllChecked) {
-      setDataQuenstionChecked((prevItems) => [...prevItems, ...visibleItems]);
-      const allItemsChecked = visibleItems.every((item) =>
-        dataQuestionChecked.includes(item)
+      const newDataQuestionChecked = visibleItems.filter(
+        (item) =>
+          !dataQuestionChecked.some(
+            (checkedItem) => checkedItem.idQues === item.idQues
+          )
       );
+      setDataQuenstionChecked((prevItems) => [
+        ...prevItems,
+        ...newDataQuestionChecked,
+      ]);
+
+      const allItemsChecked = visibleItems.every((item) =>
+        dataQuestionChecked.some(
+          (checkedItem) => checkedItem.idQues === item.idQues
+        )
+      );
+
       if (allItemsChecked) {
         setShowCheckAll(true);
       } else {
@@ -761,7 +801,10 @@ function App() {
       }
     } else {
       const newDataQuestionChecked = dataQuestionChecked.filter(
-        (item) => !visibleItems.includes(item)
+        (item) =>
+          !visibleItems.some(
+            (visibleItem) => visibleItem.idQues === item.idQues
+          )
       );
       setDataQuenstionChecked(newDataQuestionChecked);
       setShowCheckAll(true);
@@ -803,7 +846,6 @@ function App() {
     const selectedValue = event.target.value;
     let pageNum = numberItem / selectedValue;
     pageNum = Math.ceil(pageNum);
-    console.log(pageNum);
     setNumberPage(pageNum);
     setCurrentPage(1);
     setNumShowItem(selectedValue);
@@ -814,6 +856,8 @@ function App() {
   };
 
   const handleSearchButtonClick = (searchKeyword) => {
+    togglePopupStatusItem();
+    // handleSetPage();
     setSearchKey(searchKeyword);
   };
 
@@ -861,7 +905,7 @@ function App() {
                 onClick={() => handlePopupAction(option.action)}
                 style={{
                   backgroundColor: "#BDC2D2",
-                  width: 190,
+                  width: 170,
                   height: 50,
                   display: "flex",
                   alignItems: "center",
@@ -896,6 +940,7 @@ function App() {
       dataQuestionChecked.includes(item)
     );
     CheckedStatus = allChecked;
+    itemSlice = slicedData.length;
 
     return slicedData.map((dataItem, index) => {
       const isChecked = dataQuestionChecked.includes(dataItem);
@@ -947,6 +992,8 @@ function App() {
           className={`rowItem ${isChecked ? "selected" : ""}`}
           style={{
             backgroundColor: isChecked ? "#1A6634B2" : "",
+            width: "100%",
+            overflowY: "scroll",
           }}
         >
           <input
@@ -1100,11 +1147,9 @@ function App() {
                 position: "relative",
               }}
             >
-              <img
-                style={{ height: 20, width: 20 }}
-                src={iconThreeDot}
-                alt="Icon Home"
-              />
+              <div style={{ marginRight: 20 }}>
+                <Icon24px classIcon={faEllipsis} size={20} color={"#959DB3"} />
+              </div>
             </div>
             <div
               className="itemAbsolute"
@@ -1506,7 +1551,9 @@ function App() {
                   <div className="body-pop-delete" onClick={handlePopupClick}>
                     <div>
                       <p>Bạn có chắc chắn muốn xóa phân nhóm</p>
-                      <div className="itemChoose">{getItemDeleteChecked()}</div>
+                      <div className="itemChoose">
+                        <p>{getItemDeleteChecked()}</p>
+                      </div>
                     </div>
                     <div>
                       <p>

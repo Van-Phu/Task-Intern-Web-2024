@@ -637,7 +637,7 @@ head-action .btn-individual ul li:hover::before {
   display: flex;
   background-color: white;
   border-radius: 5px;
-  background-color: #008000;
+  background-color: #1a6634;
   color: white;
   box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
     0 6px 10px 0 rgba(216, 216, 216, 0.19);
@@ -765,12 +765,13 @@ head-action .btn-individual ul li:hover::before {
   font-size: 18px;
 }
 
-.footer-page-numbe {
+.footer-page-number {
   width: 200px;
 }
 
 .footer-page-number .itemNumber {
   margin: 0 20px;
+
   /* background-color: red; */
 }
 
@@ -779,6 +780,7 @@ head-action .btn-individual ul li:hover::before {
   display: flex;
   justify-content: right;
   align-items: center;
+  margin-right: 10px;
 }
 
 .footer-page-number div {
@@ -961,7 +963,7 @@ input[type="checkbox"] {
 .pop-itemchecked-area {
   max-height: 120px;
   width: 75%;
-  margin-left: 5%;
+  margin-left: 6.51%;
   margin-right: 5%;
   position: absolute;
   align-items: center;
@@ -972,14 +974,13 @@ input[type="checkbox"] {
 
 .popupItemChecked {
   max-width: 100%;
-  height: 100%;
+  height: 90%;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #ffffff;
-  box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
-    0 6px 10px 0 rgba(216, 216, 216, 0.19);
   border-radius: 15px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.19);
 }
 
 .popupItemChecked .itemChecked {
@@ -1022,14 +1023,19 @@ input[type="checkbox"] {
 }
 
 .itemsFunction {
+  min-width: 80px;
   max-width: 200px;
   height: 100%;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  padding: 20px;
-  margin-left: 10px;
+  padding: 30px;
+  /* margin-left: 10px; */
   display: flex;
+}
+
+.itemsFunction:hover {
+  background-color: #bdc2d2;
 }
 
 .itemsFunction div {
@@ -1062,12 +1068,16 @@ input[type="checkbox"] {
 .close-pop-checked {
   margin-left: 20px;
   border-left: 1px solid #bdc2d2;
-  height: 100%;
+  height: 200px;
   width: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.close-pop-checked:hover {
+  background-color: rgb(255, 64, 64);
 }
 
 .close-pop-checked div {
@@ -1079,9 +1089,9 @@ input[type="checkbox"] {
 
 .itemChoose {
   align-items: center;
-  display: flex;
+  /* display: flex; */
   justify-content: center;
-  width: 80%;
+  max-width: 80%;
   margin-left: 10%;
   color: #36c8cf;
   text-overflow: ellipsis;
