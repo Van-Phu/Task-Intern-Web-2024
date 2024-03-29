@@ -208,7 +208,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
             border: "none",
             backgroundColor: "#F4F5F7",
             fontSize: 14,
-            backgroundColor: currentPage == totalPages ? "#FFFFFF" : "#FFFFFF",
+            backgroundColor: currentPage == totalPages ? "#F4F5F7" : "#FFFFFF",
             cursor: "pointer",
           }}
           key="next"

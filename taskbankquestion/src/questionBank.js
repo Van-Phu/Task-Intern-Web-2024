@@ -36,6 +36,8 @@ import {
   faArrowDownTo,
   faDownload,
   faUpload,
+  faArrowRight,
+  faBan,
 } from "@fortawesome/free-solid-svg-icons";
 
 import question from "./question.json";
@@ -80,13 +82,14 @@ function App() {
   const [newNumberItem, setNewNumberItem] = useState();
   const handlefunctionStatusRef = useRef(null);
   const [itemDelete, setItemDelete] = useState();
-  const [dataItemDelete, setDataItemDelete] = useState([]);
-  const [dataCheckAllPage, setDataCheckAllPage] = useState([]);
-  const [pageChecked, setPageChecked] = useState({});
-  const [checkedPages, setCheckedPages] = useState([]);
   const [showCheckAll, setShowCheckAll] = useState(true);
+  const [slicedData, setSlicedData] = useState([]);
 
   let numberItem = 0;
+  let itemSliceShow = 0;
+  let StartIndex = 0;
+  let EndIndex = 0;
+  let CheckedStatus = false;
 
   const [sidebarItems, setSidebarItems] = useState([
     {
@@ -122,27 +125,27 @@ function App() {
 
   const statusOptions = {
     0: [
-      { label: "Chỉnh sửa", action: "update" },
-      { label: "Gửi duyệt", action: "send" },
-      { label: "Xóa", action: "delete" },
+      { label: "Chỉnh sửa", action: "update", icon: faPencil },
+      { label: "Gửi duyệt", action: "send", icon: faArrowRight },
+      { label: "Xóa", action: "delete", icon: faTrash },
     ],
     1: [
-      { label: "Chỉnh sửa", action: "update" },
-      { label: "Phê duyệt", action: "approve" },
-      { label: "Trả về", action: "return" },
+      { label: "Chỉnh sửa", action: "update", icon: faPencil },
+      { label: "Phê duyệt", action: "approve", icon: faCheck },
+      { label: "Trả về", action: "return", icon: faArrowLeft },
     ],
     2: [
-      { label: "Xem chi tiết", action: "detail" },
-      { label: "Ngưng hiển thị", action: "stopDis" },
+      { label: "Xem chi tiết", action: "detail", icon: faEye },
+      { label: "Ngưng hiển thị", action: "stopDis", icon: faBan },
     ],
     3: [
-      { label: "Xem chi tiết", action: "detail" },
-      { label: "Phê duyệt", action: "approve" },
-      { label: "Trả về", action: "return" },
+      { label: "Xem chi tiết", action: "detail", icon: faEye },
+      { label: "Phê duyệt", action: "approve", icon: faCheck },
+      { label: "Trả về", action: "return", icon: faArrowLeft },
     ],
     4: [
-      { label: "Chỉnh sửa", action: "update" },
-      { label: "Gửi duyệt", action: "send" },
+      { label: "Chỉnh sửa", action: "update", icon: faPencil },
+      { label: "Gửi duyệt", action: "send", icon: faArrowRight },
     ],
   };
 
@@ -205,6 +208,18 @@ function App() {
     return pageNum;
   };
 
+  const handlePageChange = (page) => {
+    //  setCheckAllChecked(dataCheckAllPage.includes(page));;
+    setCurrentPage(page);
+  };
+
+  // const checkIfAllItemsChecked = () => {
+  //   const allItemsChecked = slicedData.every((item) =>
+  //     dataQuestionChecked.includes(item)
+  //   );
+  //   setCheckAllChecked(allItemsChecked);
+  // };;
+
   useEffect(() => {
     setDataQuestion(listQuestion);
     setIsDataLoaded(true);
@@ -243,6 +258,14 @@ function App() {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (CheckedStatus == true) {
+      setCheckAllChecked(true);
+    } else {
+      setCheckAllChecked(false);
+    }
+  }, [handlePageChange]);
 
   const changeHeaderFunction = (fun) => {
     setSelectedItemHeader(fun);
@@ -718,12 +741,6 @@ function App() {
     setActiveDropDown(!activeDropdown);
   };
 
-  const handlePageChange = (page) => {
-    //  setCheckAllChecked(dataCheckAllPage.includes(page));
-    // setCheckAllChecked(false);
-    setCurrentPage(page);
-  };
-
   const handleCheckAll = (numItem) => {
     let startIndex = Number(numItem) * Number(currentPage) - Number(numItem);
     setCheckAllChecked(!checkAllChecked);
@@ -808,6 +825,7 @@ function App() {
     setStopBrowserChecked(false);
     setSearchKeyword("");
     handleSearchButtonClick("");
+    // setNumShowItem(25);
   };
 
   function renderRows(dataList) {
@@ -823,13 +841,15 @@ function App() {
     const startIndex = (currentPage - 1) * numShowItem;
     const endIndex = Number(startIndex) + Number(numShowItem);
     const slicedData = filteredData.slice(startIndex, endIndex);
+    itemSliceShow = slicedData.length;
+    StartIndex = startIndex;
+    EndIndex = endIndex;
     const handlefunctionStatus = (status) => {
       return (
         <div
-          // ref={handlefunctionStatusRef}
           style={{
             width: "100%",
-            marginRight: 220,
+            marginRight: 230,
             marginTop: status === 2 || status == 4 ? 60 : 110,
             zIndex: 9999,
           }}
@@ -841,22 +861,26 @@ function App() {
                 onClick={() => handlePopupAction(option.action)}
                 style={{
                   backgroundColor: "#BDC2D2",
-                  width: 170,
+                  width: 190,
                   height: 50,
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
+                  justifyContent: "left",
                   cursor: "pointer",
                   zIndex: 9999,
                 }}
               >
-                <Icon24px classIcon={faPencil} color={"#FFFFFF"} />
+                <div style={{ paddingLeft: 20 }}>
+                  <Icon24px classIcon={option.icon} color={"#FFFFFF"} />
+                </div>
+
                 <a
                   style={{
                     color: "white",
-                    marginLeft: 10,
-                    fontSize: 18,
+                    marginLeft: 20,
+                    fontSize: 14,
                     cursor: "pointer",
+                    paddingRight: 20,
                   }}
                 >
                   {option.label}
@@ -867,6 +891,11 @@ function App() {
         </div>
       );
     };
+
+    const allChecked = slicedData.every((item) =>
+      dataQuestionChecked.includes(item)
+    );
+    CheckedStatus = allChecked;
 
     return slicedData.map((dataItem, index) => {
       const isChecked = dataQuestionChecked.includes(dataItem);
@@ -923,7 +952,7 @@ function App() {
           <input
             className="input-item"
             onChange={(event) => handleItemChecked(event, dataItem)}
-            style={{ width: "1%", cursor: "pointer" }}
+            style={{ width: 15, cursor: "pointer" }}
             type="checkbox"
             checked={isChecked}
           />
@@ -1050,11 +1079,12 @@ function App() {
               display: "flex",
               justifyContent: "center",
               width: "5%",
-              // borderLeft: "solid",
+              borderLeft: "solid",
               marginLeft: "2%",
               paddingTop: 10,
               borderColor: "#BDC2D2",
               paddingBottom: 10,
+              borderWidth: 1,
             }}
           >
             <div
@@ -1107,7 +1137,7 @@ function App() {
           {sidebarItems.map((item, index) => (
             <div key={index}>
               <ul>
-                <li onClick={handleDropdowm}>
+                <li style={{ cursor: "pointer" }} onClick={handleDropdowm}>
                   <div style={{ marginLeft: 10 }}>
                     <Icon24px
                       classIcon={item.icon}
@@ -1386,7 +1416,11 @@ function App() {
           >
             <p>Hiển thị mỗi trang</p>
             <div class="dropup">
-              <select onChange={getValueNumPage} id="numberShow">
+              <select
+                onChange={getValueNumPage}
+                id="numberShow"
+                value={numShowItem}
+              >
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="5">5</option>

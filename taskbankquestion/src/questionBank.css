@@ -684,11 +684,11 @@ head-action .btn-individual ul li:hover::before {
   align-items: center;
   color: #5a6276;
   font-weight: 500;
-  margin-left: 1%;
+  margin-left: 0.5%;
 }
 
 .head-group {
-  width: 15%;
+  width: 15.5%;
   height: 100%;
   color: #5a6276;
   font-weight: 500;
