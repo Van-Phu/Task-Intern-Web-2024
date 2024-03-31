@@ -1,0 +1,349 @@
+* {
+  text-decoration: none;
+  list-style-type: none;
+  overflow: hidden;
+  user-select: none;
+}
+
+.all-page {
+  height: calc(100vh);
+  width: 100%;
+  display: flex;
+  background-color: #edeff3;
+  padding-top: 2px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.content-side-bar {
+  width: 100%;
+  height: 100%;
+}
+
+.side-bar {
+  width: 220px;
+  height: 100%;
+  background-color: #5a6276;
+}
+
+.under-line {
+  width: 100%;
+  height: 1px;
+  background-color: #bdc2d2;
+}
+
+.logo {
+  height: 7vh;
+  width: 99.5%;
+  border-bottom: 1px #ffffff solid;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-arrow {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.logo-image {
+  width: 70%;
+  height: 100%;
+  margin-left: 10px;
+}
+
+.image {
+  background-image: url("../../../icon/logoHachi.png");
+  height: 100%;
+  width: 100%;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.content-side-bar {
+  height: 93vh;
+  width: 100%;
+}
+
+.content-side-bar ul {
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  width: 100%;
+}
+
+.content-side-bar ul li {
+  height: 50px;
+  max-width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+  border-left: 5px solid #5cb800;
+}
+
+.content-side-bar ul li .icon {
+  height: 30px;
+  width: 30px;
+  color: white;
+  padding-left: 2vh;
+}
+
+.content-side-bar ul li a {
+  color: white;
+  position: relative;
+  font-size: 13px;
+}
+
+.content-side-bar ul li .iconSideBar {
+  margin-right: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.dropdown {
+  display: none;
+}
+
+.dropdown a {
+  margin-left: 10px;
+}
+
+.dropdown.active {
+  display: block;
+  height: 50px;
+  position: absolute;
+  /* background-color: red; */
+  align-items: center;
+  display: flex;
+  justify-content: left;
+  padding-left: 20px;
+  margin-top: 100px;
+  margin-left: -5px;
+  border-left: 5px solid white;
+  max-width: 100%;
+}
+
+.content-area {
+  width: calc(100% - 220px);
+  height: 100%;
+  margin-left: 0.3%;
+  margin-right: 0.3%;
+}
+
+.input-find input:focus {
+  outline: none;
+}
+
+.numberShow select:focus {
+  outline: none;
+}
+
+.head-action {
+  height: 50px;
+  width: 100%;
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  position: relative;
+  box-shadow: 0 1px 2px 0 rgba(199, 199, 199, 0.2),
+    0 6px 10px 0 rgba(216, 216, 216, 0.19);
+}
+
+.head-action .btn-location {
+  width: calc(70%);
+  height: 100%;
+  overflow-x: auto;
+}
+
+.head-action .btn-location ul {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  margin: 0 10px;
+  margin-left: 20px;
+}
+
+.head-action .btn-location ul li {
+  max-width: 100%;
+  height: 100%;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  white-space: nowrap;
+}
+
+.item-header {
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.head-action .btn-location ul li a {
+  color: #008000;
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.head-action .btn-location ul li nav {
+  height: 80%;
+  width: 3px;
+  background-color: #c4c4c4;
+  border-radius: 30%;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+.head-action .btn-location ul li div {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.underline-title-header {
+  height: 5px;
+  width: 100%;
+  border-radius: 20px;
+  position: absolute;
+  top: 60%;
+}
+
+.head-action .btn-individual {
+  width: 30%;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  padding-right: 20px;
+}
+
+.rowItem {
+  max-height: 500px;
+  width: 99%;
+  align-items: center;
+  display: flex;
+  padding: 0.5%;
+  cursor: pointer;
+  margin-top: 5px;
+  background-color: white;
+}
+
+.rowItem:hover {
+  background-color: #1a6634b2;
+}
+
+.input-item:hover {
+  background: #008000;
+}
+
+.rowItem:hover::before {
+  content: attr(title);
+  position: absolute;
+  background-color: black;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.head-action .btn-individual ul {
+  display: flex;
+  justify-content: center;
+}
+
+.head-action .btn-individual ul li {
+  width: 60px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  position: relative;
+}
+
+head-action .btn-individual ul li:hover::before {
+  content: attr(title);
+  position: absolute;
+  background-color: black;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.head-action .btn-individual ul li .head-find {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.head-action .btn-individual ul div {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.head-action .btn-individual ul div .red-point {
+  height: 20px;
+  width: 20px;
+  background-color: orange;
+  border-radius: 100px;
+  color: white;
+  font-size: 10px;
+  position: absolute;
+  margin-top: -20px;
+  margin-right: -1%;
+}
+
+.head-action .btn-individual ul li .head-find img {
+  width: 18px;
+  height: 18px;
+}
+
+.head-action .btn-individual ul li .head-noi {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  position: relative;
+}
+
+.head-action .btn-individual ul li .head-noi img {
+  width: 18px;
+  height: 18px;
+}
+
+.head-action .btn-individual ul li .head-avatar {
+  height: 35px;
+  width: 35px;
+  background-color: red;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  border-radius: 100px;
+  background-image: url("../../../icon/avatar.jpg");
+  background-size: cover;
+  position: relative;
+}
+
+.head-action .btn-individual ul div .green-point {
+  height: 10px;
+  width: 10px;
+  background-color: #05d103;
+  border-radius: 100px;
+  position: absolute;
+  margin-top: 30px;
+  margin-left: 25px;
+}

@@ -58,7 +58,7 @@
 }
 
 .image {
-  background-image: url("./icon/logoHachi.png");
+  background-image: url("../../icon/logoHachi.png");
   height: 100%;
   width: 100%;
   background-size: contain;
@@ -333,7 +333,7 @@ head-action .btn-individual ul li:hover::before {
   justify-content: center;
   display: flex;
   border-radius: 100px;
-  background-image: url("./icon/avatar.jpg");
+  background-image: url("../../icon/avatar.jpg");
   background-size: cover;
   position: relative;
 }

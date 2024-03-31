@@ -1,16 +1,12 @@
 import "./questionBank.css";
-import iconHome from "./icon/home-svgrepo-com.svg";
-import iconFind from "./icon/find-magnifier-search-zoom-look-svgrepo-com.svg";
-import iconNoi from "./icon/bell-svgrepo-com.svg";
-import iconExport from "./icon/export-svgrepo-com.svg";
-import iconImport from "./icon/import-svgrepo-com.svg";
-import iconFill from "./icon/filter-svgrepo-com.svg";
-import iconFindWhite from "./icon/find-white.svg";
-import iconThreeDot from "./icon/three-dot.png";
-import iconDownArrow from "./icon/icon-down-arrow.png";
+import iconFind from "../../icon/find-magnifier-search-zoom-look-svgrepo-com.svg";
+import iconNoi from "../../icon/bell-svgrepo-com.svg";
+import iconFill from "../../icon/filter-svgrepo-com.svg";
+import iconFindWhite from "../../icon/find-white.svg";
+import iconDownArrow from "../../icon/icon-down-arrow.png";
 import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Pagination from "./component/panigation/pagination";
+import Pagination from "../panigation/pagination";
 import "react-toastify/dist/ReactToastify.css";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -20,7 +16,6 @@ import {
   faTrashCan,
   faCircleCheck,
   faPlus,
-  faSleigh,
   faEdit,
   faCheck,
   faTrash,
@@ -41,7 +36,7 @@ import {
   faEllipsis,
 } from "@fortawesome/free-solid-svg-icons";
 
-import question from "./question.json";
+import question from "../../question.json";
 function App() {
   //Data đầu
   const [dataQuestion, setDataQuestion] = useState();
@@ -1290,93 +1285,6 @@ function App() {
           </div>
         </div>
 
-        <div
-          className="head-field"
-          style={{
-            pointerEvents: isStatusHeader ? "none" : "auto",
-            display: selectedSidebar == 0 ? "" : "none",
-          }}
-        >
-          <div className="field-check">
-            <div
-              onClick={handleDraftChecked}
-              id={draftChecked && "draftChecked"}
-              className="draftChecked"
-            >
-              <a>Đang soạn thảo</a>
-              <input
-                checked={draftChecked}
-                id="checkbox"
-                value="draft"
-                onChange={handleDraftChecked}
-                type="checkbox"
-              />
-            </div>
-
-            <div
-              className="sendChecked"
-              onClick={handleSendChecked}
-              id={sendChecked && "sendChecked"}
-            >
-              <a>Gửi duyệt</a>
-              <input
-                checked={sendChecked}
-                id="checkbox"
-                value="draft"
-                onChange={handleSendChecked}
-                type="checkbox"
-              />
-            </div>
-
-            <div
-              className="browserChecked"
-              onClick={handleBrowserChecked}
-              id={browserChecked && "browserChecked"}
-            >
-              <a>Đã duyệt</a>
-              <input
-                checked={browserChecked}
-                id="checkbox"
-                value="draft"
-                onChange={handleBrowserChecked}
-                type="checkbox"
-              />
-            </div>
-
-            <div
-              className="stopBrowserChecked"
-              onClick={handleStopBrowserChecked}
-              id={stopBrowserChecked && "stopBrowserChecked"}
-            >
-              <a>Ngưng áp dụng</a>
-              <input
-                checked={stopBrowserChecked}
-                id="checkbox"
-                value="draft"
-                onChange={handleStopBrowserChecked}
-                type="checkbox"
-              />
-            </div>
-          </div>
-          <div className="field-btn">
-            <div className="field-uploand">
-              <Icon24px classIcon={faUpload} size={14} color={"#959DB3"} />
-            </div>
-
-            <div className="field-downloand">
-              <div>
-                <Icon24px classIcon={faDownload} size={14} color={"#959DB3"} />
-              </div>
-              <a>Template</a>
-            </div>
-
-            <div className="field-addNew">
-              <Icon24px classIcon={faPlus} size={14} color={"white"} />
-              <a>Thêm mới</a>
-            </div>
-          </div>
-        </div>
-        <div style={{ marginBottom: -10 }} className="under-line"></div>
         <div
           className="body-data"
           style={{
