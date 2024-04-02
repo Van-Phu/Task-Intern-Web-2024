@@ -347,3 +347,9 @@ head-action .btn-individual ul li:hover::before {
   margin-top: 30px;
   margin-left: 25px;
 }
+
+.content {
+  height: 100%;
+  width: 100%;
+  /* background-color: red; */
+}

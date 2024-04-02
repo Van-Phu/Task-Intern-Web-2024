@@ -190,8 +190,9 @@ function HeadAndSidebar() {
             </ul>
           </div>
         </div>
-
-        <Assessment />
+        <div className="content">
+          <Assessment />
+        </div>
       </div>
     </div>
   );
