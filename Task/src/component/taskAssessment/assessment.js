@@ -35,10 +35,11 @@ function Assessment() {
   const [data, setData] = useState(dataJson);
   const [dataPosition, setDataPosition] = useState([]);
   const [dataCompetence, setDataCompetence] = useState([]);
-  const [competenceLevel, setCompetenceLevel] = useState([]);
   const [dataItemCompetence, setDataItemCompetence] = useState([]);
   const [dataItemChange, setDataItemChange] = useState([]);
-  const [indexItem, setIndexItem] = useState();
+  const [valueOldItemMin, setValueOldItemMin] = useState();
+  const [valueOldItemMax, setValueOldItemMax] = useState();
+
   const readPosition = async (data) => {
     const uniquePositionIDs = new Set();
     const uniquePositions = data.filter((item) => {
@@ -71,38 +72,46 @@ function Assessment() {
     setDataCompetence(positions);
   };
 
-  const readCompetenceLevel = async (data) => {
-    const positions = data.map((item) => ({
-      CompetenceLevel: item.CompetenceLevel,
-      CompetenceLevelMax: item.CompetenceLevelMax,
-    }));
-    setCompetenceLevel(positions);
-  };
-
   const handleChangeValue = (itemX, itemY, newMin, newMax) => {
-    if (newMin < 0 || newMax < 0) {
-      alert("Không hợp lệ!");
-      return;
-    } else {
-      let newArr = [...dataItemCompetence];
-      if (newMin > newMax) {
-        newArr[itemX][itemY].CompetenceLevel = newMin;
-        newArr[itemX][itemY].CompetenceLevelMax = newMin;
-      } else {
-        newArr[itemX][itemY].CompetenceLevel = newMin;
-        newArr[itemX][itemY].CompetenceLevelMax = newMax;
-      }
-      setDataItemChange(newArr);
-    }
+    let newArr = [...dataItemCompetence];
+    newArr[itemX][itemY].CompetenceLevel = newMin;
+    newArr[itemX][itemY].CompetenceLevelMax = newMax;
+    setDataItemChange(newArr);
   };
 
-  const handleSaveChange = (status, newArr) => {
-    if (status == true) {
-      alert("Cập nhật thành công!");
-      setDataItemCompetence(newArr);
+  const handleSaveChange = (itemX, itemY, newArr) => {
+    let Min = Number(newArr[itemX][itemY].CompetenceLevel);
+    let Max = Number(newArr[itemX][itemY].CompetenceLevelMax);
+    if (Min < 0) {
+      alert("Lỗi Min");
+      if (valueOldItemMin == null) {
+        newArr[itemX][itemY].CompetenceLevel = "";
+      } else {
+        newArr[itemX][itemY].CompetenceLevel = valueOldItemMin;
+      }
+    } else if (Max < 0) {
+      alert("Lỗi Max");
+      if (valueOldItemMax == null) {
+        newArr[itemX][itemY].CompetenceLevelMax = "";
+      } else {
+        newArr[itemX][itemY].CompetenceLevel = valueOldItemMin;
+        newArr[itemX][itemY].CompetenceLevelMax = valueOldItemMax;
+      }
     } else {
-      alert("Không thành công!");
+      if (Min > Max) {
+        alert("Số Max không được thấp hơn Min");
+        newArr[itemX][itemY].CompetenceLevel = Min;
+        newArr[itemX][itemY].CompetenceLevelMax = Min;
+      } else {
+        alert(
+          "Cập nhật khung năng lực thành công " +
+            newArr[itemX][itemY].PositionName +
+            " " +
+            newArr[itemX][itemY].CompetenceName
+        );
+      }
     }
+    setDataItemCompetence(newArr);
   };
 
   const getValueCompetency = () => {
@@ -119,11 +128,14 @@ function Assessment() {
     setDataItemCompetence(newArr);
   };
 
+  // console.log(dataCompetence);
+  // console.log(dataItemCompetence);
+  // console.log(dataPosition);
+
   useEffect(() => {
     const fetchData = async () => {
       await readPosition(data);
       await readCompetence(data);
-      await readCompetenceLevel(data);
     };
 
     fetchData();
@@ -132,8 +144,6 @@ function Assessment() {
   useEffect(() => {
     getValueCompetency();
   }, [dataCompetence]);
-
-  console.log(dataItemCompetence);
 
   return (
     <div>
@@ -240,7 +250,10 @@ function Assessment() {
                   >
                     Diễn giả
                   </p>
-                  <textarea className="input-actor-competency" />
+                  <textarea
+                    style={{ resize: "inherit" }}
+                    className="input-actor-competency"
+                  />
                 </div>
               </div>
             </div>
@@ -348,14 +361,19 @@ function Assessment() {
                             backgroundColor:
                               rowIndex % 2 === 0 ? "white" : "#DBDEE7",
                           }}
-                          // onBlur={(e) =>
-                          //   handleChangeValue(
-                          //     rowIndex,
-                          //     colIndex,
-                          //     e.target.value,
-                          //     subItem.CompetenceLevelMax
-                          //   )
+                          // onClick={(e) =>
+
                           // }
+                          onFocus={(e) => {
+                            handleChangeValue(
+                              rowIndex,
+                              colIndex,
+                              e.target.value,
+                              subItem.CompetenceLevelMax
+                            );
+                            setValueOldItemMin(subItem.CompetenceLevel);
+                            setValueOldItemMax(subItem.CompetenceLevelMax);
+                          }}
                           onChange={(e) =>
                             handleChangeValue(
                               rowIndex,
@@ -364,7 +382,9 @@ function Assessment() {
                               subItem.CompetenceLevelMax
                             )
                           }
-                          onBlur={() => handleSaveChange(dataItemChange)}
+                          onBlur={() =>
+                            handleSaveChange(rowIndex, colIndex, dataItemChange)
+                          }
                           value={subItem.CompetenceLevel}
                           className="min"
                         />
@@ -372,6 +392,19 @@ function Assessment() {
                           style={{
                             backgroundColor:
                               rowIndex % 2 === 0 ? "white" : "#DBDEE7",
+                          }}
+                          // onClick={(e) =>
+
+                          // }
+                          onFocus={(e) => {
+                            handleChangeValue(
+                              rowIndex,
+                              colIndex,
+                              subItem.CompetenceLevel,
+                              e.target.value
+                            );
+                            setValueOldItemMin(subItem.CompetenceLevel);
+                            setValueOldItemMax(subItem.CompetenceLevelMax);
                           }}
                           onChange={(e) =>
                             handleChangeValue(
@@ -381,7 +414,9 @@ function Assessment() {
                               e.target.value
                             )
                           }
-                          onBlur={() => handleSaveChange(dataItemChange)}
+                          onBlur={() =>
+                            handleSaveChange(rowIndex, colIndex, dataItemChange)
+                          }
                           value={subItem.CompetenceLevelMax}
                           className="max"
                         />
