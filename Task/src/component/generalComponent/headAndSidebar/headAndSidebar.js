@@ -31,7 +31,7 @@ function HeadAndSidebar() {
       label: "Đánh giá nhân sự",
       icon: faListCheck,
       link: "/danh-gia-nhan-su",
-      dropdowns: [{ label: "Ngân hàng câu hỏi", link: "/ngan-hang-cau-hoi" }],
+      dropdowns: [{ label: "Quản lí dợt đánh giá", link: "/ngan-hang-cau-hoi" }],
     },
     {
       label: "Mục khác",
@@ -50,6 +50,16 @@ function HeadAndSidebar() {
   const [isPopStatusVisible, setIsStatusVisible] = useState(false);
   const [statusMessage, setStatusMessage] = useState(true);
   const [status, setStatus] = useState("none");
+
+  const receiveDataFromAssessment = (data, status) => {
+    setStatusMessage(status);
+      setStatus(data);
+      setIsStatusVisible(true);
+      setTimeout(() => {
+        setIsStatusVisible(false);
+      }, 2000);
+  };
+  
 
   const changeHeaderFunction = (fun) => {
     setSelectedItemHeader(fun);
@@ -120,7 +130,7 @@ function HeadAndSidebar() {
           <div className="popStatus-area">
             <div
               className="popStatus"
-              style={{ backgroundColor: statusMessage ? "#1a6634" : "#FD7676" }}
+              style={{ backgroundColor: statusMessage ? "#1a6634" : "#FD7676"}}
             >
               <Icon24px
                 classIcon={statusMessage ? faCircleCheck : faCircleXmark}
@@ -191,7 +201,7 @@ function HeadAndSidebar() {
           </div>
         </div>
         <div className="content">
-          <Assessment />
+          <Assessment sendMessage={receiveDataFromAssessment}/>
         </div>
       </div>
     </div>

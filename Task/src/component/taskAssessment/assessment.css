@@ -2,6 +2,7 @@
   width: 100%;
   height: 100%;
   margin-left: 10px;
+/* overflow-y: auto; */
 }
 
 .head {
@@ -14,10 +15,24 @@
 
 .head-road {
   height: 48px;
-  width: 100%;
+  width: 40%;
   display: flex;
   align-items: center;
+  white-space: nowrap;
+  margin-right: 5%;
+  overflow-x: auto;
 }
+
+.head-road-child{
+  min-width: 500px;
+  display: flex;
+}
+
+.head-road div {
+  white-space: nowrap;
+}
+
+
 
 .head div {
   font-size: 14px;
@@ -29,6 +44,10 @@
 .competency {
   height: 290px;
   width: 100%;
+}
+
+.competency-dateTimePicker{
+  /* width: 150px; */
 }
 
 .text-infoCompetency {
@@ -51,11 +70,6 @@
   margin: 0 10px;
   display: flex;
   justify-content: space-between;
-}
-
-.competency-dateTimePicker {
-  width: 150px;
-  height: 60px;
 }
 
 .input-competency {
@@ -89,6 +103,7 @@
   height: 100%;
   width: 100%;
   margin-top: 10px;
+  overflow-x: auto;
 }
 
 .grid-competency {
@@ -122,16 +137,18 @@
 }
 
 .head-btn {
-  width: 700px;
+  width: 65%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: right;
+  white-space: nowrap;
 }
 
 .btn-delete {
   display: flex;
   width: 130px;
+  min-width: 130px;
   height: 80%;
   align-items: center;
   justify-content: space-between;
@@ -156,6 +173,7 @@
   display: flex;
   width: 90px;
   height: 80%;
+  min-width: 90px;
   align-items: center;
   justify-content: space-between;
   /* padding-left: 10px; */
@@ -176,6 +194,7 @@
   display: flex;
   width: 90px;
   height: 80%;
+  min-width: 90px;
   align-items: center;
   justify-content: space-between;
   padding-left: 10px;
@@ -211,7 +230,8 @@
 }
 
 .competence-item {
-  width: 150px;
+  max-width: 150px;
+  min-width: 150px;
   height: 100%;
 
   /* display: flex;
@@ -290,12 +310,6 @@
   margin-left: 10px;
 }
 
-/* .body-level {
-  width: 100%;
-  height: 100px;
-  background-color: red;
-} */
-
 .level {
   width: calc(100% - 200px);
   height: 500px;
@@ -333,4 +347,10 @@
 
 .level-item input:hover {
   border-color: #26282e;
+}
+
+.scroll-view {
+  /* max-height: 800px; */
+  
+  overflow: auto;
 }

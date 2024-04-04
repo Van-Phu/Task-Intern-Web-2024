@@ -108,6 +108,7 @@
 
 .dropdown {
   display: none;
+
 }
 
 .dropdown a {
@@ -351,5 +352,10 @@ head-action .btn-individual ul li:hover::before {
 .content {
   height: 100%;
   width: 100%;
-  /* background-color: red; */
+  overflow: auto;
+}
+
+.popStatus-area{
+  margin-left: -200px;
+ 
 }
