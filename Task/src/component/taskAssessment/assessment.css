@@ -47,7 +47,8 @@
 }
 
 .competency-dateTimePicker{
-  /* width: 150px; */
+  width: 150px;
+  display: flex;
 }
 
 .text-infoCompetency {
@@ -64,6 +65,7 @@
 .dataAndStatus-competency {
   width: 15%;
   margin-right: 5%;
+  height: 100%;
 }
 
 .form-competency-layout {
@@ -104,10 +106,11 @@
   width: 100%;
   margin-top: 10px;
   overflow-x: auto;
+  overflow-y: auto  ;
 }
 
 .grid-competency {
-  height: calc(100% - 224px);
+  height: 100%;
   background-color: white;
   width: 100%;
   height: 450px;
@@ -132,8 +135,8 @@
 
 .line-head {
   width: 100%;
-  transform: rotate(12deg);
-  border: 0.1px black dashed;
+  transform: rotate(11.5deg);
+  border: 0.01px black dashed;
 }
 
 .head-btn {
@@ -143,6 +146,10 @@
   align-items: center;
   justify-content: right;
   white-space: nowrap;
+}
+
+.head-btn div{
+  cursor: pointer;
 }
 
 .btn-delete {
@@ -219,6 +226,7 @@
   align-items: center;
   justify-content: center;
   padding-left: 10px;
+  cursor: pointer;
 }
 
 .competence {
@@ -227,6 +235,7 @@
   display: flex;
   align-items: center;
   justify-content: left;
+
 }
 
 .competence-item {
@@ -246,6 +255,7 @@
   height: 20px;
   color: #5a6276;
   font-weight: 500;
+  margin-right: 3px;
 }
 
 .minMaxItem {
@@ -256,7 +266,7 @@
 }
 
 .minMaxItem .min {
-  margin-right: 20px;
+  margin-right: 27px;
   color: #5a6276;
 }
 
@@ -294,7 +304,7 @@
 .addActor {
   height: 10%;
   width: 100%;
-
+cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -340,9 +350,10 @@
 .level-item input {
   text-align: center;
   border: none;
-  height: 20px;
-  width: 30px;
+  height: 30px;
+  width: 40px;
   border: 0.1px solid transparent;
+  font-size: 14px;
 }
 
 .level-item input:hover {

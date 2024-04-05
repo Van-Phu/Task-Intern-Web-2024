@@ -21,6 +21,7 @@ import {
   faListCheck,
   faChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
+import { blue } from "@mui/material/colors";
 
 function HeadAndSidebar() {
   const [activeDropdown, setActiveDropDown] = useState(true);
@@ -47,7 +48,7 @@ function HeadAndSidebar() {
   const handleDropdowm = () => {
     setActiveDropDown(!activeDropdown);
   };
-  const [isPopStatusVisible, setIsStatusVisible] = useState(false);
+  const [isPopStatusVisible, setIsStatusVisible] = useState(true);
   const [statusMessage, setStatusMessage] = useState(true);
   const [status, setStatus] = useState("none");
 
@@ -127,7 +128,7 @@ function HeadAndSidebar() {
         </div>
 
         {isPopStatusVisible && (
-          <div className="popStatus-area">
+          <div style={{alignItems:'left', justifyContent:'flex-start'}} className="popStatus-area">
             <div
               className="popStatus"
               style={{ backgroundColor: statusMessage ? "#1a6634" : "#FD7676"}}
@@ -200,7 +201,7 @@ function HeadAndSidebar() {
             </ul>
           </div>
         </div>
-        <div className="content">
+        <div style={{ display: selectedSidebar == 0 ? "" : "none" }} className="content">
           <Assessment sendMessage={receiveDataFromAssessment}/>
         </div>
       </div>

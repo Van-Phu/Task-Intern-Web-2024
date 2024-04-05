@@ -7,11 +7,15 @@ import {
   faChevronRight,
   faPlus,
   faTrash,
+  faCircleInfo,
+  faCalendar
 } from "@fortawesome/free-solid-svg-icons";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dataJson from "../../data/dataAssessment.json";
+import { Icon } from "@mui/material";
 const Icon24px = ({ classIcon, color, size }) => {
   const iconSize = {
     color: color,
@@ -97,7 +101,13 @@ function Assessment({sendMessage}) {
           status = true
           newArr[itemX][itemY][0].CompetenceLevel = Min;
           newArr[itemX][itemY][0].CompetenceLevelMax = Min;
-        } else {
+        } else if(valueOldItemMin == null){
+          message = "Số Min sẽ thay đổi để bằng số Max";
+          status = true
+          newArr[itemX][itemY][0].CompetenceLevel = Max;
+          newArr[itemX][itemY][0].CompetenceLevelMax = Max;
+        }
+        else {
           status = true
           message =  "Cập nhật khung năng lực thành công " +
           newArr[itemX][itemY][0].CompetenceName +
@@ -208,8 +218,12 @@ function Assessment({sendMessage}) {
                     </p>
                     <div className="competency-dateTimePicker">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DateTimePicker label="Basic date time picker" />
+                      <DateTimePicker />
                     </LocalizationProvider>
+                    {/* <div>
+                    <Icon24px classIcon={faCalendar} size={20} color={"black"}/>
+                    </div>
+                     */}
                     </div>
                   </div>
                   <div>
@@ -296,7 +310,14 @@ function Assessment({sendMessage}) {
                 <div className="competence">
                   {dataCompetence.map((item, index) => (
                     <div className="competence-item" key={index}>
-                      <div className="itemCompetence">{item.CompetenceID}</div>
+                      <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+                        <div className="itemCompetence">{item.CompetenceID}</div>
+                        <div style={{marginTop: -15}}>
+                        <Icon24px classIcon={faCircleInfo} size={8} color={"rgba(49, 173, 255, 1)"}/>
+                        </div>
+                       
+                      </div>
+                     
                       <div className="minMaxItem">
                         <p className="min">Min</p>
                         <p className="max">Max</p>

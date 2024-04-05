@@ -354,8 +354,3 @@ head-action .btn-individual ul li:hover::before {
   width: 100%;
   overflow: auto;
 }
-
-.popStatus-area{
-  margin-left: -200px;
- 
-}
