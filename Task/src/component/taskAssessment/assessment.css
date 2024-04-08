@@ -47,8 +47,15 @@
 }
 
 .competency-dateTimePicker{
-  width: 150px;
+  width: 130px;
   display: flex;
+  border: 1px solid #959DB3;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #DBDEE7;
+  position: relative;
+  z-index: 999;
 }
 
 .text-infoCompetency {
@@ -102,11 +109,9 @@
 }
 
 .detail-competency {
-  height: 100%;
+  height:560px;
   width: 100%;
   margin-top: 10px;
-  overflow-x: auto;
-  overflow-y: auto  ;
 }
 
 .grid-competency {
@@ -235,7 +240,7 @@
   display: flex;
   align-items: center;
   justify-content: left;
-
+  /* overflow-x: auto; */
 }
 
 .competence-item {
@@ -243,9 +248,6 @@
   min-width: 150px;
   height: 100%;
 
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
 }
 
 .itemCompetence {
@@ -279,6 +281,8 @@
   height: 100%;
   background-color: #d1e0d6;
   display: flex;
+  background-color: white;
+  /* overflow-x: scroll; */
 }
 
 .position {
@@ -286,6 +290,7 @@
   height: 100%;
   background-color: #d1e0d6;
   border-right: 0.1px solid rgb(26, 102, 52, 0.3);
+
 }
 
 .position-item {
@@ -321,15 +326,17 @@ cursor: pointer;
 }
 
 .level {
-  width: calc(100% - 200px);
+  width: calc(100% - 360px);
   height: 500px;
   display: flex;
   background-color: white;
+  overflow-x: scroll;
 }
 
 .layout-item-position {
-  width: 150px;
+  min-width: 150px;
   height: 100%;
+  
 }
 
 .level-item {
@@ -360,8 +367,14 @@ cursor: pointer;
   border-color: #26282e;
 }
 
-.scroll-view {
-  /* max-height: 800px; */
-  
-  overflow: auto;
+.custom-datepicker-input .MuiSvgIcon-root {
+  color: rebeccapurple;
+}
+
+.pop-datePicker .MuiPaper-root{
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+
+.pop-datePicker .MuiPopover-paper {
+ background-color: red;
 }

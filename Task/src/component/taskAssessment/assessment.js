@@ -1,5 +1,5 @@
 import "./assessment.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -15,6 +15,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dataJson from "../../data/dataAssessment.json";
+import TextField from "@mui/material/TextField";
 import { Icon } from "@mui/material";
 const Icon24px = ({ classIcon, color, size }) => {
   const iconSize = {
@@ -31,16 +32,41 @@ function Assessment({sendMessage}) {
   const [dataPosition, setDataPosition] = useState([]);
   const [dataCompetence, setDataCompetence] = useState([]);
   const [dataItemCompetence, setDataItemCompetence] = useState([]);
+  const [dataCategory, setDataCategory] = useState([])
   const [dataItemChange, setDataItemChange] = useState([]);
   const [valueOldItemMin, setValueOldItemMin] = useState();
   const [valueOldItemMax, setValueOldItemMax] = useState();
+  const [openDatetimePicker, setOpenDateTimePicker] = useState(false)
+  const [dateSelected, setDateSelected] = useState()
 
+  const competenceRef = useRef(null);
+  const levelRef = useRef(null);
+
+  const handleScroll = (event) => {
+    const { scrollLeft } = event.target;
+    console.log(event.target)
+    competenceRef.current.scrollLeft = scrollLeft;
+  };
+
+  const popDateTimePicker = () =>{
+    setOpenDateTimePicker(!openDatetimePicker)
+  }
+
+  const handleClose = () =>{
+    setOpenDateTimePicker(!openDatetimePicker)
+  }
+
+  const getDatePicker = (newDate) => {
+    setDateSelected(newDate)
+  }
 
   const readPostionAndCompetence = async (data) => {
     const uniquePositionIDs = new Set();
     const uniqueCompetenceIDs = new Set();
+    const uniqueCategory = new Set();
     const listPosition = [];
     const listCompetence = [];
+    const listCategory = [];
     data.forEach((element) => {
       if (!uniquePositionIDs.has(element.PositionID)) {
         listPosition.push(element);
@@ -50,10 +76,16 @@ function Assessment({sendMessage}) {
         listCompetence.push(element);
         uniqueCompetenceIDs.add(element.CompetenceID);
       }
+      if(!uniqueCategory.has(element.CategoryID)){
+        listCategory.push(element.CategoryID)
+        uniqueCategory.add(element.CategoryID)
+      }
     });
+    setDataCategory(listCategory)
     setDataPosition(listPosition);
     setDataCompetence(listCompetence);
   };
+
 
   const sendDataToParentFunction = (data, status) => {
     sendMessage(data, status);
@@ -78,7 +110,7 @@ function Assessment({sendMessage}) {
         newArr[itemX][itemY][0].CompetenceLevel = valueOldItemMin;
         newArr[itemX][itemY][0].CompetenceLevelMax = valueOldItemMax;
       }
-      else if (Min < 0) {
+      else if (Min < 0 || Min > 5) {
         message = "Lỗi Min";
         status = false
         if (valueOldItemMin == null) {
@@ -86,7 +118,7 @@ function Assessment({sendMessage}) {
         } else {
           newArr[itemX][itemY][0].CompetenceLevel = valueOldItemMin;
         }
-      } else if (Max < 0) {
+      } else if (Max < 0 || Max > 5) {
         message = "Lỗi Max";
         status = false
         if (valueOldItemMax == null) {
@@ -95,13 +127,30 @@ function Assessment({sendMessage}) {
           newArr[itemX][itemY][0].CompetenceLevel = valueOldItemMin;
           newArr[itemX][itemY][0].CompetenceLevelMax = valueOldItemMax;
         }
-      } else {
-        if (Min > Max) {
+      }
+      else if(Min == valueOldItemMin &&  Max == 0){
+        console.log("err");
+        if(Max != valueOldItemMax ){
+          console.log("err")
+          message = "Cập nhật thành công";
+          status = true
+          newArr[itemX][itemY][0].CompetenceLevelMax = "";
+        } 
+      }
+ 
+      else {
+        if(Min > Max && Max == 0){
           message = "Số Max sẽ thay đổi để lớn hơn hoặc bằng min";
           status = true
           newArr[itemX][itemY][0].CompetenceLevel = Min;
           newArr[itemX][itemY][0].CompetenceLevelMax = Min;
-        } else if(valueOldItemMin == null){
+        }
+        else if (Min > Max) {
+          message = "Số Min đã vượt quá Max";
+          status = false
+          newArr[itemX][itemY][0].CompetenceLevel = valueOldItemMin;
+        }
+        else if(valueOldItemMin == null){
           message = "Số Min sẽ thay đổi để bằng số Max";
           status = true
           newArr[itemX][itemY][0].CompetenceLevel = Max;
@@ -152,13 +201,14 @@ function Assessment({sendMessage}) {
     getValueCompetency();
   }, [dataCompetence]);
 
+
   return (
     <div>
       <div className="body">
         <div className="head">
           <div className="head-road">
             <div className="head-road-child">
-              <div style={{ marginLeft: 0, paddingLeft: 0 }}>
+              <div style={{ marginLeft: -10, paddingLeft: 0 }}>
                 Đánh giá nhân sự
               </div>
               <div>
@@ -216,15 +266,43 @@ function Assessment({sendMessage}) {
                     <p style={{ color: "#959DB3", fontSize: 14 }}>
                       Ngày hiệu lực khung năng lực
                     </p>
-                    <div className="competency-dateTimePicker">
+                    <div onClick={popDateTimePicker} className="competency-dateTimePicker">
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DateTimePicker />
+                          <div style={{marginRight: 20}}>
+                            {dateSelected == null ? "Không chọn" : dateSelected.$D + "/" + dateSelected.$M + "/" + dateSelected.$y}
+                          </div>
+                          <div>
+                            <Icon24px classIcon={faCalendar} size={20} color={"#959DB3"}/>
+                          </div>
                     </LocalizationProvider>
-                    {/* <div>
-                    <Icon24px classIcon={faCalendar} size={20} color={"black"}/>
+                 
                     </div>
-                     */}
-                    </div>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <div style={{marginTop: -50, width: 0}}>
+                        <DatePicker
+                        value={dateSelected}
+                        onChange={getDatePicker}
+                        open={openDatetimePicker}
+                        onClose={handleClose}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            inputProps={{
+                              className: 'custom-datepicker-input'
+                            }}
+                          />
+                        
+                        )}
+                        slotProps={{
+                          popper: {
+                            className: "pop-datePicker"
+                          },
+                        }}
+                        />
+                      </div>
+                      </LocalizationProvider>
+      
+           
                   </div>
                   <div>
                     <p style={{ color: "#959DB3", fontSize: 14 }}>Tình trạng</p>
@@ -307,7 +385,7 @@ function Assessment({sendMessage}) {
                     Chức danh
                   </div>
                 </div>
-                <div className="competence">
+                <div ref={competenceRef} className="competence">
                   {dataCompetence.map((item, index) => (
                     <div className="competence-item" key={index}>
                       <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
@@ -338,7 +416,7 @@ function Assessment({sendMessage}) {
                 <div className="position">
                   <div className="actor-area">
                     {dataPosition.map((item, index) => (
-                      <div key={index} className="position-item">
+                      <di title={"Chức danh: " + item.PositionName} key={index} className="position-item">
                         <div className="positionID">{item.PositionID}</div>
                         <div
                           style={{
@@ -358,7 +436,7 @@ function Assessment({sendMessage}) {
                           ></nav>
                         </div>
                         <div className="positionName">{item.PositionName}</div>
-                      </div>
+                      </di>
                     ))}
                   </div>
 
@@ -377,7 +455,7 @@ function Assessment({sendMessage}) {
                     </p>
                   </div>
                 </div>
-                <div className="level">
+                <div onScroll={handleScroll}  ref={levelRef} className="level">
                   {dataItemCompetence.map((itemRow, rowIndex) => (
                     <div
                       key={rowIndex}
@@ -389,7 +467,7 @@ function Assessment({sendMessage}) {
                     >
                       {dataPosition.map((subItem, colIndex) => {
                         return((itemRow[colIndex] && itemRow[colIndex].length == 0) ? "" : (
-                          <div key={colIndex} className="level-item">
+                          <div title={"Mã loại: " + itemRow[colIndex][0].CategoryID} key={colIndex} className="level-item">
                           <input
                             style={{
                               backgroundColor:
@@ -467,7 +545,7 @@ function Assessment({sendMessage}) {
                             className="max"
                           />
                         </div>))
-        })}
+                    })}
                     </div>
                   ))}
                 </div>

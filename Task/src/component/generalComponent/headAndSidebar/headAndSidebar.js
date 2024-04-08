@@ -48,7 +48,7 @@ function HeadAndSidebar() {
   const handleDropdowm = () => {
     setActiveDropDown(!activeDropdown);
   };
-  const [isPopStatusVisible, setIsStatusVisible] = useState(true);
+  const [isPopStatusVisible, setIsStatusVisible] = useState(false);
   const [statusMessage, setStatusMessage] = useState(true);
   const [status, setStatus] = useState("none");
 
