@@ -1,0 +1,121 @@
+<div class="body">
+    <div class="header-two">
+        <div class="checkbox-header">
+            <div class="check-item" id="checkDraft">
+                <p>Đang soạn thảo</p>
+                <input type="checkbox"/>
+            </div>
+            <div class="check-item" id="checkSent">
+                <p>Đã duyệt</p>
+                <input type="checkbox"/>
+            </div>
+            <div class="check-item" id="checkApprove">
+                <p>Đã duyệt</p>
+                <input type="checkbox"/>
+            </div>
+            <div class="check-item" id="checkStopApply">
+                <p>Ngưng áp dụng</p>
+                <input type="checkbox"/>
+            </div>
+        </div>
+        <div class="button-header">
+            <div class="btn-upload">
+                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+            </div>
+            <div class="btn-downloand">
+                <i class="fa-solid fa-download"></i>
+                <p>Temple</p>
+            </div>
+            <div class="btn-addnew">
+                <i class="fa-solid fa-plus"></i>
+                <p>Thêm mới</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="borderBottom"></div>
+
+    <div class="field">
+        <div class="reset-area">
+            <div class="title-field">
+                <i class="fa-solid fa-filter"></i>
+                <p>Lọc dữ liệu</p>
+            </div>
+            <p class="btn-reset"><ins>Reset bộ lọc</ins></p>
+        </div>
+        <div class="search-area">
+            <p class="title-search">Tìm kiếm</p>
+            <div class="search-action">
+                <div class="search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="search-input">
+                </div>
+                <div class="btn-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <p class="title-btn-search">Tìm</p>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+
+    <div class="borderBottom"></div>
+
+    <div class="question-area">
+        <div class="header-question">
+            <div class="head-ques">
+                <input type="checkbox">
+                <p>Câu hỏi</p>
+            </div>
+            <div class="head-group">
+                <p>Phân nhóm</p>
+            </div>
+            <div class="head-time">
+                <p>Thời gian làm</p>
+            </div>
+            <div class="head-status">
+                <p>Tình trạng</p>
+            </div>
+        </div>
+        <div class="listQuestion">
+            <ul class="parentList">
+                <li class="item" *ngFor="let question of questions; index as i"> 
+                    <div class="item-ques">
+                        <input type="checkbox">
+                        <div class="farme-question">
+                            <div class="question">{{question.question}}</div>
+                            <div class="farme-code">
+                                <div class="idQues">{{question.idQues}}</div>
+                                <div class="lineCenter"></div>
+                                <div class="type-question">
+                                    <p>Loại câu hỏi: </p>
+                                    <div class="type">{{question.type}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item-group">
+                        <p>{{getNameById(question.group, groupdata)}}</p>
+                    </div>
+                      
+                    <div class="item-time">
+                        <p>{{question.time}}</p>
+                    </div>
+                    <div class="item-status">
+                        <div class="title-status">
+                            <p [ngStyle]="{'color': question.status | statusColor}">{{getNameById(question.status, statusQuestionData)}}</p>
+                        </div>
+                   
+                        <div (click)="hanldeChangeStatusPopfunction(i)" class="btn-func">
+                            <i [ngStyle]="{'color': currentIndexStatus == i ? '#FFFFFF' : '#BDC2D2', 'background-color': currentIndexStatus == i? '#BDC2D2': ''}" class="fa-solid fa-ellipsis"></i>
+                            <div *ngIf="currentIndexStatus == i" class="popfunction">
+
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+ 
+</div>

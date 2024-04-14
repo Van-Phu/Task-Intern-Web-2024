@@ -1,0 +1,32 @@
+*{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    list-style-type: none;
+    text-decoration: none;
+    background-color: #EDEFF3;
+    overflow: hidden;
+}
+
+.all{
+    display: flex;
+    overflow: hidden;
+    .menuLeft{
+        width: 220px;
+        z-index: 0;
+    }
+
+    .contentRight{
+        width: calc(100% - 220px);
+        height: 100vh;
+        z-index: 99;
+
+        .header{
+        .questionBank{
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        }
+    }
+}

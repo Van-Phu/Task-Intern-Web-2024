@@ -14,7 +14,9 @@ import { HeroService } from '../hero.service';
 })
 
 export class HeroDetailComponent{
-  hero: Hero | undefined;
+  // hero: Hero | undefined;
+
+  @Input() hero?: Hero;
   
   constructor(private route: ActivatedRoute, private heroService: HeroService, private location: Location){}
 
@@ -35,7 +37,6 @@ export class HeroDetailComponent{
     if(this.hero){
       this.heroService.updateHero(this.hero).subscribe(() => this.goBack());
     }
+    console.log("Hello world");
   }
-
- 
 }

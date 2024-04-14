@@ -1,0 +1,121 @@
+*{
+    list-style-type: none;
+    text-decoration: none;
+    background-color: white;
+}
+
+.body{
+    height: 60px;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    display: flex;
+    justify-content: space-between;
+
+    .header-route{
+        display: flex;
+        width: 75%;
+        overflow-x: auto;
+        overflow-y: hidden;
+
+        .body-item{
+            display: flex;
+            margin-left: -50px;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            .item{
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                cursor: pointer;
+                min-width: 100px;
+                max-width: 200px;
+                .item-top{
+                    height: 50px;
+                    max-width: 100px;
+                    margin-right: 20px;
+                    align-items: center;
+                    justify-content: center;
+                    padding-left: 20px;
+
+                    div{
+                        height: 48px;
+                        align-items: center;
+                        display: flex;
+                        justify-content: center;
+                        color: #BBBBBB;
+                        font-size: 14px;
+                        white-space: nowrap;
+                    }
+
+                    .under-line{
+                        height: 3px;
+                        background-color: #008000;
+                        border-radius: 100px;
+                        
+                    }
+                }
+
+                .lineColumn{
+                    width: 2px;
+                    height: 35px;
+                    background-color: #c4c4c4;
+                }
+                
+                
+            }
+        }
+    }
+
+    .header-action{
+        width: 20%;
+        display: flex;
+        align-items: center;
+        justify-content: right;
+        margin-right: 20px;
+
+        .iconFind{
+            margin-right: 40px;
+            font-size: 20px;
+           
+        }
+
+        .iconNoi{
+            margin-right: 40px;
+            font-size: 20px;
+            .red-dot{
+                background-color: #F1802E;
+                border-radius: 100px;
+                color: white;
+                width: 15px;
+                height: 15px;
+                align-items: center;
+                justify-content: center;
+                display: flex;
+                font-size: 10px;
+                position: absolute;
+                margin-top: -30px;
+                margin-left: 7px;
+            }
+        }
+
+        .avatar{
+            width: 35px;
+            height: 35px;
+            background-color: red;
+            border-radius: 100px;
+            background-image: url('../avatar.jpg');
+            background-size: cover;
+
+            .green-dot{
+                background-color: #05D103;
+                width: 10px;
+                height: 10px;
+                position: absolute;
+                margin-top: 25px;
+                margin-left: 25px;
+                border-radius: 100px;
+            }
+        }
+    }
+}

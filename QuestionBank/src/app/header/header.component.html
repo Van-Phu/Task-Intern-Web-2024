@@ -1,0 +1,33 @@
+<div class="body">
+    <div class="header-route">
+        <ul  class="body-item">
+            <li [routerLink]="['/' + item.route]" (click)="selectItemHead(i, item.route)" class="item" *ngFor="let item of headerItems; index as i">
+                <div class="item-top">
+                    <div [ngStyle]="{'color': itemSelect === i ? '#008000': '#BBBBBB'}">
+                        <span>{{item.name}}</span>
+                    </div>
+                   
+                    <div  *ngIf="itemSelect === i" class="under-line">
+
+                    </div>
+                </div>
+        
+                <ng-container *ngIf="i !== headerItems.length - 1">
+                    <div class="lineColumn"></div>
+                </ng-container>
+            </li>
+        </ul>
+    </div>
+    <div class="header-action"> 
+        <div class="iconFind">
+            <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+        </div>
+        <div class="iconNoi">
+            <fa-icon [icon]="faBell"></fa-icon>
+            <div class="red-dot">25</div>
+        </div>
+        <div class="avatar">
+            <div class="green-dot"></div>
+        </div>
+    </div>
+</div>
