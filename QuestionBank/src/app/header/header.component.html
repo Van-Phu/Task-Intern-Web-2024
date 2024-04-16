@@ -1,14 +1,13 @@
 <div class="body">
     <div class="header-route">
         <ul  class="body-item">
-            <li [routerLink]="['/' + item.route]" (click)="selectItemHead(i, item.route)" class="item" *ngFor="let item of headerItems; index as i">
+            <li [routerLink]="[item.route]" (click)="selectItemHead(i, href)" class="item" *ngFor="let item of headerItems; index as i">
                 <div class="item-top">
-                    <div [ngStyle]="{'color': itemSelect === i ? '#008000': '#BBBBBB'}">
+                    <div [ngStyle]="{'color': href.includes(item.route) ? '#008000': '#BBBBBB'}">
                         <span>{{item.name}}</span>
                     </div>
                    
-                    <div  *ngIf="itemSelect === i" class="under-line">
-
+                    <div  *ngIf="href.includes(item.route)" class="under-line">
                     </div>
                 </div>
         

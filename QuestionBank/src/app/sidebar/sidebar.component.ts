@@ -18,42 +18,60 @@ export class SidebarComponent implements OnInit, OnDestroy {
   activeDropdown = false
 
   showFiller = false;
-  itemSelected = -1
+  itemSelected = 0
 
   isDropdownItem = false
-  itemDropSelected = -1
+  dataItemChild = -1
 
-  drawerData: string = ""
+  href: string = ""
   subDataService: any = {} 
+  selectedItems:number[] = []
 
   constructor(private dataService: DataService){}
 
   ngOnInit(): void {
-    this.subDataService = this.dataService.currentData.subscribe(data =>{
-      this.drawerData = data
+    this.subDataService = this.dataService.currentURL.subscribe(data =>{
+      this.href = data
     })
-
   }
+
   selectItem(index: number){
-    if(this.itemSelected == index){
-      this.activeDropdown = false
+    let indexToRemove = -1;
+    this.selectedItems.forEach((element, i) => {
+      if(element === index){
+        indexToRemove = i;
+        return;
+      }      
+    });
+    if (indexToRemove !== -1) {
+      this.selectedItems.splice(indexToRemove, 1);
+    }else{
+      this.selectedItems.push(index);
+    }
+    if(this.selectedItems.length > 0){
+      this.isDropdownItem = false
     }else{
       this.isDropdownItem = true
-      this.itemSelected = index
-      this.activeDropdown = true
     }
+    
   }
   
+  selectedModule(dataRoute: string){
+    this.dataService.changeParamData(this.href + dataRoute)
 
-  selectItemDropdown(index: number){
-    this.itemDropSelected  = index
   }
 
   setItemDropdown(){
     this.isDropdownItem = !this.isDropdownItem
   }
 
-  ngOnDestroy(): void {
-    this.subDataService.unsubscribe();
+  selectItemDrop(data:number){
+    this.dataItemChild = data
+  }
+
+ngOnDestroy(): void {
+    if (this.subDataService) {
+      this.subDataService.unsubscribe();
+    }
   }
 }

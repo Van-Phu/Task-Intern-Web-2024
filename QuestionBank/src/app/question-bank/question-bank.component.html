@@ -1,21 +1,47 @@
 <div class="body">
-    <div class="header-two">
+    <div *ngIf="isPopDelete" class="popUpDetele">
+        <div class="pop">
+            <div class="title">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <p>{{ 'Xóa câu hỏi' | uppercase }}</p>
+            </div>
+            <div class="underline">
+            </div>
+            <div class="content">
+                <div class="title-contet">Bạn chắc chắn muốn xóa phân nhóm</div>
+                <div class="group">hachihachi</div>
+                <div>Đơn vị xóa sẽ &nbsp; <span [ngStyle]="{'color': '#FD7676'}">KHÔNG</span>&nbsp;  thể khôi phục lại.</div>
+                                   <!-- <div class="underline"> -->
+            </div>
+            <div class="underline2"></div>
+            <div class="btn">
+                <div class="btn-cancel">{{'Không xóa' | uppercase}}</div>
+                <div class="btn-delete">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <div>{{'xóa' | uppercase}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="header-two" [ngStyle]="{'pointer-events': listItemChecked.length > 0 ? 'none': ''}">
         <div class="checkbox-header">
-            <div class="check-item" id="checkDraft">
+            <div [ngStyle]="{'borderColor': isCheckDraft == true ? '#008000' : ''}" (click)="handlCheckItem('draft')" class="check-item" id="checkDraft">
                 <p>Đang soạn thảo</p>
-                <input type="checkbox"/>
+                <input [checked]="isCheckDraft" type="checkbox"/>
             </div>
-            <div class="check-item" id="checkSent">
+            <div [ngStyle]="{'borderColor': isCheckSend == true ? '#008000' : ''}" (click)="handlCheckItem('send')"  class="check-item" id="checkSent">
+                <p>Gửi duyệt</p>
+                <input [checked]="isCheckSend" type="checkbox"/>
+            </div>
+            <div [ngStyle]="{'borderColor': isCheckApprove == true ? '#008000' : ''}" (click)="handlCheckItem('approve')" class="check-item" id="checkApprove">
                 <p>Đã duyệt</p>
-                <input type="checkbox"/>
+                <input [checked]="isCheckApprove" type="checkbox"/>
             </div>
-            <div class="check-item" id="checkApprove">
-                <p>Đã duyệt</p>
-                <input type="checkbox"/>
-            </div>
-            <div class="check-item" id="checkStopApply">
+            <div [ngStyle]="{'borderColor': isCheckStopApprove == true ? '#008000' : ''}" (click)="handlCheckItem('stopApprove')" class="check-item" id="checkStopApply">
                 <p>Ngưng áp dụng</p>
-                <input type="checkbox"/>
+                <input [checked]="isCheckStopApprove" type="checkbox"/>
             </div>
         </div>
         <div class="button-header">
@@ -35,22 +61,22 @@
 
     <div class="borderBottom"></div>
 
-    <div class="field">
+    <div [ngStyle]="{'pointer-events': listItemChecked.length > 0 ? 'none': ''}" class="field">
         <div class="reset-area">
             <div class="title-field">
                 <i class="fa-solid fa-filter"></i>
                 <p>Lọc dữ liệu</p>
             </div>
-            <p class="btn-reset"><ins>Reset bộ lọc</ins></p>
+            <p (click)="resetFilter()" class="btn-reset"><ins>Reset bộ lọc</ins></p>
         </div>
         <div class="search-area">
             <p class="title-search">Tìm kiếm</p>
             <div class="search-action">
                 <div class="search">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" class="search-input">
+                    <input (keypress)="handleSearchByEnter($event)" [(ngModel)]="searchQuery" placeholder="Tìm theo mã và câu hỏi" type="text" class="search-input">
                 </div>
-                <div class="btn-search">
+                <div (click)="filterQuestions()" class="btn-search">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <p class="title-btn-search">Tìm</p>
                 </div>
@@ -64,7 +90,7 @@
     <div class="question-area">
         <div class="header-question">
             <div class="head-ques">
-                <input type="checkbox">
+                <input (change)="handleCheckboxChange()" [checked]="isCheckedAll" type="checkbox">
                 <p>Câu hỏi</p>
             </div>
             <div class="head-group">
@@ -77,11 +103,18 @@
                 <p>Tình trạng</p>
             </div>
         </div>
+
         <div class="listQuestion">
+            <div *ngIf="isLoading" class="loading">
+                <div class="loader"></div>
+            </div>
+
+            <!-- Pop Delete -->
+            
             <ul class="parentList">
-                <li class="item" *ngFor="let question of questions; index as i"> 
+                <li [class.selected]="listItemChecked.includes(question)" class="item" *ngFor="let question of listQuestionDataFilter; index as i"> 
                     <div class="item-ques">
-                        <input type="checkbox">
+                        <input [checked]="listItemChecked.includes(question)" (change)="handleAddItemChecked(question)" class="checkbox-item" type="checkbox">
                         <div class="farme-question">
                             <div class="question">{{question.question}}</div>
                             <div class="farme-code">
@@ -106,16 +139,54 @@
                             <p [ngStyle]="{'color': question.status | statusColor}">{{getNameById(question.status, statusQuestionData)}}</p>
                         </div>
                    
-                        <div (click)="hanldeChangeStatusPopfunction(i)" class="btn-func">
+                        <div (click)="hanldeChangeStatusPopfunction(i, question.status)" class="btn-func">
                             <i [ngStyle]="{'color': currentIndexStatus == i ? '#FFFFFF' : '#BDC2D2', 'background-color': currentIndexStatus == i? '#BDC2D2': ''}" class="fa-solid fa-ellipsis"></i>
                             <div *ngIf="currentIndexStatus == i" class="popfunction">
-
+                                <ul>
+                                    <li (click)="handleChangeStatus(question, question.status, itemFun.id)" class="item-function" *ngFor="let itemFun of listChildFunctionStatus; index as f">
+                                        <div class="icon-function">
+                                            <i class="{{itemFun.icon}}"></i>
+                                        </div>
+                                        {{itemFun.name}}
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </li>
             </ul>
         </div>
+
+        <div class="footerList">
+            <div class="page-select">
+                <p>Hiển thị mỗi trang</p>
+                <select #numberPage (change)="getValueNumberPage(numberPage.value)" id="number-page">
+                    <option [value]="100"  >100</option>
+                    <option [value]="2">2</option>
+                    <option [value]="1">1</option>
+                    <option default [value]="5">5</option>
+                  </select>
+                  
+            </div>
+            <div class="pagintion">
+                <div [ngStyle]="{'background-color': currenPage == 1 ? '#F4F5F7' : ''}" (click)="handleFirstPage()" class="first">Đầu</div>
+                <div [ngStyle]="{'background-color': currenPage == 1 ? '#F4F5F7' : ''}" (click)="handlePreCurrentPage()" class="pre">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </div>
+                <div class="numberPage">
+                    <div class="many-page" *ngIf="currenPage >= 3">...</div>
+                    <ul>
+                        <li [ngStyle]="{'background-color': numberPage == currenPage ? '#959DB3': ''}" class="itemPageNumber" (click)="getValueCurrentPage(numberPage)" *ngFor="let numberPage of listNumberPage">
+                            <div>{{numberPage}}</div>
+                        </li>
+                    </ul>
+                    <div class="many-page" *ngIf="currenPage == currentNumberPage - 3">...</div>
+                </div>
+                <div [ngStyle]="{'background-color': currenPage == currentNumberPage ? '#F4F5F7' : ''}" (click)="handleNextCurrentPage()" class="next">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
+                <div [ngStyle]="{'background-color': currenPage == currentNumberPage ? '#F4F5F7' : ''}" (click)="handleLastPage()" class="last">Cuối</div>
+            </div>
+        </div>
     </div>
- 
 </div>

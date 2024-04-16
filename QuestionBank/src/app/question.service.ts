@@ -27,4 +27,16 @@ export class QuestionService {
     return this.http.get<Question[]>(this.questionUrl)
     .pipe()
   }
+
+  updateStatus(question: Question): Observable<any>{
+    return this.http.put(this.questionUrl, question, this.httpOptions).pipe(
+      tap()
+    )
+  }
+  deleteQuestion(id:number): Observable<Question>{
+    const url = `${this.questionUrl}/${id}`;
+    return this.http.delete<Question>(url, this.httpOptions).pipe(
+    );
+  }
+  
 }

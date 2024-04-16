@@ -12,6 +12,10 @@ import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { MyInMemoryDataService } from './in-memory-data.service';
 import { CustomPipeStatusComponent } from './custom-pipe-status/custom-pipe-status.component';
 import { HomeComponent } from './home/home.component';
+import { InfoComponent } from './info/info.component';
+import { FinaceComponent } from './finace/finace.component';
+import {FormsModule} from '@angular/forms'
+import { PersonelComponent } from './personel/personel.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,13 +23,17 @@ import { HomeComponent } from './home/home.component';
     SidebarComponent,
     QuestionBankComponent,
     CustomPipeStatusComponent,
-    HomeComponent
+    HomeComponent,
+    InfoComponent,
+    FinaceComponent,
+    PersonelComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FontAwesomeModule,
     HttpClientModule,
+    FormsModule,
     HttpClientInMemoryWebApiModule.forRoot(
       MyInMemoryDataService, { dataEncapsulation: false }
     )

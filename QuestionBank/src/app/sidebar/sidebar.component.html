@@ -7,26 +7,26 @@
     </div>
     <div class="sidebar-data-container" autosize>
         <div #drawer class="sidebar-data" mode="side">
-            <ul *ngIf="drawerData == 'nhansu'" class="group-item">
+            <ul *ngIf="href.includes('/nhansu') " class="group-item">
                 <li  (click)="selectItem(i)" class="item" *ngFor="let item of DrawerLeftData; index as i">
                     <div class="itemMain">
-                        <div [ngStyle]="{'color': itemSelected === i ? '#5CB800': 'white'}" class="iconLeft">
-                            <i [ngStyle]="{'color': itemSelected === i ? '#5CB800': 'white'}" class="{{item.icon}}"></i>
+                        <div [ngStyle]="{'color': selectedItems.includes(i) ? '#5CB800': 'white'}" class="iconLeft">
+                            <i [ngStyle]="{'color': selectedItems.includes(i) ? '#5CB800': 'white'}" class="{{item.icon}}"></i>
                         </div>
-                        <div [ngStyle]="{'color': itemSelected === i ? '#5CB800': 'white'}"  class="name">{{item.name}}</div>
+                        <div [ngStyle]="{'color': selectedItems.includes(i) ? '#5CB800': 'white'}"  class="name">{{item.name}}</div>
                         <div class="iconRight">
-                            <i *ngIf="itemSelected === i" [ngStyle]="{'color': itemSelected === i ? '#5CB800': 'white'}" class="fa-solid fa-chevron-up"></i>
-                            <i *ngIf="itemSelected !== i" [ngStyle]="{'color': itemSelected === i ? '#5CB800': 'white'}" class="fa-solid fa-chevron-down"></i>
+                            <i *ngIf="selectedItems.includes(i)" [ngStyle]="{'color': selectedItems.includes(i) ? '#5CB800': 'white'}" class="fa-solid fa-chevron-up"></i>
+                            <i *ngIf="!selectedItems.includes(i)" [ngStyle]="{'color': selectedItems.includes(i) ? '#5CB800': 'white'}" class="fa-solid fa-chevron-down"></i>
                         </div>
                     </div>
-                    <div *ngIf="itemSelected === i">
+                    <div *ngIf="selectedItems.includes(i)">
                         <div *ngFor="let itemChild of item.child; index as j" class="itemDrop">
-                            <ul *ngIf="isDropdownItem == true" class="itemDropGroup">
-                                <li class="item">
+                            <ul (click)="$event.stopPropagation()" class="itemDropGroup">
+                                <li [routerLink]="[href + itemChild.route]" (click)="selectedModule(itemChild.route)" class="item">
                                     <div class="icon">
-                                        <i [ngStyle]="{'color': itemDropSelected === j ? '#5CB800': 'white'}" class="{{itemChild.icon}}"></i>
+                                        <i [ngStyle]="{'color': dataItemChild === j ? '#5CB800': 'white'}" class="{{itemChild.icon}}"></i>
                                     </div>
-                                    <span [ngStyle]="{'color': itemDropSelected === j ? '#5CB800': 'white'}" class="name">{{itemChild.nameChild}}</span>
+                                    <span [ngStyle]="{'color': dataItemChild === j ? '#5CB800': 'white'}" class="name">{{itemChild.nameChild}}</span>
                                 </li>
                             </ul>
                         </div>
