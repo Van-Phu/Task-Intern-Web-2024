@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MyInMemoryDataService } from './in-memory-data.service';
 
 @Component({
   selector: 'app-root',

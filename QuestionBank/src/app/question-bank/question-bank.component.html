@@ -1,4 +1,114 @@
 <div class="body">
+    <p-sidebar id="sidebar" [style]="{ 'width': '100%', 'font-size': '16px' }" [visible]="sidebarVisible" position="right" [showCloseIcon]="false">
+        <div class="areaSideBar">
+            <div class="side-close"></div>
+            <div class="sidebar">
+                <div class="title">
+                    <i class="fa-regular fa-circle-question"></i>
+                    <p>{{'Ngân hàng câu hỏi' | uppercase}}</p>
+                </div>
+                <div class="underline"></div>
+                <form class="form" [formGroup]="profileQuestion">
+                    <div class="nameQuestion">
+                        <label for="question">Tên câu hỏi</label>
+                        <input #firstInput autofocus id="nameQuestion" type="text" formControlName="nameQuestion">
+                    </div>
+                
+                    <div class="phase2">
+                      <div class="idQues">
+                        <label for="idQues">Mã câu hỏi</label>
+                        <input type="text" formControlName="idQues">
+                        </div>
+
+                        <div class="type">
+                            <label for="group">Phân nhóm</label>
+                            <select id="group" formControlName="group">
+                                <option value="" disabled selected hidden>---Chọn---</option>
+                                <option *ngFor="let option of groupData" [value]="option.id">{{ option.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                
+                    <div class="phase3">
+                        <div>
+                            <label for="type">Loại câu hỏi</label>
+                        </div>
+                        <div>
+                            <select [ngStyle]="{'pointer-events': isDisabledMethod == 0 ? 'none' : ''}" id="type" formControlName="type">
+                                <option value="" disabled selected hidden>---Chọn---</option>
+                                <option *ngFor="let option of typeOfQuestions" [value]="option.id">{{ option.name }}</option>
+                            </select>
+                            
+                            
+                        </div>
+                    </div>
+                
+                    <div class="phase4">
+                        <div>
+                            <label for="gradingMethod">Cách tính điểm</label>
+                        </div>
+                        <div>
+                            <select [ngStyle]="{'pointer-events': isDisabledMethod == 0 ? 'none' : 'auto'}" id="gradingMethod" formControlName="gradingMethod">
+                                <option value="" disabled selected hidden>---Chọn---</option>
+                                <option *ngFor="let option of gratingMethod" [value]="option.id">{{ option.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                
+                    <div class="phase5">
+                        <label for="time">Thời gian làm bài (giây)</label>
+                        <input type="text" formControlName="time">
+                    </div>
+                
+                    <div class="phase6">
+                        <div>
+                            <label for="status">Tình trạng</label>
+                        </div>
+                        <div>
+                            <select id="status" formControlName="status">
+                                <option *ngFor="let option of statusQuestons; let first = first" [value]="option.id" [selected]="first">{{ option.name }}</option>
+                            </select>
+                            
+                        </div>
+                    </div>
+                </form>
+                <div class="btn-area">
+                    <div (click)="closeSidbar()" class="btn-close">Đóng</div>
+                    <div *ngIf="isDisabledMethod == 1" (click)="updateQuestion()" class="btn-add">Cập nhật</div>
+                    <div *ngIf="isDisabledMethod == 0"(click)="addQuestion()" class="btn-add">Thêm mới</div>
+                </div>
+                
+            </div>
+        </div>
+    </p-sidebar>
+
+    <div [ngStyle]="{'background-color': statusMessage == true ? '#1A6634' : '#FD7676'}" *ngIf="isPopToast" class="popToast">
+        <div class="pop" >
+            <i *ngIf="statusMessage == true" class="fa-regular fa-circle-check"></i>
+            <i *ngIf="statusMessage == false" class="fa-regular fa-circle-xmark"></i>
+            <p>{{message}}</p>
+        </div>
+    </div>
+
+    <div *ngIf="isPopChecked" class="popCheck">
+        <div class="pop">
+            <div class="numberItem">
+                <div>{{listItemChecked.length}}</div>
+                <p>Đã chọn</p>
+         
+            </div>
+            <div *ngFor="let item of listItemFunction" class="itemFunction">
+                <div (click)="handleManyItemCheck(item.id)" class="item">
+                    <i class="{{item.icon}}"></i>
+                    <div>{{item.name}}</div>
+                </div>
+            </div>
+            <div (click)="handleTurnOffPopChecked()" class="btn-cancel">
+                <i class="fa-solid fa-x"></i>
+            </div>
+        </div>
+    </div>
+
     <div *ngIf="isPopDelete" class="popUpDetele">
         <div class="pop">
             <div class="title">
@@ -9,14 +119,18 @@
             </div>
             <div class="content">
                 <div class="title-contet">Bạn chắc chắn muốn xóa phân nhóm</div>
-                <div class="group">hachihachi</div>
-                <div>Đơn vị xóa sẽ &nbsp; <span [ngStyle]="{'color': '#FD7676'}">KHÔNG</span>&nbsp;  thể khôi phục lại.</div>
-                                   <!-- <div class="underline"> -->
+                <div class="parentList" *ngFor="let title of listItemDelete.slice(0, 3)" >
+                    <div class="group">{{ title.question.slice(0, 20) + '...' }}</div>
+                   
+                </div>
+                <div class="three-dot" *ngIf="listItemDelete.length> 3">...</div>
+                <div class="under-title">Đơn vị xóa sẽ &nbsp; <span [ngStyle]="{'color': '#FD7676'}">KHÔNG</span>&nbsp;  thể khôi phục lại.</div>
+
             </div>
             <div class="underline2"></div>
             <div class="btn">
-                <div class="btn-cancel">{{'Không xóa' | uppercase}}</div>
-                <div class="btn-delete">
+                <div (click)="isPopDelete = false; listItemDelete = []" class="btn-cancel">{{'Không xóa' | uppercase}}</div>
+                <div (click)="handleDeleteItem(listItemDelete)" class="btn-delete">
                     <i class="fa-solid fa-trash-can"></i>
                     <div>{{'xóa' | uppercase}}</div>
                 </div>
@@ -26,7 +140,7 @@
 
 
     <div class="header-two" [ngStyle]="{'pointer-events': listItemChecked.length > 0 ? 'none': ''}">
-        <div class="checkbox-header">
+        <div  (click)="closeSidbar()" class="checkbox-header">
             <div [ngStyle]="{'borderColor': isCheckDraft == true ? '#008000' : ''}" (click)="handlCheckItem('draft')" class="check-item" id="checkDraft">
                 <p>Đang soạn thảo</p>
                 <input [checked]="isCheckDraft" type="checkbox"/>
@@ -48,12 +162,12 @@
             <div class="btn-upload">
                 <i class="fa-solid fa-arrow-up-from-bracket"></i>
             </div>
-            <div class="btn-downloand">
+            <div (click)="openSidebarByUpdate(listQuestionDataFilter[0])" class="btn-downloand">
                 <i class="fa-solid fa-download"></i>
                 <p>Temple</p>
             </div>
-            <div class="btn-addnew">
-                <i class="fa-solid fa-plus"></i>
+            <div (click)="openSidebarAdd()" class="btn-addnew">
+                <i  class="fa-solid fa-plus"></i>
                 <p>Thêm mới</p>
             </div>
         </div>
@@ -61,7 +175,7 @@
 
     <div class="borderBottom"></div>
 
-    <div [ngStyle]="{'pointer-events': listItemChecked.length > 0 ? 'none': ''}" class="field">
+    <div  [ngStyle]="{'pointer-events': listItemChecked.length > 0 ? 'none': ''}" class="field">
         <div class="reset-area">
             <div class="title-field">
                 <i class="fa-solid fa-filter"></i>
@@ -87,7 +201,7 @@
 
     <div class="borderBottom"></div>
 
-    <div class="question-area">
+    <div (click)="closeSidbar()" class="question-area">
         <div class="header-question">
             <div class="head-ques">
                 <input (change)="handleCheckboxChange()" [checked]="isCheckedAll" type="checkbox">
@@ -122,7 +236,7 @@
                                 <div class="lineCenter"></div>
                                 <div class="type-question">
                                     <p>Loại câu hỏi: </p>
-                                    <div class="type">{{question.type}}</div>
+                                    <div class="type">{{getNameById(question.type, typeOfQuestions)}}</div>
                                 </div>
                             </div>
                         </div>
@@ -132,7 +246,7 @@
                     </div>
                       
                     <div class="item-time">
-                        <p>{{question.time}}</p>
+                        <p>{{question.time}}s</p>
                     </div>
                     <div class="item-status">
                         <div class="title-status">
@@ -143,7 +257,7 @@
                             <i [ngStyle]="{'color': currentIndexStatus == i ? '#FFFFFF' : '#BDC2D2', 'background-color': currentIndexStatus == i? '#BDC2D2': ''}" class="fa-solid fa-ellipsis"></i>
                             <div *ngIf="currentIndexStatus == i" class="popfunction">
                                 <ul>
-                                    <li (click)="handleChangeStatus(question, question.status, itemFun.id)" class="item-function" *ngFor="let itemFun of listChildFunctionStatus; index as f">
+                                    <li (click)="openSidebarByUpdate(question)" (click)="handleChangeStatus(question, question.status, itemFun.id)" class="item-function" *ngFor="let itemFun of listChildFunctionStatus; index as f">
                                         <div class="icon-function">
                                             <i class="{{itemFun.icon}}"></i>
                                         </div>
@@ -157,7 +271,7 @@
             </ul>
         </div>
 
-        <div class="footerList">
+        <div (click)="closeSidbar()" class="footerList">
             <div class="page-select">
                 <p>Hiển thị mỗi trang</p>
                 <select #numberPage (change)="getValueNumberPage(numberPage.value)" id="number-page">
@@ -174,13 +288,13 @@
                     <i class="fa-solid fa-chevron-left"></i>
                 </div>
                 <div class="numberPage">
-                    <div class="many-page" *ngIf="currenPage >= 3">...</div>
+                    <div class="many-page" *ngIf="currenPage >= 5">...</div>
                     <ul>
-                        <li [ngStyle]="{'background-color': numberPage == currenPage ? '#959DB3': ''}" class="itemPageNumber" (click)="getValueCurrentPage(numberPage)" *ngFor="let numberPage of listNumberPage">
+                        <li [ngStyle]="{'background-color': numberPage == currenPage ? '#959DB3': ''}" class="itemPageNumber" (click)="getValueCurrentPage(numberPage)" *ngFor="let numberPage of listPageItemShow">
                             <div>{{numberPage}}</div>
                         </li>
                     </ul>
-                    <div class="many-page" *ngIf="currenPage == currentNumberPage - 3">...</div>
+                    <div *ngIf="isShowEndthreeDot" class="many-page" >...</div>
                 </div>
                 <div [ngStyle]="{'background-color': currenPage == currentNumberPage ? '#F4F5F7' : ''}" (click)="handleNextCurrentPage()" class="next">
                     <i class="fa-solid fa-chevron-right"></i>

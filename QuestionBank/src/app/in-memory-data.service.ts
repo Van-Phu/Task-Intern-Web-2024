@@ -8,7 +8,9 @@ import { Question } from './question';
 export class MyInMemoryDataService implements InMemoryDbService {
 
   createDb() {
-    const questions = [
+    const savedQuestions = localStorage.getItem('questions');
+    console.log(savedQuestions);
+    const questions = savedQuestions ? JSON.parse(savedQuestions) : [
       { 
         id: 0, 
         idQues: "MX01",
@@ -119,5 +121,12 @@ export class MyInMemoryDataService implements InMemoryDbService {
       },
     ];
     return { questions };
+  }
+
+  putDb(reqInfo: any) {
+    if (reqInfo.collectionName === 'questions') {
+      localStorage.setItem('questions', JSON.stringify(reqInfo.collection));
+    }
+    return reqInfo;
   }
 }

@@ -16,6 +16,10 @@ import { InfoComponent } from './info/info.component';
 import { FinaceComponent } from './finace/finace.component';
 import {FormsModule} from '@angular/forms'
 import { PersonelComponent } from './personel/personel.component';
+import { SidebarModule } from 'primeng/sidebar';
+import { FormGroup, FormControl } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,13 +33,16 @@ import { PersonelComponent } from './personel/personel.component';
     PersonelComponent
   ],
   imports: [
+    ReactiveFormsModule,
     BrowserModule,
     AppRoutingModule,
     FontAwesomeModule,
     HttpClientModule,
     FormsModule,
+    SidebarModule,
+    
     HttpClientInMemoryWebApiModule.forRoot(
-      MyInMemoryDataService, { dataEncapsulation: false }
+      MyInMemoryDataService
     )
   ],
   providers: [

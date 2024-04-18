@@ -34,7 +34,7 @@ export const FunctionStatus = [
     {
         id: 3, function: [  
             {id: 0, name: "Xem chi tiết", icon: "fa-regular fa-eye"},
-            {id: 2, name:"Gửi duyệt", icon: "fa-solid fa-share"},  
+            {id: 3, name: "Phê duyệt",  icon: "fa-regular fa-circle-check"}, 
             {id: 5, name: "Trả về", icon: "fa-solid fa-reply"},
         ]
     },

@@ -33,10 +33,20 @@ export class QuestionService {
       tap()
     )
   }
+
+  updateQuestion(question: Question): Observable<any>{
+    return this.http.put(this.questionUrl, question, this.httpOptions).pipe(
+      tap()
+    )
+  }
+
   deleteQuestion(id:number): Observable<Question>{
     const url = `${this.questionUrl}/${id}`;
     return this.http.delete<Question>(url, this.httpOptions).pipe(
     );
+  }
+  addNewQuestion(question: Question):Observable<Question>{
+    return this.http.post<Question>(this.questionUrl, question, this.httpOptions).pipe()
   }
   
 }

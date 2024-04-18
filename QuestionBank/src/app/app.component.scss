@@ -23,11 +23,15 @@
         z-index: 99;
 
         .header{
+            z-index: 999;
+       
+
+        }
+
         .questionBank{
             padding-left: 10px;
             padding-right: 10px;
-        }
-
+            z-index: 1;
         }
     }
 }

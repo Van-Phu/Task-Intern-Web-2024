@@ -1,440 +1,853 @@
-import { AfterContentInit, Component, OnInit } from '@angular/core';
-import { QuestionService } from '../question.service';
-import { Question } from '../question';
-import { GroupData } from '../data/group-data';
-import { CustomPipeStatusComponent } from '../custom-pipe-status/custom-pipe-status.component';
-import { StatusQuestionData } from '../data/status-question-data';
-import { ActivatedRoute } from '@angular/router';
-import { FunctionStatus } from '../data/function-pop-by-status-data';
-import { faL } from '@fortawesome/free-solid-svg-icons';
-import { Router } from 'express';
+  import { AfterContentInit, Component, OnInit, HostListener,ViewChild, ElementRef } from '@angular/core';
+  import { QuestionService } from '../question.service';
+  import { Question } from '../question';
+  import { GroupData } from '../data/group-data';
+  import { CustomPipeStatusComponent } from '../custom-pipe-status/custom-pipe-status.component';
+  import { StatusQuestionData } from '../data/status-question-data';
+  import { ActivatedRoute } from '@angular/router';
+  import { FunctionStatus } from '../data/function-pop-by-status-data';
+  import { faL } from '@fortawesome/free-solid-svg-icons';
+  import { Router } from 'express';
+  import { MyInMemoryDataService } from '../in-memory-data.service';
+  import { group, log } from 'console';
+  import { FormGroup, FormControl, FormsModule } from '@angular/forms';
+  import { TypeOfQuestion } from '../data/typeOfQuestion';
+  import { GratingMethod } from '../data/gratingMethod';
 
 
-@Component({
-  selector: 'app-question-bank',
-  templateUrl: './question-bank.component.html',
-  styleUrl: './question-bank.component.scss'
-})
-export class QuestionBankComponent implements OnInit, AfterContentInit{
-  questions: Question[] = []
-  groupdata = GroupData
-  statusQuestionData = StatusQuestionData
-  currentIndexStatus = -1
-
-  isCheckDraft = false
-  isCheckApprove = false
-  isCheckSend = false
-  isCheckStopApprove = false
-
-  params = ''
-
-  //list arr of checkbox Filter
-  listStatusFilter:number[] = []
-
-  //list item filter by checkbox
-  listItemFilterByCheckbox:any[] = []
-
-  listFunctionStatus = FunctionStatus
-  listChildFunctionStatus:any = []
-  listQuestionDataFilter:any[] = []
-
-  listItemChecked:any[] = []
-
-  //handle pagintion
-  listNumberPage:number[] = []
-  listNumberPageFilter:number[] =[]
-  currentNumberPage = 5
-  currenPage = 1 
-  numberShowItemPage = 5
-
-  //handle checkAll
-  isCheckedAll: boolean = false; 
-
-  //handle search
-  searchQuery: string = ""
-
-  //loading
-  isLoading: boolean = false;
-
-  //popDelete
-  isPopDelete: boolean = false
-  listItemDelete: any = []
-
-  constructor(private questionService: QuestionService, private route: ActivatedRoute){}
-
-  async ngOnInit(): Promise<void> {
-    try{
-      this.isLoading = false
-      await this.getQuestions();
-      this.listItemFilterByCheckbox = this.questions;
-      this.handleFilterData();
-      this.resetFilter();
-    }finally{
-      this.isLoading = false
-    }
-
-  }
-  
-  async getQuestions(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.questionService.getQuestions().subscribe(
-        questions => {
-          this.questions = questions;
-          this.filterQuestions();
-          resolve();
-        },
-        error => {
-          reject(error);
-        }
-      );
-    });
-  }
-  
-
-  ngAfterContentInit(): void {
-    this.handlePagination(this.numberShowItemPage, this.listQuestionDataFilter.length);
-    this.handleShowItemQuestion(this.numberShowItemPage, this.listQuestionDataFilter, this.currenPage)
-  }
-
-  handleDeleteItem():void{
-
-  }
-
-  // getQuestions():void{
-  //   this.questionService.getQuestions().subscribe(
-  //     questions => {
-  //       this.questions = questions,
-  //       this.filterQuestions();
-  //     }
-  //   )
-  // }
-
-  filterQuestions(): void {
-    if (!this.searchQuery.trim() && this.listStatusFilter.length === 0) {
-      this.listQuestionDataFilter = this.questions;
-      return;
-    }
-    let filteredBySearch = this.listQuestionDataFilter;
-    if (this.searchQuery.trim()) {
-      filteredBySearch = this.questions.filter(question =>
-        question.question.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(this.searchQuery.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
-      );
-    }
-  
-    let filteredByStatus = filteredBySearch;
-    if (this.listStatusFilter.length > 0) {
-      filteredByStatus = filteredBySearch.filter(question =>
-        this.listStatusFilter.includes(question.status)
-      );
-    }
-  
-    this.listQuestionDataFilter = filteredByStatus;
-  }
-  
-  
-
-  handleFilterData(): void {
-    if( this.isCheckDraft == false && this.isCheckApprove == false && this.isCheckSend == false && this.isCheckStopApprove == false){
-      this.listItemFilterByCheckbox = this.questions
-      this.listQuestionDataFilter = this.listItemFilterByCheckbox
-      return
-    }else{
-      this.listItemFilterByCheckbox = this.questions.filter(child => {
-        return this.listStatusFilter.includes(child.status);
-    });
-    this.listQuestionDataFilter = this.listItemFilterByCheckbox
-    }
-}
 
 
-  handleSetArrayStatus(item: number):void{
-    let indexToRemove = -1;
-    this.listStatusFilter.forEach((element, i) => {
-        if (element === item) {
-            indexToRemove = i;
-        }
-    });
-    if (indexToRemove !== -1) {
-        this.listStatusFilter.splice(indexToRemove, 1);
-    } else {
-        this.listStatusFilter.push(item);
-    }
-  }
-
-  handlCheckItem(item:string):void{
+  @Component({
+    selector: 'app-question-bank',
+    templateUrl: './question-bank.component.html',
+    styleUrl: './question-bank.component.scss'
+  })
+  export class QuestionBankComponent implements OnInit, AfterContentInit{
     
-    switch(item){
-      case 'draft':
-        this.isCheckDraft = !this.isCheckDraft
-        this.handleSetArrayStatus(0);
-        this.handleSetArrayStatus(4);
+    questions: Question[] = []
+    groupdata = GroupData
+    statusQuestionData = StatusQuestionData
+    currentIndexStatus = -1
+
+    isCheckDraft = false
+    isCheckApprove = false
+    isCheckSend = false
+    isCheckStopApprove = false
+
+    params = ''
+
+    //list arr of checkbox Filter
+    listStatusFilter:number[] = []
+
+    //list item filter by checkbox
+    listItemFilterByCheckbox:any[] = []
+
+    listFunctionStatus = FunctionStatus
+    listChildFunctionStatus:any = []
+    listQuestionDataFilter:any[] = []
+    listItemChecked:any[] = []
+
+    //handle pagintion
+    listNumberPage:number[] = []
+    listNumberPageFilter:number[] =[]
+    currentNumberPage = 5
+    currenPage = 1 
+    numberShowItemPage = 5
+    listPageItemShow:number[] = []
+    listItemIndexPage: any[] =[]
+    startIndex:number = 0
+    endIndex:number = 4
+    phasePage = 0
+    isShowStartThreeDot: boolean = false
+    isShowEndthreeDot:boolean = true
+
+    //handle checkAll
+    isCheckedAll: boolean = false; 
+
+    //handle search
+    searchQuery: string = ""
+
+    //loading
+    isLoading: boolean = false;
+
+    //popDelete
+    isPopDelete: boolean = false
+    listItemDelete: any = []
+    itemDelete: number = -1
+    titleDelete: string = ""
+
+    //list function item
+    listItemFunction: any[] = []
+
+    //handle popupChecked
+    isPopChecked:boolean = false
+
+    //localStorage
+    db:any = []
+
+    //popToast
+    isPopToast: boolean = false
+    statusMessage: boolean = true
+    message: string = ''
+    listStatusMessage: any[] = []
+
+    //sidebar
+    sidebarVisible:boolean = false;
+    showFiller = false
+    testNumber= 0;
+    idItemUpdate = -1
+
+    //form
+    @ViewChild('firstInput') firstInput!: ElementRef;
+    typeOfQuestions = TypeOfQuestion
+    groupData = GroupData
+    gratingMethod = GratingMethod
+    statusQuestons = StatusQuestionData
+    isDisabledMethod: number = 0; 
+
+    profileQuestion = new FormGroup({
+      nameQuestion: new FormControl(''),
+      idQues: new FormControl(''),
+      group: new FormControl(''),
+      gradingMethod: new FormControl(''),
+      type: new FormControl(''),
+      time: new FormControl(30),
+      status: new FormControl(this.statusQuestons[0].id)
+    });
+    
+
+    constructor(private questionService: QuestionService, private route: ActivatedRoute, private inMemoryDataService: MyInMemoryDataService){}
+
+    async ngOnInit(): Promise<void> {
+      try{
+        this.db = this.inMemoryDataService.createDb();
+        this.inMemoryDataService.putDb({ collectionName: 'questions', collection: this.db.questions });
+        this.isLoading = false
+        await this.getQuestions();
+        this.listItemFilterByCheckbox = this.questions;
         this.handleFilterData();
-        this.getValueNumberPage(this.numberShowItemPage)
-        // this.handlecheckAll()
-        break
-      case 'approve':
-        this.isCheckApprove = !this.isCheckApprove
-        this.handleSetArrayStatus(2);
-        this.handleFilterData();
-        this.getValueNumberPage(this.numberShowItemPage)
-        break
-      case 'send':
-        this.isCheckSend = !this.isCheckSend
-        this.handleSetArrayStatus(1);
-        this.handleFilterData();
-        this.getValueNumberPage(this.numberShowItemPage)
-        break
-      case 'stopApprove':
-        this.isCheckStopApprove = !this.isCheckStopApprove
-        this.handleSetArrayStatus(3);
-        this.handleFilterData();
-        this.getValueNumberPage(this.numberShowItemPage)
-        break
+        this.resetFilter();
+      }finally{
+        this.isLoading = false
+      }
+
     }
-  }
-
-  resetFilter():void{
-    this.isCheckDraft = false
-    this.isCheckApprove = false
-    this.isCheckSend = false
-    this.isCheckStopApprove = false
-    this.searchQuery =''
-    this.listStatusFilter = []
-    this
-    .currenPage = 1
-    this.handlCheckItem('draft')
-    this.handleFilterData();
-    this.getValueNumberPage(this.numberShowItemPage)
-  }
-
-
-  getNameById(id: number, data: any): string {
-    let name = '';
-    for (let i = 0; i < data.length; i++) {
-        if (id === data[i].id) {
-            name = data[i].name;
-            break;
-        }
+    
+    async getQuestions(): Promise<void> {
+      return new Promise<void>((resolve, reject) => {
+        this.questionService.getQuestions().subscribe(
+          questions => {
+            this.questions = questions;
+            this.filterQuestions();
+            resolve();
+          },
+          error => {
+            reject(error);
+          }
+        );
+      });
     }
-    return name;
+
+    ngAfterContentInit(): void {
+      this.handlePagination(this.numberShowItemPage, this.listQuestionDataFilter.length);
+      this.handleShowItemQuestion(this.numberShowItemPage, this.listQuestionDataFilter, this.currenPage)
+
+    }
+
+    closeSidbar(){
+      this.sidebarVisible = false
+    }
+
+    openSidebarAdd() {
+      this.isDisabledMethod = 0
+      this.sidebarVisible = true;
+      setTimeout(() => { 
+        this.firstInput.nativeElement.focus();
+      });
+    }
+
+    openSidebarByUpdate(question: Question){
+      this.sidebarVisible = true;
+      this.isDisabledMethod = 1
+      this.idItemUpdate = question.id
+      this.profileQuestion.patchValue({
+        nameQuestion: question.question,
+        idQues: String(question.idQues),
+        group: String(question.group),
+        gradingMethod: String(question.gradingMethod),
+        type: String(question.type),
+        time: question.time,
+        status: question.status
+      });
+      setTimeout(() => { 
+        this.firstInput.nativeElement.focus();
+      });
+    }
+
+    handleToast(message: string, status: boolean): void {
+      this.statusMessage = status;
+      this.message = message;
+      this.isPopToast = true;
+      setTimeout(() => {
+        this.isPopToast = false;
+      }, 2000);
   }
 
-  handleCheckboxChange() {
-    if (this.isCheckedAll) {
-        this.isCheckedAll = false;
-        this.listItemChecked.splice( (this.currenPage - 1) * this.numberShowItemPage, this.numberShowItemPage * this.currenPage);
-    } else {
-        this.isCheckedAll = true;
+
+    getItemFunction(): void {
+      this.listItemFunction = []
+      this.listItemChecked.forEach(element => {
+          if (!this.listItemFunction.some(item => item.id === element.id)) {
+              const functionsToAdd = this.listFunctionStatus[element.status].function.filter(func =>
+                  !this.listItemFunction.some(item => item.id === func.id)
+              );
+              this.listItemFunction.push(...functionsToAdd);
+          }
+      });
+      
+      this.listItemFunction = this.removeDuplicates(this.listItemFunction);
+      this.listItemFunction = this.listItemFunction.filter(item => item.id !== 0 && item.id !== 1);
+  }
+
+  handleTurnOffPopChecked():void{
+    this.listItemChecked = []
+    this.isCheckedAll = false
+    this.isPopChecked = false
+  }
+
+  removeDuplicates(arr: any[]) {
+    const uniqueIds:any[] = [];
+      const uniqueArray = [];
+      for (const obj of arr) {
+          if (!uniqueIds.includes(obj.id)) {
+              uniqueIds.push(obj.id);
+              uniqueArray.push(obj);
+          }
+      }
+      return uniqueArray;
+  }
+
+    filterQuestions(): void {
+      if (!this.searchQuery.trim() && this.listStatusFilter.length === 0) {
+        this.listQuestionDataFilter = this.questions;
+        return;
+      }
+      let filteredBySearch = this.listQuestionDataFilter;
+      if (this.searchQuery.trim()) {
+        filteredBySearch = this.questions.filter(question =>
+          question.question.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(this.searchQuery.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
+        );
+      }
+    
+      let filteredByStatus = filteredBySearch;
+      if (this.listStatusFilter.length > 0) {
+        filteredByStatus = filteredBySearch.filter(question =>
+          this.listStatusFilter.includes(question.status)
+        );
+      }
+    
+      this.listQuestionDataFilter = filteredByStatus;
+    }
+    
+    
+
+    handleFilterData(): void {
+      if( this.isCheckDraft == false && this.isCheckApprove == false && this.isCheckSend == false && this.isCheckStopApprove == false){
+        this.listItemFilterByCheckbox = this.questions
+        this.listQuestionDataFilter = this.listItemFilterByCheckbox
+        return
+      }else{
+        this.listItemFilterByCheckbox = this.questions.filter(child => {
+          return this.listStatusFilter.includes(child.status);
+      });
+      this.listQuestionDataFilter = this.listItemFilterByCheckbox
+      }
+  }
+
+
+    handleSetArrayStatus(item: number):void{
+      let indexToRemove = -1;
+      this.listStatusFilter.forEach((element, i) => {
+          if (element === item) {
+              indexToRemove = i;
+          }
+      });
+      if (indexToRemove !== -1) {
+          this.listStatusFilter.splice(indexToRemove, 1);
+      } else {
+          this.listStatusFilter.push(item);
+      }
+    }
+
+    handlCheckItem(item:string):void{
+      switch(item){
+        case 'draft':
+          this.isCheckDraft = !this.isCheckDraft
+          this.handleSetArrayStatus(0);
+          this.handleSetArrayStatus(4);
+          this.handleFilterData();
+          this.getValueNumberPage(this.numberShowItemPage)
+          break
+        case 'approve':
+          this.isCheckApprove = !this.isCheckApprove
+          this.handleSetArrayStatus(2);
+          this.handleFilterData();
+          this.getValueNumberPage(this.numberShowItemPage)
+          break
+        case 'send':
+          this.isCheckSend = !this.isCheckSend
+          this.handleSetArrayStatus(1);
+          this.handleFilterData();
+          this.getValueNumberPage(this.numberShowItemPage)
+          break
+        case 'stopApprove':
+          this.isCheckStopApprove = !this.isCheckStopApprove
+          this.handleSetArrayStatus(3);
+          this.handleFilterData();
+          this.getValueNumberPage(this.numberShowItemPage)
+          break
+      }
+    }
+
+    resetFilter():void{
+      this.isCheckDraft = false
+      this.isCheckApprove = false
+      this.isCheckSend = false
+      this.isCheckStopApprove = false
+      this.searchQuery =''
+      this.listStatusFilter = []
+      this
+      .currenPage = 1
+      this.handlCheckItem('draft')
+      this.handleFilterData();
+      this.getValueNumberPage(this.numberShowItemPage)
+    }
+
+
+    getNameById(id: number, data: any): string {
+      let name = '';
+      for (let i = 0; i < data.length; i++) {
+          if (id === data[i].id) {
+              name = data[i].name;
+              break;
+          }
+      }
+      return name;
+    }
+
+    handlePopChecked():void{
+      if(this.listItemChecked.length > 0){
+        this.isPopChecked = true
+        this.getItemFunction()
+      }else{
+        this.isPopChecked = false
+        this.getItemFunction()
+      }
+    }
+
+    handleCheckboxChange() {
+      if (this.isCheckedAll) {
+          this.isCheckedAll = false;
+          this.listItemChecked.splice( (this.currenPage - 1) * this.numberShowItemPage, this.numberShowItemPage * this.currenPage);
+      } else {
+          this.isCheckedAll = true;
+          for (let i = (this.currenPage - 1) * this.numberShowItemPage; i < this.numberShowItemPage * this.currenPage; i++) {
+              if (i >= this.listItemFilterByCheckbox.length) {
+                  break;
+              }
+              if(!this.listItemChecked.includes(this.listItemFilterByCheckbox[i])){
+                this.listItemChecked.push(this.listItemFilterByCheckbox[i]);
+              }
+
+          }
+      }
+
+      this.handlePopChecked();
+  }
+
+    handlecheckAll() {
         for (let i = (this.currenPage - 1) * this.numberShowItemPage; i < this.numberShowItemPage * this.currenPage; i++) {
             if (i >= this.listItemFilterByCheckbox.length) {
                 break;
             }
-            if(!this.listItemChecked.includes(this.listItemFilterByCheckbox[i])){
-              this.listItemChecked.push(this.listItemFilterByCheckbox[i]);
+            if (!this.listItemChecked.includes(this.listItemFilterByCheckbox[i])) {
+                this.isCheckedAll = false;
+                return;
             }
-
         }
+        this.isCheckedAll = true;
     }
-}
 
-  handlecheckAll() {
-      for (let i = (this.currenPage - 1) * this.numberShowItemPage; i < this.numberShowItemPage * this.currenPage; i++) {
-          if (i >= this.listItemFilterByCheckbox.length) {
-              break;
+  handleAddItemChecked(item: any): void {
+      let indexToRemove = -1;
+      this.listItemChecked.forEach((element, i) => {
+          if (element.id === item.id) {
+              indexToRemove = i;
           }
-          if (!this.listItemChecked.includes(this.listItemFilterByCheckbox[i])) {
-              this.isCheckedAll = false;
-              return;
-          }
+      });
+      if (indexToRemove !== -1) {
+          this.listItemChecked.splice(indexToRemove, 1);
+          this.handlecheckAll();
+      } else {
+          this.listItemChecked.push(item);
       }
-      this.isCheckedAll = true;
+      this.handlecheckAll()
+      this.handlePopChecked();
   }
 
-handleAddItemChecked(item: any): void {
-    let indexToRemove = -1;
-    this.listItemChecked.forEach((element, i) => {
-        if (element.id === item.id) {
-            indexToRemove = i;
+
+    hanldeChangeStatusPopfunction(index:number, status:number):void{
+      if(this.currentIndexStatus == index){
+        this.currentIndexStatus = -1
+      }else{
+        this.currentIndexStatus = index
+      }
+      this.listChildFunctionStatus = this.listFunctionStatus[status].function
+    }
+
+  
+    handleChangeStatus(question: Question, status: number, fun: number):void{
+      switch(fun){
+        case 0:
+          this.handleToast("Xem chi tiết câu hỏi mã: " + question.idQues, true)
+          break
+        case 1:
+          this.openSidebarByUpdate(question)
+          this.handleToast("Chỉnh sửa câu hỏi mã: " + question.idQues, true)
+          break
+        case 2:
+          if(this.checkTruthyData(question) == true){
+            const questionUpdateSend = {...question}
+            questionUpdateSend.status = 1
+            this.updateStatus(questionUpdateSend)
+            this.handleToast("Gửi duyệt thành công câu hỏi mã: " + question.idQues, true)
+          }else{
+            this.handleToast("Gửi duyệt thất bại câu hỏi phải đầy đủ thông tin! ", false)
+          }
+          break
+        case 3:
+          if(this.checkTruthyData(question) == true){
+            const questionUpdateApprove = {...question}
+            questionUpdateApprove.status = 2
+            this.updateStatus(questionUpdateApprove)
+            this.handleToast("Phê duyệt thành công câu hỏi mã: " + question.idQues, true)
+          }else{
+            this.handleToast("Phê duyệt thất bại câu hỏi phải đầy đủ thông tin! ", false)
+          }
+          break
+        case 4:
+          if(this.checkTruthyData(question) == true){
+            const questionUpdateStopVision = {...question}
+            questionUpdateStopVision.status = 3
+            this.updateStatus(questionUpdateStopVision)
+            this.handleToast("Ngừng áp dụng thành công câu hỏi mã: " + question.idQues, true)
+          }else{
+            this.handleToast("Gửi duyệt thất bại câu hỏi phải đầy đủ thông tin! ", false)
+          }
+          break
+        case 5:
+          if(this.checkTruthyData(question) == true){
+            const questionUpdateReturn = {...question}
+            questionUpdateReturn.status = 4
+            this.updateStatus(questionUpdateReturn)
+            this.handleToast("Trả về thành công câu hỏi mã: " + question.idQues, true)
+          }
+          break
+        case 6:{
+          this.listItemDelete.push(question)
+          this.titleDelete = this.listItemDelete[0].question
+          this.isPopDelete = true
         }
-    });
-    if (indexToRemove !== -1) {
-        this.listItemChecked.splice(indexToRemove, 1);
-        this.handlecheckAll();
-    } else {
-        this.listItemChecked.push(item);
+      } 
     }
-    this.handlecheckAll()
-}
 
-
-  hanldeChangeStatusPopfunction(index:number, status:number):void{
-    if(this.currentIndexStatus == index){
-      this.currentIndexStatus = -1
-    }else{
-      this.currentIndexStatus = index
-    }
-    this.listChildFunctionStatus = this.listFunctionStatus[status].function
-  }
-
-  getValueNumberPage(numberPage: any):void{
-   
-    this.numberShowItemPage = Number(numberPage)
-    if(this.currenPage > this.numberShowItemPage){
-      this.currenPage = 1
-    }
-    this.handlePagination(numberPage, this.listItemFilterByCheckbox.length);
-    this.handleShowItemQuestion(this.numberShowItemPage, this.listItemFilterByCheckbox, this.currenPage)
-  }
-
-  getValueCurrentPage(value:number):void{
-    this.currenPage = value
-    this.handleShowItemQuestion(this.numberShowItemPage, this.listItemFilterByCheckbox, this.currenPage)
-    this.handlecheckAll()
-  }
-
-  handlePagination(currentNumberPage: number, numberItem: number): void {
-    this.listNumberPage = []
-    this.currentNumberPage = Math.ceil(numberItem / currentNumberPage);
-    for(let i = 0; i < this.currentNumberPage; i++){
-      this.listNumberPage.push(i + 1)
-    }
-  }
-
-  handleShowItemQuestion(numberPage: number, data: any[], currentPage: number): void {
-    this.listQuestionDataFilter = data.filter((item: any, index: number) => {
-        const startIndex = (currentPage - 1) * numberPage;
-        const endIndex = currentPage * numberPage - 1;
-        return index >= startIndex && index <= endIndex;
-    });
-    
-}
-
-  handleNextCurrentPage():void{
-    if(this.currenPage >= this.currentNumberPage){
-      return
-    }
-    this.currenPage += 1
-    this.getValueCurrentPage(this.currenPage)
-    this.generatePageNumbers()
-    this.handlecheckAll()
-  }
-
-  handlePreCurrentPage():void{
-    if(this.currenPage <= 1){
-      return
-    }
-    this.currenPage -=1
-    this.getValueCurrentPage(this.currenPage)
-    this.handlecheckAll()
-  }
-
-  handleFirstPage():void{
-    if(this.currenPage == 1){
-      return
-    }
-    this.currenPage = 1
-    this.getValueCurrentPage(this.currenPage)
-    this.handlecheckAll()
-  }
-
-  handleLastPage():void{
-    if(this.currenPage == this.currentNumberPage){
-      return
-    }
-    this.currenPage = this.currentNumberPage
-    this.getValueCurrentPage(this.currenPage)
-    this.handlecheckAll()
-  }
-
-  generatePageNumbers(): void {
-    // this.listNumberPage
-    // this.listNumberPageFilter
-
-    // if(this.currenPage >= 3){
-    //   this.listNumberPageFilter.push(this.currenPage - 1, this.currenPage, this.currenPage + 1)
-    // }
-  }
-
-
-  handleChangeStatus(question: Question, status: number, fun: number):void{
-    switch(fun){
-      case 0:
-        console.log("Xem chi tiết!");
-        break
-      case 1:
-        console.log("Chỉnh sửa");
-        break
+    handleManyItemCheck(func:number):void{
+      switch (func){
+        case 0:
+          console.log('Xem chi tiết');
+          this.handleTurnOffPopChecked(); this.handleToast("Xem chi tiết thành công! ", true)
+          break
+        case 1:
+          console.log("Chỉnh sửa");
+          this.handleTurnOffPopChecked();
+        this.handleToast("Chỉnh sửa thành công! ", true)
+          break
       case 2:
-        if(this.checkTruthyData(question) == true){
-          const questionUpdateSend = {...question}
-          questionUpdateSend.status = 1
-          this.updateStatus(questionUpdateSend)
+        let successSend = false;
+        this.listItemChecked.forEach(element => {
+            if (element.status === 0 || element.status === 4) {
+                if (this.checkTruthyData(element)) {
+                    const questionUpdateSend = {...element};
+                    questionUpdateSend.status = 1;
+                    this.updateStatus(questionUpdateSend);
+                    // this.handleTurnOffPopChecked();
+                    successSend = true;
+                }
+            }
+        });
+        if (successSend) {
+            this.handleToast("Gửi duyệt thành công!", true);
+        } else {
+            this.handleToast("Không có phần tử nào được gửi duyệt thành công.", false);
+        }
+        this.handleTurnOffPopChecked();
+        break;
+
+        
+        case 3:
+          let successApprove = false
+          this.listItemChecked.forEach(element => {
+            if(element.status == 1 || element.status == 3){
+              if(this.checkTruthyData(element) == true){
+                const questionUpdateSend = {...element}
+                questionUpdateSend.status = 2
+                this.updateStatus(questionUpdateSend)
+                this.handleTurnOffPopChecked();
+                this.handleToast("Phê duyệt thành công! ", true)
+                successApprove = true
+              }
+            }
+          });
+        if (successApprove) {
+            this.handleToast("Phê duyệt thành công!", true);
+        } else {
+            this.handleToast("Không có phần tử nào được phê duyệt thành công.", false);
+        }
+        this.handleTurnOffPopChecked();
+          break
+
+        case 4:
+          let successStopVission = false
+          this.listItemChecked.forEach(element => {
+            if(element.status == 2){
+              if(this.checkTruthyData(element) == true){
+                const questionUpdateSend = {...element}
+                questionUpdateSend.status = 3
+                this.updateStatus(questionUpdateSend)
+                successStopVission = true
+              }
+            }
+          });
+          if (successStopVission) {
+            this.handleToast("Ngừng áp dụng thành công!", true);
+          } else {
+              this.handleToast("Không có phần tử nào được Ngừng áp dụng thành công.", false);
+          }
+          this.handleTurnOffPopChecked();
+          break
+        
+        case 5:
+          let successReturn = false
+          this.listItemChecked.forEach(element => {
+            if(element.status == 1 || element.status == 3){
+              if(this.checkTruthyData(element) == true){
+                const questionUpdateSend = {...element}
+                questionUpdateSend.status = 4
+                this.updateStatus(questionUpdateSend)
+                successReturn = false
+              
+              }
+            }
+          });
+          if (successReturn) {
+            this.handleToast("Trả về thành công!", true);
+          } else {
+              this.handleToast("Không có phần tử nào được trả về thành công.", false);
+          }
+          this.handleTurnOffPopChecked();
+          break
+
+        case 6:
+          this.listItemChecked.forEach(element => {
+            if(element.status == 0){
+              this.listItemDelete.push(element)
+            }
+            this.isPopDelete = true
+          });
+          break
+      }
+    }
+
+
+
+
+    handleSearchByEnter(event: any) {
+      if (event.keyCode === 13) {
+        // this.openSidebarByUpdate(this.listItemFilterByCheckbox[0])
+        console.log(this.testNumber);
+        this.filterQuestions();
+      }
+    }
+
+    checkTruthyData(data:Question):any{
+      if(!data.idQues || data.group == null || data.status == null || !data.time || data.type == null){
+        console.log(false);
+        return false
+      }else{
+        return true
+      }
+    }
+
+    async refreshData() {
+      try {
+          this.isLoading = true; 
+          await this.getQuestions(); 
+          this.listItemFilterByCheckbox = this.questions;
+          this.handleFilterData();
+          this.inMemoryDataService.putDb({ collectionName: 'questions', collection: this.questions});
+      } finally {
+          this.isLoading = false;
+      }
+  }
+
+  handleDeleteItem(listItemDelete:any[]):void{
+    try{
+      listItemDelete.forEach(element => {
+        this.deleteQuestion(element.id) 
+      });
+    
+    }finally{
+      this.handleTurnOffPopChecked();
+      this.listItemDelete = []
+      this.isPopDelete = false
+      this.handleToast("Xóa thành công!", true)
+    }
+    
+  }
+    
+    deleteQuestion(id:number):void{
+      this.questionService.deleteQuestion(id).subscribe(() => this.refreshData())
+    }
+
+    updateStatus(question: Question): void {
+      this.questionService.updateStatus(question).subscribe(() => this.refreshData())
+    }
+
+    updateQuestion():void{
+      const nameQuestion = this.profileQuestion.get('nameQuestion')?.value;
+      const idQues = this.profileQuestion.get('idQues')?.value;
+      const group = this.profileQuestion.get('group')?.value;
+      const type = this.profileQuestion.get('type')?.value;
+      const time = this.profileQuestion.get('time')?.value;
+      const status = this.profileQuestion.get('status')?.value;
+      const gradingMethod = this.profileQuestion.get('gradingMethod')?.value;
+      if (nameQuestion && idQues && group && time && status) {
+        if(isNaN(time)){
+          this.handleToast("thời giàn làm bài không hợp lệ!", false)
         }else{
-          alert("Phai day du thong tin")
+          const newQuestion: Question = {
+            id: this.idItemUpdate,
+            question: nameQuestion,
+            idQues: idQues,
+            gradingMethod: Number(gradingMethod),
+            group: Number(group),
+            type: Number(type),
+            time: Number(time),
+            status: Number(status)
+          };
+  
+          this.questionService.updateStatus(newQuestion).subscribe(() => {this.sidebarVisible = false, this.refreshData()})
         }
-        break
-      case 3:
-        if(this.checkTruthyData(question) == true){
-          const questionUpdateApprove = {...question}
-          questionUpdateApprove.status = 2
-          this.updateStatus(questionUpdateApprove)
+      }else{
+        this.handleToast("Cập nhật không thành công! Phải chọn đầy đủ thông tin!!", false)
+      }
+    }
+
+    addQuestion():void{
+      const nameQuestion = this.profileQuestion.get('nameQuestion')?.value;
+      const idQues = this.profileQuestion.get('idQues')?.value;
+      const group = this.profileQuestion.get('group')?.value;
+      const type = this.profileQuestion.get('type')?.value;
+      const time = this.profileQuestion.get('time')?.value;
+      const status = this.profileQuestion.get('status')?.value;
+      const gradingMethod = this.profileQuestion.get('gradingMethod')?.value;
+
+      if (nameQuestion && idQues && group && time && status) {
+        if(isNaN(time)){
+          this.handleToast("thời giàn làm bài không hợp lệ!", false)
+        }else{
+          const newQuestion: Question = {
+            id: 1,
+            question: nameQuestion,
+            idQues: idQues,
+            gradingMethod: -1,
+            group: Number(group),
+            type: -1,
+            time: Number(time),
+            status: Number(status)
+          };
+  
+          this.questionService.addNewQuestion(newQuestion).subscribe( (addedQuestion: Question) => {
+            this.handleToast("Thêm câu hỏi thành công!", true)
+            this.sidebarVisible = false
+            this.refreshData();
+  
+          },)
         }
-        break
-      case 4:
-        if(this.checkTruthyData(question) == true){
-          const questionUpdateStopVision = {...question}
-          questionUpdateStopVision.status = 3
-          this.updateStatus(questionUpdateStopVision)
+        
+      }else{
+        this.handleToast("Thêm không thành công! Phải chọn đầy đủ thông tin!!", false)
+      }
+
+    }
+
+    handleShowItemQuestion(numberPage: number, data: any[], currentPage: number): void {
+      this.listQuestionDataFilter = data.filter((item: any, index: number) => {
+          const startIndex = (currentPage - 1) * numberPage;
+          const endIndex = currentPage * numberPage - 1;
+          return index >= startIndex && index <= endIndex;
+      });
+      
+  }
+  
+    getValueNumberPage(numberPage: any):void{
+      this.handlePagination(numberPage, this.listItemFilterByCheckbox.length);
+      this.numberShowItemPage = Number(numberPage)
+      if(this.currenPage >= this.currentNumberPage){
+        this.listPageItemShow = [...this.listNumberPage.slice(0, 4)];
+        this.currenPage = 1
+      }
+      this.listItemIndexPage.forEach((array, index) => {
+        if (this.currenPage === array[0] + 3) {
+          this.startIndex = index * 4; 
+          this.endIndex = Math.min(this.startIndex + 4, this.listNumberPage.length); 
+          this.phasePage = Math.floor(this.startIndex / 4) - 1;
+          this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex)];
         }
-        break
-      case 5:
-        if(this.checkTruthyData(question) == true){
-          const questionUpdateReturn = {...question}
-          questionUpdateReturn.status = 4
-          this.updateStatus(questionUpdateReturn)
+      });
+  
+      this.handleShowItemQuestion(this.numberShowItemPage, this.listItemFilterByCheckbox, this.currenPage)
+      this.handlecheckAll()
+    }
+
+    getValueCurrentPage(value:number):void{
+      this.currenPage = value
+      this.handleShowItemQuestion(this.numberShowItemPage, this.listItemFilterByCheckbox, this.currenPage)
+      this.handlecheckAll()
+    }
+
+    handleItemPageShow():void{
+      this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex)]
+      this.listItemIndexPage.forEach(element => {
+        if(this.currenPage == element + 1){
+          this.startIndex += 4
+          this.endIndex += 4
+          this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex )]
         }
-        break
-      case 6:{
-        const idQuestionDelete = question.id
-        this.deleteQuestion(idQuestionDelete)
+      });
+
+    }
+
+    handlePagination(currentNumberPage: number, numberItem: number): void {
+      this.currentNumberPage = Math.ceil(numberItem / currentNumberPage);
+      let surplus = this.currentNumberPage % 4;
+      this.listItemIndexPage = [];
+      this.listNumberPage = [];
+    
+      for (let i = 0; i < this.currentNumberPage; i++) {
+        this.listNumberPage.push(i + 1);
+      }
+  
+      for (let i = 0; i < this.listNumberPage.length; i += 4) {
+        this.listItemIndexPage.push(this.listNumberPage.slice(i, i + 4));
+      }
+      if (surplus > 0) {
+        for (let i = 0; i < surplus; i++) {
+          this.listItemIndexPage[this.listItemIndexPage.length - 1].push(this.listNumberPage[this.listNumberPage.length - surplus + i]);
+        }
+      }
+      this.handleThreeDot();
+      this.handleItemPageShow();
+    }
+    
+
+ 
+
+    handleNextCurrentPage(): void {
+      if (this.currenPage >= this.currentNumberPage) {
+        return;
+      }
+      
+      this.currenPage += 1;
+      this.getValueCurrentPage(this.currenPage);
+      this.handlecheckAll();
+    
+      let isNewArray = false;
+      this.listItemIndexPage.forEach((array, index) => {
+        if (this.currenPage  === array[0]) {
+          isNewArray = true;
+          this.startIndex = index * 4; 
+          this.endIndex = Math.min(this.startIndex + 4, this.listNumberPage.length); 
+          this.phasePage = Math.floor(this.startIndex / 4) - 1;
+          this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex)];
+        }
+      });
+  
+      this.handleThreeDot();
+    }
+    
+    handlePreCurrentPage():void{
+      if(this.currenPage <= 1){
+        return
+      }
+      this.currenPage -=1
+      this.getValueCurrentPage(this.currenPage)
+      this.handlecheckAll()
+      let isNewArray = false;
+      this.listItemIndexPage.forEach((array, index) => {
+        if (this.currenPage === array[0] + 3) {
+          isNewArray = true;
+          this.startIndex = index * 4; 
+          this.endIndex = Math.min(this.startIndex + 4, this.listNumberPage.length); 
+          this.phasePage = Math.floor(this.startIndex / 4) - 1;
+          this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex)];
+        }
+      });
+      
+    }
+
+    handleFirstPage():void{
+      if(this.currenPage == 1){
+        return
+      }
+      this.currenPage = 1
+      this.getValueCurrentPage(this.currenPage)
+      this.handlecheckAll()
+
+      this.startIndex = 0; 
+      this.endIndex = Math.min(this.startIndex + 4, this.listNumberPage.length); 
+      this.phasePage = Math.floor(this.startIndex / 4) - 1;
+      this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex)];
+      this.handleThreeDot();
+    }
+
+    handleLastPage(): void {
+      if (this.currenPage === this.currentNumberPage) {
+        return; 
+      }
+      this.isShowEndthreeDot = false
+      this.currenPage = this.currentNumberPage; 
+      this.getValueCurrentPage(this.currenPage); 
+      this.handlecheckAll(); 
+    
+      this.startIndex = Math.floor((this.currentNumberPage - 1) / 4) * 4;
+      this.endIndex = Math.min(this.startIndex + 4, this.listNumberPage.length);
+      this.phasePage = Math.floor(this.startIndex / 4);
+      this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex)];
+    }
+    
+
+    handleThreeDot():void{
+      if(this.currentNumberPage <= 4){
+        this.isShowEndthreeDot = false
+      }else{
+        let numberItemEnd = this.currentNumberPage % 4
+        if(this.currenPage <= this.currentNumberPage - numberItemEnd){
+          this.isShowEndthreeDot = true
+        }else{
+          this.isShowEndthreeDot = false
+        }
       }
     
-    } 
-  }
-
-  handleSearchByEnter(event: any) {
-    if (event.keyCode === 13) {
-      this.filterQuestions();
     }
   }
-
-  checkTruthyData(data:Question):any{
-    if(!data.idQues || data.group == null || data.status == null || !data.time || data.type == null){
-      console.log(false);
-      return false
-    }else{
-      return true
-    }
-  }
-
-  async refreshData() {
-    try {
-        this.isLoading = true; 
-        await this.getQuestions(); 
-        this.listItemFilterByCheckbox = this.questions;
-        this.handleFilterData();
-    } finally {
-        this.isLoading = false;
-    }
-}
-
-  
-deleteQuestion(id:number):void{
-  this.questionService.deleteQuestion(id).subscribe(() => this.refreshData())
-}
-
-  updateStatus(question: Question): void {
-    this.questionService.updateStatus(question).subscribe(() => this.refreshData())
-  }
-  
-}
