@@ -140,7 +140,7 @@
 
 
     <div class="header-two" [ngStyle]="{'pointer-events': listItemChecked.length > 0 ? 'none': ''}">
-        <div  (click)="closeSidbar()" class="checkbox-header">
+        <div class="checkbox-header">
             <div [ngStyle]="{'borderColor': isCheckDraft == true ? '#008000' : ''}" (click)="handlCheckItem('draft')" class="check-item" id="checkDraft">
                 <p>Đang soạn thảo</p>
                 <input [checked]="isCheckDraft" type="checkbox"/>
@@ -201,7 +201,7 @@
 
     <div class="borderBottom"></div>
 
-    <div (click)="closeSidbar()" class="question-area">
+    <div class="question-area">
         <div class="header-question">
             <div class="head-ques">
                 <input (change)="handleCheckboxChange()" [checked]="isCheckedAll" type="checkbox">
@@ -257,7 +257,7 @@
                             <i [ngStyle]="{'color': currentIndexStatus == i ? '#FFFFFF' : '#BDC2D2', 'background-color': currentIndexStatus == i? '#BDC2D2': ''}" class="fa-solid fa-ellipsis"></i>
                             <div *ngIf="currentIndexStatus == i" class="popfunction">
                                 <ul>
-                                    <li (click)="openSidebarByUpdate(question)" (click)="handleChangeStatus(question, question.status, itemFun.id)" class="item-function" *ngFor="let itemFun of listChildFunctionStatus; index as f">
+                                    <li (click)="handleChangeStatus(question, question.status, itemFun.id)" class="item-function" *ngFor="let itemFun of listChildFunctionStatus; index as f">
                                         <div class="icon-function">
                                             <i class="{{itemFun.icon}}"></i>
                                         </div>
@@ -271,14 +271,15 @@
             </ul>
         </div>
 
-        <div (click)="closeSidbar()" class="footerList">
+        <div class="footerList">
             <div class="page-select">
                 <p>Hiển thị mỗi trang</p>
                 <select #numberPage (change)="getValueNumberPage(numberPage.value)" id="number-page">
-                    <option [value]="100"  >100</option>
+                    <option default [value]="5">5</option>
+                    <option [value]="100">100</option>
                     <option [value]="2">2</option>
                     <option [value]="1">1</option>
-                    <option default [value]="5">5</option>
+                  
                   </select>
                   
             </div>

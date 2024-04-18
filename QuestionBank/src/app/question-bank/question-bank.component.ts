@@ -13,6 +13,7 @@
   import { FormGroup, FormControl, FormsModule } from '@angular/forms';
   import { TypeOfQuestion } from '../data/typeOfQuestion';
   import { GratingMethod } from '../data/gratingMethod';
+import { max } from 'rxjs';
 
 
 
@@ -158,16 +159,29 @@
       this.sidebarVisible = false
     }
 
+    openSideBar(){
+      this.sidebarVisible = true
+    }
+
     openSidebarAdd() {
-      this.isDisabledMethod = 0
+      this.isDisabledMethod = 0;
       this.sidebarVisible = true;
+      this.profileQuestion.patchValue({
+        nameQuestion: '',
+        idQues: '',
+        group: '',
+        gradingMethod: '',
+        type: '',
+        time: 30,
+        status: this.statusQuestons[0].id
+      });
       setTimeout(() => { 
         this.firstInput.nativeElement.focus();
       });
     }
+    
 
     openSidebarByUpdate(question: Question){
-      this.sidebarVisible = true;
       this.isDisabledMethod = 1
       this.idItemUpdate = question.id
       this.profileQuestion.patchValue({
@@ -182,6 +196,7 @@
       setTimeout(() => { 
         this.firstInput.nativeElement.focus();
       });
+
     }
 
     handleToast(message: string, status: boolean): void {
@@ -407,13 +422,16 @@
 
   
     handleChangeStatus(question: Question, status: number, fun: number):void{
+      if(fun == 1){
+        this.sidebarVisible = true
+      }
       switch(fun){
         case 0:
           this.handleToast("Xem chi tiết câu hỏi mã: " + question.idQues, true)
           break
         case 1:
           this.openSidebarByUpdate(question)
-          this.handleToast("Chỉnh sửa câu hỏi mã: " + question.idQues, true)
+   
           break
         case 2:
           if(this.checkTruthyData(question) == true){
@@ -647,6 +665,7 @@
           };
   
           this.questionService.updateStatus(newQuestion).subscribe(() => {this.sidebarVisible = false, this.refreshData()})
+          this.handleToast("Chỉnh sửa thành công!", true)
         }
       }else{
         this.handleToast("Cập nhật không thành công! Phải chọn đầy đủ thông tin!!", false)
@@ -661,13 +680,13 @@
       const time = this.profileQuestion.get('time')?.value;
       const status = this.profileQuestion.get('status')?.value;
       const gradingMethod = this.profileQuestion.get('gradingMethod')?.value;
-
-      if (nameQuestion && idQues && group && time && status) {
+      const maxId = this.questions.reduce((max, current) => (current.id > max ? current.id : max), this.questions[0].id);
+      if (nameQuestion && idQues && group && time) {
         if(isNaN(time)){
           this.handleToast("thời giàn làm bài không hợp lệ!", false)
         }else{
           const newQuestion: Question = {
-            id: 1,
+            id: maxId + 1,
             question: nameQuestion,
             idQues: idQues,
             gradingMethod: -1,
