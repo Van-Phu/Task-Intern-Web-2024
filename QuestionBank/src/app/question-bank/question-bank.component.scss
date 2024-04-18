@@ -196,6 +196,7 @@ input[type='checkbox'] {
         margin-left: -150px;
         border-radius: 20px;
         color: white;
+        z-index: 99;
 
         .pop{
             padding: 10px;
@@ -651,6 +652,7 @@ input[type='checkbox'] {
     .question-area{
         height: 100%;
         width: 100%;
+        overflow-x: auto;
         .header-question{
             margin-right: 20px;
             display: flex;
@@ -683,9 +685,9 @@ input[type='checkbox'] {
         }
 
         .listQuestion{
-            // max-height: calc(100% - 236px);
             max-height: 620px;
-            overflow-y: scroll;
+            min-height: 620px;
+            overflow-y: auto;
 
             .parentList{
                 display: block;
@@ -843,12 +845,13 @@ input[type='checkbox'] {
             position: fixed;
             bottom: 0;
             width: 100%;
-
+            background-color: #EDEFF3;
             height: 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 10px 0;
+            z-index: 1;
  
 
             .page-select{

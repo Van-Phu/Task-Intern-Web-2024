@@ -105,16 +105,36 @@ import { max } from 'rxjs';
     gratingMethod = GratingMethod
     statusQuestons = StatusQuestionData
     isDisabledMethod: number = 0; 
+    isDisabledMethodtype: boolean = true;
+    isDisabledMethodGrading: boolean = true;
+    questionChoose: any = {}
 
     profileQuestion = new FormGroup({
       nameQuestion: new FormControl(''),
       idQues: new FormControl(''),
       group: new FormControl(''),
-      gradingMethod: new FormControl(''),
-      type: new FormControl(''),
+      gradingMethod: new FormControl(),
+      type: new FormControl(),
       time: new FormControl(30),
       status: new FormControl(this.statusQuestons[0].id)
-    });
+  });
+
+  isGroupNotNull():void {
+    if(this.profileQuestion.get('group')?.value != ''){
+      this.isDisabledMethodtype = false
+    }else{
+      this.isDisabledMethodtype = true
+    }
+  }
+
+  isTypeNotNull():void{
+    if(this.profileQuestion.get('type')?.value == 3){
+      this.isDisabledMethodGrading = false
+    }else{
+      this.isDisabledMethodGrading = true
+    }
+  }
+  
     
 
     constructor(private questionService: QuestionService, private route: ActivatedRoute, private inMemoryDataService: MyInMemoryDataService){}
@@ -123,7 +143,7 @@ import { max } from 'rxjs';
       try{
         this.db = this.inMemoryDataService.createDb();
         this.inMemoryDataService.putDb({ collectionName: 'questions', collection: this.db.questions });
-        this.isLoading = false
+        this.isLoading = true
         await this.getQuestions();
         this.listItemFilterByCheckbox = this.questions;
         this.handleFilterData();
@@ -147,6 +167,10 @@ import { max } from 'rxjs';
           }
         );
       });
+    }
+
+    showItem():void{
+      console.log(this.profileQuestion.get('type')?.value);
     }
 
     ngAfterContentInit(): void {
@@ -183,6 +207,24 @@ import { max } from 'rxjs';
 
     openSidebarByUpdate(question: Question){
       this.isDisabledMethod = 1
+      this.idItemUpdate = question.id
+      this.profileQuestion.patchValue({
+        nameQuestion: question.question,
+        idQues: String(question.idQues),
+        group: String(question.group),
+        gradingMethod: String(question.gradingMethod),
+        type: String(question.type),
+        time: question.time,
+        status: question.status
+      });
+      setTimeout(() => { 
+        this.firstInput.nativeElement.focus();
+      });
+
+    }
+
+    openSidebarByDetail(question: Question){
+      this.isDisabledMethod = 2
       this.idItemUpdate = question.id
       this.profileQuestion.patchValue({
         nameQuestion: question.question,
@@ -250,6 +292,7 @@ import { max } from 'rxjs';
       let filteredBySearch = this.listQuestionDataFilter;
       if (this.searchQuery.trim()) {
         filteredBySearch = this.questions.filter(question =>
+          question.idQues.toString().includes(this.searchQuery.trim()) ||
           question.question.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(this.searchQuery.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
         );
       }
@@ -422,12 +465,14 @@ import { max } from 'rxjs';
 
   
     handleChangeStatus(question: Question, status: number, fun: number):void{
-      if(fun == 1){
+      if(fun == 1 || fun == 0){
         this.sidebarVisible = true
+        this.questionChoose = question
+        console.log(this.questionChoose);
       }
       switch(fun){
         case 0:
-          this.handleToast("Xem chi tiết câu hỏi mã: " + question.idQues, true)
+          this.openSidebarByDetail(question)
           break
         case 1:
           this.openSidebarByUpdate(question)
@@ -498,16 +543,17 @@ import { max } from 'rxjs';
                     const questionUpdateSend = {...element};
                     questionUpdateSend.status = 1;
                     this.updateStatus(questionUpdateSend);
-                    // this.handleTurnOffPopChecked();
                     successSend = true;
                 }
             }
         });
         if (successSend) {
-            this.handleToast("Gửi duyệt thành công!", true);
+          this.handleToast("Gửi duyệt thành công!", true);
         } else {
             this.handleToast("Không có phần tử nào được gửi duyệt thành công.", false);
         }
+        this.getValueCurrentPage(this.currenPage);
+        this.handlecheckAll();
         this.handleTurnOffPopChecked();
         break;
 
@@ -527,6 +573,8 @@ import { max } from 'rxjs';
             }
           });
         if (successApprove) {
+          this.handleShowItemQuestion(this.numberShowItemPage, this.listItemFilterByCheckbox, this.currenPage)
+          this.handlecheckAll()
             this.handleToast("Phê duyệt thành công!", true);
         } else {
             this.handleToast("Không có phần tử nào được phê duyệt thành công.", false);
@@ -547,6 +595,8 @@ import { max } from 'rxjs';
             }
           });
           if (successStopVission) {
+            this.handleShowItemQuestion(this.numberShowItemPage, this.listItemFilterByCheckbox, this.currenPage)
+            this.handlecheckAll()
             this.handleToast("Ngừng áp dụng thành công!", true);
           } else {
               this.handleToast("Không có phần tử nào được Ngừng áp dụng thành công.", false);
@@ -562,12 +612,14 @@ import { max } from 'rxjs';
                 const questionUpdateSend = {...element}
                 questionUpdateSend.status = 4
                 this.updateStatus(questionUpdateSend)
-                successReturn = false
+                successReturn = true
               
               }
             }
           });
           if (successReturn) {
+            this.handleShowItemQuestion(this.numberShowItemPage, this.listItemFilterByCheckbox, this.currenPage)
+            this.handlecheckAll()
             this.handleToast("Trả về thành công!", true);
           } else {
               this.handleToast("Không có phần tử nào được trả về thành công.", false);
@@ -586,13 +638,9 @@ import { max } from 'rxjs';
       }
     }
 
-
-
-
     handleSearchByEnter(event: any) {
       if (event.keyCode === 13) {
-        // this.openSidebarByUpdate(this.listItemFilterByCheckbox[0])
-        console.log(this.testNumber);
+        console.log(this.profileQuestion.get('group')?.value);
         this.filterQuestions();
       }
     }
@@ -613,6 +661,8 @@ import { max } from 'rxjs';
           this.listItemFilterByCheckbox = this.questions;
           this.handleFilterData();
           this.inMemoryDataService.putDb({ collectionName: 'questions', collection: this.questions});
+          this.handlePagination(this.numberShowItemPage, this.listQuestionDataFilter.length);
+          this.handleShowItemQuestion(this.numberShowItemPage, this.listQuestionDataFilter, this.currenPage)
       } finally {
           this.isLoading = false;
       }
@@ -762,6 +812,10 @@ import { max } from 'rxjs';
       let surplus = this.currentNumberPage % 4;
       this.listItemIndexPage = [];
       this.listNumberPage = [];
+
+      if(this.currenPage > this.currentNumberPage){
+        this.currenPage = 1
+      }
     
       for (let i = 0; i < this.currentNumberPage; i++) {
         this.listNumberPage.push(i + 1);
@@ -790,11 +844,9 @@ import { max } from 'rxjs';
       this.currenPage += 1;
       this.getValueCurrentPage(this.currenPage);
       this.handlecheckAll();
-    
-      let isNewArray = false;
+  
       this.listItemIndexPage.forEach((array, index) => {
         if (this.currenPage  === array[0]) {
-          isNewArray = true;
           this.startIndex = index * 4; 
           this.endIndex = Math.min(this.startIndex + 4, this.listNumberPage.length); 
           this.phasePage = Math.floor(this.startIndex / 4) - 1;
