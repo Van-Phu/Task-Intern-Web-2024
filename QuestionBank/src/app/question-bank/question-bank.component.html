@@ -38,10 +38,7 @@
                                 <option value="" disabled selected hidden>---Chọn---</option>
                                 <option *ngFor="let option of typeOfQuestions" [value]="option.id">{{ option.name }}</option>
                             </select>
-                            
-                            
                         </div>
-                        <div (click)="showItem()">hello</div>
                     </div>
                 
                     <div class="phase4">
@@ -67,7 +64,7 @@
                         </div>
                         <div>
                             <select id="status" formControlName="status">
-                                <option value="0">Đang soạn thảo</option>
+                                <option [disabled]="questionChoose.status != 0" value="0">Đang soạn thảo</option>
                                 <option [disabled]="questionChoose.status != 0 && questionChoose.status != 4" value="1">Gởi duyệt</option>
                                 <option [disabled]="questionChoose.status != 1 && questionChoose.status != 3" value="2">Duyệt áp dụng</option>
                                 <option [disabled]="questionChoose.status != 2" value="3">Ngừng áp dụng</option>
@@ -223,12 +220,16 @@
             </div>
             <div class="head-status">
                 <p>Tình trạng</p>
+                <h1></h1>
             </div>
         </div>
 
         <div class="listQuestion">
             <div *ngIf="isLoading" class="loading">
                 <div class="loader"></div>
+            </div>
+            <div *ngIf="isNotFoundItem == true" class="NFItem">
+                <p>{{'Not Item In List' | uppercase}}</p>
             </div>
 
             <!-- Pop Delete -->

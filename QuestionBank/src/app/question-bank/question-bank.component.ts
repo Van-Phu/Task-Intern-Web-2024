@@ -47,6 +47,7 @@ import { max } from 'rxjs';
     listChildFunctionStatus:any = []
     listQuestionDataFilter:any[] = []
     listItemChecked:any[] = []
+    // listCurrentItem: any[] = []
 
     //handle pagintion
     listNumberPage:number[] = []
@@ -79,6 +80,7 @@ import { max } from 'rxjs';
 
     //list function item
     listItemFunction: any[] = []
+    isNotFoundItem: boolean = false
 
     //handle popupChecked
     isPopChecked:boolean = false
@@ -128,7 +130,7 @@ import { max } from 'rxjs';
   }
 
   isTypeNotNull():void{
-    if(this.profileQuestion.get('type')?.value == 3){
+    if(this.profileQuestion.get('type')?.value == 0){
       this.isDisabledMethodGrading = false
     }else{
       this.isDisabledMethodGrading = true
@@ -337,6 +339,16 @@ import { max } from 'rxjs';
       }
     }
 
+    handleListItemNotFound():void{
+      if(this.listItemFilterByCheckbox.length <= 0){
+        this.isCheckedAll = false
+        this.isNotFoundItem = true
+      }else{
+        this.isNotFoundItem = false
+      }
+     
+    }
+
     handlCheckItem(item:string):void{
       switch(item){
         case 'draft':
@@ -345,24 +357,28 @@ import { max } from 'rxjs';
           this.handleSetArrayStatus(4);
           this.handleFilterData();
           this.getValueNumberPage(this.numberShowItemPage)
+          this.handleListItemNotFound()
           break
         case 'approve':
           this.isCheckApprove = !this.isCheckApprove
           this.handleSetArrayStatus(2);
           this.handleFilterData();
           this.getValueNumberPage(this.numberShowItemPage)
+          this.handleListItemNotFound()
           break
         case 'send':
           this.isCheckSend = !this.isCheckSend
           this.handleSetArrayStatus(1);
           this.handleFilterData();
           this.getValueNumberPage(this.numberShowItemPage)
+          this.handleListItemNotFound()
           break
         case 'stopApprove':
           this.isCheckStopApprove = !this.isCheckStopApprove
           this.handleSetArrayStatus(3);
           this.handleFilterData();
           this.getValueNumberPage(this.numberShowItemPage)
+          this.handleListItemNotFound()
           break
       }
     }
@@ -406,7 +422,7 @@ import { max } from 'rxjs';
     handleCheckboxChange() {
       if (this.isCheckedAll) {
           this.isCheckedAll = false;
-          this.listItemChecked.splice( (this.currenPage - 1) * this.numberShowItemPage, this.numberShowItemPage * this.currenPage);
+          this.listItemChecked =  this.listItemChecked.filter(question => !this.listQuestionDataFilter.includes(question)) 
       } else {
           this.isCheckedAll = true;
           for (let i = (this.currenPage - 1) * this.numberShowItemPage; i < this.numberShowItemPage * this.currenPage; i++) {
@@ -419,7 +435,6 @@ import { max } from 'rxjs';
 
           }
       }
-
       this.handlePopChecked();
   }
 
@@ -663,6 +678,7 @@ import { max } from 'rxjs';
           this.inMemoryDataService.putDb({ collectionName: 'questions', collection: this.questions});
           this.handlePagination(this.numberShowItemPage, this.listQuestionDataFilter.length);
           this.handleShowItemQuestion(this.numberShowItemPage, this.listQuestionDataFilter, this.currenPage)
+          this.handleListItemNotFound()
       } finally {
           this.isLoading = false;
       }
@@ -832,9 +848,41 @@ import { max } from 'rxjs';
       this.handleThreeDot();
       this.handleItemPageShow();
     }
-    
 
- 
+    
+    handlePreCurrentPage():void{
+      if(this.currenPage <= 1){
+        return
+      }
+      this.currenPage -=1
+      this.getValueCurrentPage(this.currenPage)
+      this.handlecheckAll()
+
+      this.listItemIndexPage.forEach((array, index) => {
+        if (this.currenPage === array[0] + 3) {
+          this.startIndex = index * 4; 
+          this.endIndex = Math.min(this.startIndex + 4, this.listNumberPage.length); 
+          this.phasePage = Math.floor(this.startIndex / 4) - 1;
+          this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex)];
+        }
+      });
+      this.handleThreeDot();
+    }
+
+    handleFirstPage():void{
+      if(this.currenPage == 1){
+        return
+      }
+      this.currenPage = 1
+      this.getValueCurrentPage(this.currenPage)
+      this.handlecheckAll()
+
+      this.startIndex = 0; 
+      this.endIndex = Math.min(this.startIndex + 4, this.listNumberPage.length); 
+      this.phasePage = Math.floor(this.startIndex / 4) - 1;
+      this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex)];
+      this.handleThreeDot();
+    }
 
     handleNextCurrentPage(): void {
       if (this.currenPage >= this.currentNumberPage) {
@@ -854,41 +902,6 @@ import { max } from 'rxjs';
         }
       });
   
-      this.handleThreeDot();
-    }
-    
-    handlePreCurrentPage():void{
-      if(this.currenPage <= 1){
-        return
-      }
-      this.currenPage -=1
-      this.getValueCurrentPage(this.currenPage)
-      this.handlecheckAll()
-      let isNewArray = false;
-      this.listItemIndexPage.forEach((array, index) => {
-        if (this.currenPage === array[0] + 3) {
-          isNewArray = true;
-          this.startIndex = index * 4; 
-          this.endIndex = Math.min(this.startIndex + 4, this.listNumberPage.length); 
-          this.phasePage = Math.floor(this.startIndex / 4) - 1;
-          this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex)];
-        }
-      });
-      
-    }
-
-    handleFirstPage():void{
-      if(this.currenPage == 1){
-        return
-      }
-      this.currenPage = 1
-      this.getValueCurrentPage(this.currenPage)
-      this.handlecheckAll()
-
-      this.startIndex = 0; 
-      this.endIndex = Math.min(this.startIndex + 4, this.listNumberPage.length); 
-      this.phasePage = Math.floor(this.startIndex / 4) - 1;
-      this.listPageItemShow = [...this.listNumberPage.slice(this.startIndex, this.endIndex)];
       this.handleThreeDot();
     }
 
@@ -913,7 +926,10 @@ import { max } from 'rxjs';
         this.isShowEndthreeDot = false
       }else{
         let numberItemEnd = this.currentNumberPage % 4
-        if(this.currenPage <= this.currentNumberPage - numberItemEnd){
+        const lastArray = this.listItemIndexPage[this.listItemIndexPage.length - 1];
+        const firstNumberLastArray = lastArray[0];
+        // console.log(firstNumberLastArray);
+        if(this.currenPage < firstNumberLastArray){
           this.isShowEndthreeDot = true
         }else{
           this.isShowEndthreeDot = false
