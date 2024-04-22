@@ -1,0 +1,42 @@
+<div (host)="blur($event)" class="datePicker" *ngIf="isVisibleDatePicker == true">
+    <div  class="input-datePicker">
+        <div class="datePicker">
+            <i  (click)="showTablePicker()" class="fa-regular fa-calendar"></i>
+            <input (click)="focus($event)" (input)="change()" type="date" placeholder="dd/mm/yyyy" (blur)="changeDataDate(selectedDateShow.toString())" class="input" [(ngModel)]="selectedDateShow"/>
+        </div>
+    </div>
+
+    <div class="tableDatePicker" *ngIf="isShowTable == true">
+
+        <div class="headerTable">
+            <div class="headerShowTime">
+                <p class="month">{{getMonthString(monthCache)}}, &nbsp;</p>
+                <p class="year">{{yearCache}}</p>
+            </div>
+            <div class="btn">
+                <div (click)="preMonth()" class="btn-pre"><i class="fa-solid fa-chevron-left"></i></div>
+                <div (click)="nextMonth()" class="btn-next"><i class="fa-solid fa-chevron-right"></i></div>
+            </div>
+        </div>
+        <div class="showDate">
+            <ul>
+                <li [ngClass]="{
+                    'dayNow': day == dayNow && monthCache == mothNow && yearCache == yearNow,
+                    'daySelected': day == selectedDay && monthCache == selectedMonth && yearCache == selectedYear
+                  }" 
+                  (click)="getSelectDate(day, monthCache, yearCache)" 
+                  [ngStyle]="{ 
+                    'opacity': day == -1 ? '0': '1', 
+                    'color': getColorDay(day, monthCache, yearCache, dayNow, mothNow, yearNow),
+                    'pointer-events': handleSectDay(day, monthCache, yearCache, dayNow, mothNow, yearNow)
+                  }" 
+                  *ngFor="let day of listCurrentDays">
+                      <div >
+                          {{day}}
+                      </div>
+                  </li>
+                  
+            </ul>
+        </div>
+    </div>
+</div>

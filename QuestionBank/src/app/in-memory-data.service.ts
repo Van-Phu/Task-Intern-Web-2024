@@ -7,6 +7,11 @@ import { Question } from './question';
 })
 export class MyInMemoryDataService implements InMemoryDbService {
 
+  createStatus(){
+    const savedQuestions = localStorage.getItem('status');
+    const status = savedQuestions? JSON.parse(savedQuestions): []
+  }
+
   createDb() {
     const savedQuestions = localStorage.getItem('questions');
     console.log(savedQuestions);
@@ -126,6 +131,13 @@ export class MyInMemoryDataService implements InMemoryDbService {
   putDb(reqInfo: any) {
     if (reqInfo.collectionName === 'questions') {
       localStorage.setItem('questions', JSON.stringify(reqInfo.collection));
+    }
+    return reqInfo;
+  }
+
+  putStatus(reqInfo: any) {
+    if (reqInfo.collectionName === 'status') {
+      localStorage.setItem('status', JSON.stringify(reqInfo.collection));
     }
     return reqInfo;
   }

@@ -20,12 +20,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
   showFiller = false;
   itemSelected = 0
 
-  isDropdownItem = false
+  isDropdownItem = true
   dataItemChild = -1
 
   href: string = ""
   subDataService: any = {} 
-  selectedItems:number[] = []
+  selectedItems:number[] = [0]
 
   constructor(private dataService: DataService){}
 
@@ -33,6 +33,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.subDataService = this.dataService.currentURL.subscribe(data =>{
       this.href = data
     })
+    this.selectedModule(this.href + '/nhansu')
   }
 
   selectItem(index: number){

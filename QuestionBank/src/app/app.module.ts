@@ -19,6 +19,10 @@ import { PersonelComponent } from './personel/personel.component';
 import { SidebarModule } from 'primeng/sidebar';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DatePickerComponent } from './date-picker/date-picker.component';
+import { CustomPipeDatePickedComponent } from './custom-pipe-date-picked/custom-pipe-date-picked.component';
+import { ToggleComponent } from './toggle/toggle.component';
+import { ToggleMessageComponent } from './toggle-message/toggle-message.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +34,11 @@ import { ReactiveFormsModule } from '@angular/forms';
     HomeComponent,
     InfoComponent,
     FinaceComponent,
-    PersonelComponent
+    PersonelComponent,
+    DatePickerComponent,
+    CustomPipeDatePickedComponent,
+    ToggleComponent,
+    ToggleMessageComponent
   ],
   imports: [
     ReactiveFormsModule,

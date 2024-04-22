@@ -8,21 +8,21 @@
                     <p>{{'Ngân hàng câu hỏi' | uppercase}}</p>
                 </div>
                 <div class="underline"></div>
-                <form [ngStyle]="{'pointer-events': isDisabledMethod == 2 ? 'none' : ''}" class="form" [formGroup]="profileQuestion">
+                <form class="form" [formGroup]="profileQuestion">
                     <div class="nameQuestion">
                         <label for="question">Tên câu hỏi</label>
-                        <input #firstInput autofocus id="nameQuestion" type="text" formControlName="nameQuestion">
+                        <input [title]="profileQuestion.get('nameQuestion')?.value" #firstInput autofocus id="nameQuestion" type="text" formControlName="nameQuestion">
                     </div>
                 
                     <div class="phase2">
                         <div class="idQues">
                             <label for="idQues">Mã câu hỏi</label>
-                            <input type="text" formControlName="idQues">
+                            <input [title]="profileQuestion.get('idQues')?.value" type="text" formControlName="idQues">
                         </div>
                 
                         <div class="type">
                             <label for="group">Phân nhóm</label>
-                            <select (click)="isGroupNotNull()" id="group" formControlName="group">
+                            <select [title]="profileQuestion.get('group')?.value" (click)="isGroupNotNull()" id="group" formControlName="group">
                                 <option value="" disabled selected hidden>---Chọn---</option>
                                 <option *ngFor="let option of groupData" [value]="option.id">{{ option.name }}</option>
                             </select>
@@ -34,7 +34,7 @@
                             <label for="type">Loại câu hỏi</label>
                         </div>
                         <div>
-                            <select (click)="isTypeNotNull()" [ngStyle]="{'pointer-events': isDisabledMethodtype == true ? 'none' : 'auto'}" id="type" formControlName="type">
+                            <select [title]="profileQuestion.get('type')?.value" (click)="isTypeNotNull()" [ngStyle]="{'pointer-events': isDisabledMethodtype == true ? 'none' : 'auto'}" id="type" formControlName="type">
                                 <option value="" disabled selected hidden>---Chọn---</option>
                                 <option *ngFor="let option of typeOfQuestions" [value]="option.id">{{ option.name }}</option>
                             </select>
@@ -46,7 +46,7 @@
                             <label for="gradingMethod">Cách tính điểm</label>
                         </div>
                         <div>
-                            <select [ngStyle]="{'pointer-events': isDisabledMethodGrading == true ? 'none' : 'auto'}" id="gradingMethod" formControlName="gradingMethod">
+                            <select [title]="profileQuestion.get('gratingMethod')?.value" [ngStyle]="{'pointer-events': isDisabledMethodGrading == true ? 'none' : 'auto'}" id="gradingMethod" formControlName="gradingMethod">
                                 <option value="" disabled selected hidden>---Chọn---</option>
                                 <option *ngFor="let option of gratingMethod" [value]="option.id">{{ option.name }}</option>
                             </select>
@@ -55,7 +55,7 @@
                 
                     <div class="phase5">
                         <label for="time">Thời gian làm bài (giây)</label>
-                        <input type="text" formControlName="time">
+                        <input [title]="profileQuestion.get('time')?.value" type="text" formControlName="time">
                     </div>
                 
                     <div class="phase6">
@@ -63,7 +63,7 @@
                             <label for="status">Tình trạng</label>
                         </div>
                         <div>
-                            <select id="status" formControlName="status">
+                            <select [title]="profileQuestion.get('nameQuestion')?.value" id="status" formControlName="status">
                                 <option [disabled]="questionChoose.status != 0" value="0">Đang soạn thảo</option>
                                 <option [disabled]="questionChoose.status != 0 && questionChoose.status != 4" value="1">Gởi duyệt</option>
                                 <option [disabled]="questionChoose.status != 1 && questionChoose.status != 3" value="2">Duyệt áp dụng</option>
@@ -74,7 +74,12 @@
                             
                         </div>
                     </div>
+                    <div class="datePicker">
+                        <app-date-picker [(ngModel)]="selectedDateShow"></app-date-picker>
+                    </div>
+             
                 </form>
+
                 
                 <div class="btn-area">
                     <div (click)="closeSidbar()" class="btn-close">Đóng</div>
@@ -104,8 +109,8 @@
             </div>
             <div *ngFor="let item of listItemFunction" class="itemFunction">
                 <div (click)="handleManyItemCheck(item.id)" class="item">
-                    <i class="{{item.icon}}"></i>
-                    <div>{{item.name}}</div>
+                    <i [ngStyle]="{'color': item.id == 6 ? 'red': ''}" class="{{item.icon}}"></i>
+                    <div [ngStyle]="{'color': item.id == 6 ? 'red': ''}">{{item.name}}</div>
                 </div>
             </div>
             <div (click)="handleTurnOffPopChecked()" class="btn-cancel">
@@ -144,7 +149,7 @@
     </div>
 
 
-    <div class="header-two" [ngStyle]="{'pointer-events': listItemChecked.length > 0 ? 'none': ''}">
+    <div class="header-two" [ngStyle]="{'pointer-events': listItemChecked.length > 0 ? 'none': ''} ">
         <div class="checkbox-header">
             <div [ngStyle]="{'borderColor': isCheckDraft == true ? '#008000' : ''}" (click)="handlCheckItem('draft')" class="check-item" id="checkDraft">
                 <p>Đang soạn thảo</p>
@@ -179,7 +184,6 @@
     </div>
 
     <div class="borderBottom"></div>
-
     <div  [ngStyle]="{'pointer-events': listItemChecked.length > 0 ? 'none': ''}" class="field">
         <div class="reset-area">
             <div class="title-field">
@@ -239,26 +243,26 @@
                     <div class="item-ques">
                         <input [checked]="listItemChecked.includes(question)" (change)="handleAddItemChecked(question)" class="checkbox-item" type="checkbox">
                         <div class="farme-question">
-                            <div class="question">{{question.question}}</div>
+                            <div [title]="question.question" class="question">{{question.question}}</div>
                             <div class="farme-code">
-                                <div class="idQues">{{question.idQues}}</div>
+                                <div [title]="question.idQues" class="idQues">{{question.idQues}}</div>
                                 <div class="lineCenter"></div>
                                 <div class="type-question">
                                     <p>Loại câu hỏi: </p>
-                                    <div class="type">{{getNameById(question.type, typeOfQuestions)}}</div>
+                                    <div [title]="getNameById(question.type, typeOfQuestions)" class="type">{{getNameById(question.type, typeOfQuestions)}}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="item-group">
+                    <div [title]="getNameById(question.group, groupdata)" class="item-group">
                         <p>{{getNameById(question.group, groupdata)}}</p>
                     </div>
                       
-                    <div class="item-time">
+                    <div [title]="question.time" class="item-time">
                         <p>{{question.time}}s</p>
                     </div>
                     <div class="item-status">
-                        <div class="title-status">
+                        <div [title]="getNameById(question.status, statusQuestionData)" class="title-status">
                             <p [ngStyle]="{'color': question.status | statusColor}">{{getNameById(question.status, statusQuestionData)}}</p>
                         </div>
                    

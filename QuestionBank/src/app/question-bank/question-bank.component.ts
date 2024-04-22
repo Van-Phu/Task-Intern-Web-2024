@@ -1,4 +1,4 @@
-  import { AfterContentInit, Component, OnInit, HostListener,ViewChild, ElementRef } from '@angular/core';
+  import { AfterContentInit, Component, OnInit, HostListener,ViewChild, ElementRef, OnDestroy } from '@angular/core';
   import { QuestionService } from '../question.service';
   import { Question } from '../question';
   import { GroupData } from '../data/group-data';
@@ -10,10 +10,11 @@
   import { Router } from 'express';
   import { MyInMemoryDataService } from '../in-memory-data.service';
   import { group, log } from 'console';
-  import { FormGroup, FormControl, FormsModule } from '@angular/forms';
+  import { FormGroup, FormControl, FormsModule, ControlValueAccessor } from '@angular/forms';
   import { TypeOfQuestion } from '../data/typeOfQuestion';
   import { GratingMethod } from '../data/gratingMethod';
-import { max } from 'rxjs';
+  import { max } from 'rxjs';
+  import { DatePickerComponent } from '../date-picker/date-picker.component';
 
 
 
@@ -23,8 +24,8 @@ import { max } from 'rxjs';
     templateUrl: './question-bank.component.html',
     styleUrl: './question-bank.component.scss'
   })
-  export class QuestionBankComponent implements OnInit, AfterContentInit{
-    
+  export class QuestionBankComponent implements OnInit, AfterContentInit, OnDestroy{
+
     questions: Question[] = []
     groupdata = GroupData
     statusQuestionData = StatusQuestionData
@@ -121,6 +122,8 @@ import { max } from 'rxjs';
       status: new FormControl(this.statusQuestons[0].id)
   });
 
+  selectedDateShow: any;
+
   isGroupNotNull():void {
     if(this.profileQuestion.get('group')?.value != ''){
       this.isDisabledMethodtype = false
@@ -182,7 +185,8 @@ import { max } from 'rxjs';
     }
 
     closeSidbar(){
-      this.sidebarVisible = false
+      console.log(this.selectedDateShow);
+      // this.sidebarVisible = false
     }
 
     openSideBar(){
@@ -190,6 +194,7 @@ import { max } from 'rxjs';
     }
 
     openSidebarAdd() {
+      this.profileQuestion.enable()
       this.isDisabledMethod = 0;
       this.sidebarVisible = true;
       this.profileQuestion.patchValue({
@@ -208,6 +213,7 @@ import { max } from 'rxjs';
     
 
     openSidebarByUpdate(question: Question){
+      this.profileQuestion.enable()
       this.isDisabledMethod = 1
       this.idItemUpdate = question.id
       this.profileQuestion.patchValue({
@@ -226,6 +232,7 @@ import { max } from 'rxjs';
     }
 
     openSidebarByDetail(question: Question){
+      this.profileQuestion.disable()
       this.isDisabledMethod = 2
       this.idItemUpdate = question.id
       this.profileQuestion.patchValue({
@@ -422,7 +429,7 @@ import { max } from 'rxjs';
     handleCheckboxChange() {
       if (this.isCheckedAll) {
           this.isCheckedAll = false;
-          this.listItemChecked =  this.listItemChecked.filter(question => !this.listQuestionDataFilter.includes(question)) 
+          this.listItemChecked =  this.listItemChecked.filter(question => !this.listQuestionDataFilter.includes(question))  
       } else {
           this.isCheckedAll = true;
           for (let i = (this.currenPage - 1) * this.numberShowItemPage; i < this.numberShowItemPage * this.currenPage; i++) {
@@ -936,5 +943,10 @@ import { max } from 'rxjs';
         }
       }
     
+    }
+
+    ngOnDestroy(): void {
+      this.db = this.inMemoryDataService.createDb();
+      this.inMemoryDataService.putDb({ collectionName: 'status', collection: this.db.listStatusFilter});
     }
   }

@@ -4,7 +4,7 @@
             <li [routerLink]="[item.route]" (click)="selectItemHead(i, href)" class="item" *ngFor="let item of headerItems; index as i">
                 <div class="item-top">
                     <div [ngStyle]="{'color': href.includes(item.route) ? '#008000': '#BBBBBB'}">
-                        <span>{{item.name}}</span>
+                        <span>{{item.name | uppercase}}</span>
                     </div>
                    
                     <div  *ngIf="href.includes(item.route)" class="under-line">

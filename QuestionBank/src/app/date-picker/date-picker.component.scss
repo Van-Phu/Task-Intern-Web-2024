@@ -1,0 +1,152 @@
+*{
+    max-width: 100%;
+    -moz-user-select: none !important;
+-webkit-touch-callout: none!important;
+-webkit-user-select: none!important;
+-khtml-user-select: none!important;
+-moz-user-select: none!important;
+-ms-user-select: none!important;
+user-select: none!important;
+}
+
+.datePicker{
+    list-style-type: none;
+    text-decoration: none;
+
+    .input-datePicker{
+        height: 30px;
+        width: 117px;
+        background-color: #36C8CF;
+        border-radius: 5px;
+        .datePicker{
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            i{
+                color: white;
+                margin-right: 10px;
+            }
+            input{
+                outline: none;
+                background-color: transparent;
+                border: 0;
+                color: white;
+                width: 100px;
+                font-size: 13px;
+            }
+
+            .input{
+                &::-webkit-calendar-picker-indicator {
+                    display: none; /* Hide the calendar dropdown button in Chrome/Edge */
+                }
+                
+                &::-webkit-inner-spin-button {
+                    display: none; /* Hide the increment/decrement arrows in Chrome/Edge */
+                }
+            }
+        }
+    }
+    
+    .tableDatePicker{
+        height: 320px;
+        width: 273px;
+        background-color: white;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+
+        .headerTable{
+            height: 30px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            color: #5A6276;
+            font-weight: 500;
+
+            .headerShowTime{
+                display: flex;
+            }
+
+            .btn{
+                display: flex;
+
+                .btn-pre{
+                    margin-right: 15px;
+                    padding: 5px;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 20px;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
+                    cursor: pointer;
+                    &:hover{
+                        background-color: #F5F6F8;
+                    }
+                }
+
+                .btn-next{
+                    padding: 5px;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 20px;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
+                    cursor: pointer;
+                    &:hover{
+                        background-color: #F5F6F8;
+                    }
+                }
+            }
+        }
+
+        .showDate{
+            height: calc(100% - 30px);
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            ul{
+                margin-left: 5%;
+                margin-right: 5%;
+                width: 90%;
+                display: flex;
+                width: 100%;
+                height: 100%;
+                flex-wrap:wrap;
+                // gap: 0.3rem;
+                li{
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    height: 33px;
+                    width: 33px;
+                    border-radius: 100px;
+                
+                    // margin-right: 10px;
+                    border: 1px solid transparent;
+                
+                    &:hover{
+                        border: 1px solid #36C8CF;
+                    }
+                }
+
+                .dayNow{
+                    background-color: #F5F6F8;
+
+                }
+
+                .daySelected{
+                    background-color: #36C8CF;
+                }
+            }
+        }
+    }
+}
+
