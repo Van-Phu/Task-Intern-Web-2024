@@ -1,21 +1,21 @@
 <div (host)="blur($event)" class="datePicker" *ngIf="isVisibleDatePicker == true">
+    
     <div  class="input-datePicker">
         <div class="datePicker">
             <i  (click)="showTablePicker()" class="fa-regular fa-calendar"></i>
-            <input (click)="focus($event)" (input)="change()" type="date" placeholder="dd/mm/yyyy" (blur)="changeDataDate(selectedDateShow.toString())" class="input" [(ngModel)]="selectedDateShow"/>
+            <input (click)="focus($event)" (input)="change()" type="date"  placeholder="dd/mm/yyyy" (blur)="changeDataDate(selectedDateShow.toString())" class="input" [(ngModel)]="selectedDateShow" [value]="selectedDateShow" selectedDate [formControl]="formControl"/>
         </div>
     </div>
 
     <div class="tableDatePicker" *ngIf="isShowTable == true">
-
         <div class="headerTable">
-            <div class="headerShowTime">
+            <div  (click)="showListYear()" class="headerShowTime">
                 <p class="month">{{getMonthString(monthCache)}}, &nbsp;</p>
                 <p class="year">{{yearCache}}</p>
             </div>
             <div class="btn">
-                <div (click)="preMonth()" class="btn-pre"><i class="fa-solid fa-chevron-left"></i></div>
-                <div (click)="nextMonth()" class="btn-next"><i class="fa-solid fa-chevron-right"></i></div>
+                <div (click)="pre()" class="btn-pre"><i class="fa-solid fa-chevron-left"></i></div>
+                <div (click)="next()" class="btn-next"><i class="fa-solid fa-chevron-right"></i></div>
             </div>
         </div>
         <div class="showDate">
@@ -28,7 +28,7 @@
                   [ngStyle]="{ 
                     'opacity': day == -1 ? '0': '1', 
                     'color': getColorDay(day, monthCache, yearCache, dayNow, mothNow, yearNow),
-                    'pointer-events': handleSectDay(day, monthCache, yearCache, dayNow, mothNow, yearNow)
+                    'pointer-events': handleSelectedDay(day, monthCache, yearCache, dayNow, mothNow, yearNow)
                   }" 
                   *ngFor="let day of listCurrentDays">
                       <div >
@@ -39,4 +39,28 @@
             </ul>
         </div>
     </div>
+
+    <div *ngIf="isShowListYear == true" class="listYear">
+        <ul>
+            <li
+            [ngStyle]="{'pointer-events': year < yearNow ? 'none': 'auto', 'color': year < yearNow ? '#CCCCCC': '', 'background-color': year == yearCache ? '#F5F6F8' : ''}"
+            (click)="showListMonth(year)" class="year" *ngFor="let year of listYear">
+                <div >{{year}}</div>
+            </li>
+        </ul>
+    </div>
+
+    <div *ngIf="isShowListMonth == true" class="listMonth">
+        <ul>
+            <li
+            [ngStyle]="{'pointer-events': handleMonth(month.id, yearSelectInList, mothNow, yearNow).point , 'color': handleMonth(month.id, yearSelectInList, mothNow, yearNow).color, 'background-color': month.id == monthCache && yearCache == yearSelectInList ? '#F5F6F8' : ''}"
+            (click)="getSelectDate(dayCache, month.id , yearSelectInList )" class="month" *ngFor="let month of listMonth">
+                {{month.name}}
+            </li>
+        </ul>
+    </div>
 </div>
+
+<!-- <input
+   type="text"
+   [formControl]="formControl" /> -->

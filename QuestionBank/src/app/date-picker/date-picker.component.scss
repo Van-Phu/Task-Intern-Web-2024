@@ -12,6 +12,7 @@ user-select: none!important;
 .datePicker{
     list-style-type: none;
     text-decoration: none;
+    position: relative;
 
     .input-datePicker{
         height: 30px;
@@ -50,6 +51,7 @@ user-select: none!important;
     }
     
     .tableDatePicker{
+
         height: 320px;
         width: 273px;
         background-color: white;
@@ -144,6 +146,68 @@ user-select: none!important;
 
                 .daySelected{
                     background-color: #36C8CF;
+                }
+            }
+        }
+    }
+
+    .listMonth{
+        width: 273px;
+        height: 270px;
+        top: 70px;
+        position: absolute;
+        background-color: white;
+        
+        ul{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            list-style-type: none;
+            
+
+            .month{
+                width: 70px;
+                padding: 10px;
+                align-items: center;
+                justify-content: center;
+                display: flex;
+                cursor: pointer;
+                font-size: 13px;
+
+                &:hover{
+                    background-color: #F5F6F8;
+                }
+            }
+        }
+    }
+
+    .listYear{
+        width: 273px;
+        background-color: white;
+        height: 290px;
+        top: 70px;
+        position: absolute;
+        
+        ul{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            list-style-type: none;
+            
+
+            .year{
+                width: 40px;
+                padding: 10px;
+                align-items: center;
+                justify-content: center;
+                display: flex;
+                cursor: pointer;
+                font-size: 13px;
+
+                &:hover{
+                    background-color: #F5F6F8;
                 }
             }
         }

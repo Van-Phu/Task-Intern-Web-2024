@@ -13,11 +13,6 @@
   import { FormGroup, FormControl, FormsModule, ControlValueAccessor } from '@angular/forms';
   import { TypeOfQuestion } from '../data/typeOfQuestion';
   import { GratingMethod } from '../data/gratingMethod';
-  import { max } from 'rxjs';
-  import { DatePickerComponent } from '../date-picker/date-picker.component';
-
-
-
 
   @Component({
     selector: 'app-question-bank',
@@ -101,6 +96,8 @@
     testNumber= 0;
     idItemUpdate = -1
 
+    vari: any = '';
+
     //form
     @ViewChild('firstInput') firstInput!: ElementRef;
     typeOfQuestions = TypeOfQuestion
@@ -119,10 +116,11 @@
       gradingMethod: new FormControl(),
       type: new FormControl(),
       time: new FormControl(30),
-      status: new FormControl(this.statusQuestons[0].id)
+      status: new FormControl(this.statusQuestons[0].id),
+      selectedDate: new FormControl('')
   });
 
-  selectedDateShow: any;
+
 
   isGroupNotNull():void {
     if(this.profileQuestion.get('group')?.value != ''){
@@ -185,8 +183,8 @@
     }
 
     closeSidbar(){
-      console.log(this.selectedDateShow);
-      // this.sidebarVisible = false
+      // console.log(this.selectedDate);
+      this.sidebarVisible = false
     }
 
     openSideBar(){
@@ -228,7 +226,7 @@
       setTimeout(() => { 
         this.firstInput.nativeElement.focus();
       });
-
+      this.isGroupNotNull()
     }
 
     openSidebarByDetail(question: Question){
@@ -272,7 +270,10 @@
       });
       
       this.listItemFunction = this.removeDuplicates(this.listItemFunction);
-      this.listItemFunction = this.listItemFunction.filter(item => item.id !== 0 && item.id !== 1);
+      this.listItemFunction = this.listItemFunction
+      .filter(item => item.id !== 0 && item.id !== 1)
+      .sort((a, b) => a.id - b.id);
+    
   }
 
   handleTurnOffPopChecked():void{
@@ -294,11 +295,16 @@
   }
 
     filterQuestions(): void {
-      if (!this.searchQuery.trim() && this.listStatusFilter.length === 0) {
-        this.listQuestionDataFilter = this.questions;
+      if (!this.searchQuery.trim()) {
+        console.log(1);
+        this.listQuestionDataFilter = this.listItemFilterByCheckbox;
+        this.listItemFilterByCheckbox = this.questions;
+        this.handleFilterData();
+        this.isNotFoundItem = false
+        this.getValueNumberPage(this.numberShowItemPage);
         return;
       }
-      let filteredBySearch = this.listQuestionDataFilter;
+      let filteredBySearch = this.listItemFilterByCheckbox;
       if (this.searchQuery.trim()) {
         filteredBySearch = this.questions.filter(question =>
           question.idQues.toString().includes(this.searchQuery.trim()) ||
@@ -313,7 +319,17 @@
         );
       }
     
-      this.listQuestionDataFilter = filteredByStatus;
+      this.listItemFilterByCheckbox = filteredByStatus;
+      if(this.listItemFilterByCheckbox.length <= 0){
+        this.listQuestionDataFilter = []
+        this.isCheckedAll = false
+        this.isNotFoundItem = true
+        console.log(2);
+      }else{
+        this.isNotFoundItem = false
+        this.getValueNumberPage(this.numberShowItemPage);
+      }
+
     }
     
     

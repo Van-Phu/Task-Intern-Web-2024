@@ -6,5 +6,28 @@ import { Component } from '@angular/core';
   styleUrl: './info.component.scss'
 })
 export class InfoComponent {
+  isShowDeletePop: boolean = false
+  isShowWarningPop: boolean = false
+  isShowSuccessPop: boolean = false
 
+  vari: any
+
+  handleButtonClick() {
+    console.log('Button clicked in parent component');
+  }
+
+  handleDeletePop():void{
+    console.log('click');
+    this.isShowDeletePop = true
+  }
+  
+
+  
+  handleWarningPop():void{
+    this.isShowWarningPop = true
+  }
+
+  handleSuccessPop():void{
+    this.isShowSuccessPop = true
+  }
 }

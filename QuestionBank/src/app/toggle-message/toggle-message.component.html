@@ -1,1 +1,7 @@
-<p>toggle-message works!</p>
+<div [ngStyle]="{'background-color': statusMessage == true ? '#1A6634' : '#FD7676'}" *ngIf="isPopToast" class="popToast">
+    <div class="pop" >
+        <i *ngIf="statusMessage == true" class="fa-regular fa-circle-check"></i>
+        <i *ngIf="statusMessage == false" class="fa-regular fa-circle-xmark"></i>
+        <p>{{message}}</p>
+    </div>
+</div>

@@ -1,0 +1,101 @@
+
+
+    .pop{
+        height: 250px;
+        width: 316px;
+        background-color: white;
+    
+        .underline{
+            width: 100%;
+            height: 1px;
+            background-color: #DBDEE7;
+        }
+
+        .title{
+            // color: #FD7676;
+            font-size: 16px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .icon{
+                margin-right: 20px;
+            }
+        }
+        .content {
+            position: relative; 
+            height: calc(100% - 120px);
+            margin: 10px;
+        
+            .title-contet {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
+        
+            .under-title {
+                position: absolute; 
+                bottom: 0;
+                width: 100%; 
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: rgba(255, 255, 255, 0.5); 
+            }
+        
+            .group {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #36C8CF;
+                // width: 100px;
+                white-space: nowrap;
+            }
+        
+            .three-dot {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #36C8CF;
+            }
+        }
+        
+        
+
+        .underline2{
+            height: 1px;
+            width: 100%;
+            background-color: #DBDEE7;
+        }
+
+        .btn{
+            height: 50px;
+            display: flex;
+            cursor: pointer;
+
+            div{
+                align-items: center;
+                justify-content: center;
+                display: flex;
+            }
+            .btn-cancel{
+                color: #959DB3;
+                width: 50%;
+                height: 50px;
+                background-color: white;
+            }
+
+            .btn-delete{
+                width: 50%;
+                height: 50px;
+                // background-color: #FD7676;
+                color: white;
+
+                .icon{
+                    margin-right: 10px;
+                }
+            }
+        }
+    }

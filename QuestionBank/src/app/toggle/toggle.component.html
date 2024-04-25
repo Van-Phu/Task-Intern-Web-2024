@@ -1,1 +1,33 @@
-<p>toggle works!</p>
+
+    <div class="pop">
+        <div [ngStyle]="{'color': mainColor}" class="title">
+            <div class="icon">
+                <ng-content select="[icon-title]"></ng-content>
+            </div>
+            <div>
+                <ng-content select="[text-title]"></ng-content>
+            </div>
+
+        </div>
+        <div class="underline"></div>
+        <div class="content">
+            <ng-content select="[content]"></ng-content>
+        </div>
+        <div class="underline2"></div>
+        <div class="btn">
+            <div  class="btn-cancel">
+                <ng-content select="[title-btn-cancel]"></ng-content>
+            </div>
+            <div [ngStyle]="{'color': 'white', 'background-color': mainColor}" class="btn-delete">
+                <div class="icon">
+                    <ng-content  select="[icon-btn-right]"></ng-content>
+                </div>
+                <div>
+                    <ng-content select="[text-btn-right]"></ng-content>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+

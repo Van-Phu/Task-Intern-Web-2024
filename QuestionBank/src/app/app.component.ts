@@ -8,4 +8,5 @@ import { MyInMemoryDataService } from './in-memory-data.service';
 })
 export class AppComponent {
   title = 'QuestionBank';
+  vari: any = '';
 }

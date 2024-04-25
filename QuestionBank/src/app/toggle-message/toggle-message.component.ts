@@ -6,5 +6,7 @@ import { Component } from '@angular/core';
   styleUrl: './toggle-message.component.scss'
 })
 export class ToggleMessageComponent {
-
+  statusMessage:boolean = false
+  message:string = ''
+  isPopToast:boolean = false
 }

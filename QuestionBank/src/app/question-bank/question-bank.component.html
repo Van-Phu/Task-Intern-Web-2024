@@ -22,8 +22,8 @@
                 
                         <div class="type">
                             <label for="group">Phân nhóm</label>
-                            <select [title]="profileQuestion.get('group')?.value" (click)="isGroupNotNull()" id="group" formControlName="group">
-                                <option value="" disabled selected hidden>---Chọn---</option>
+                            <select (click)="isGroupNotNull()" [title]="profileQuestion.get('group')?.value" id="group" formControlName="group">
+                                <option value="">---Chọn---</option>
                                 <option *ngFor="let option of groupData" [value]="option.id">{{ option.name }}</option>
                             </select>
                         </div>
@@ -35,7 +35,7 @@
                         </div>
                         <div>
                             <select [title]="profileQuestion.get('type')?.value" (click)="isTypeNotNull()" [ngStyle]="{'pointer-events': isDisabledMethodtype == true ? 'none' : 'auto'}" id="type" formControlName="type">
-                                <option value="" disabled selected hidden>---Chọn---</option>
+                                <option value="">---Chọn---</option>
                                 <option *ngFor="let option of typeOfQuestions" [value]="option.id">{{ option.name }}</option>
                             </select>
                         </div>
@@ -65,22 +65,22 @@
                         <div>
                             <select [title]="profileQuestion.get('nameQuestion')?.value" id="status" formControlName="status">
                                 <option [disabled]="questionChoose.status != 0" value="0">Đang soạn thảo</option>
-                                <option [disabled]="questionChoose.status != 0 && questionChoose.status != 4" value="1">Gởi duyệt</option>
+                                <option [disabled]="questionChoose.status != 0 && questionChoose.status != 4 && questionChoose.status != 1" value="1">Gởi duyệt</option>
                                 <option [disabled]="questionChoose.status != 1 && questionChoose.status != 3" value="2">Duyệt áp dụng</option>
                                 <option [disabled]="questionChoose.status != 2" value="3">Ngừng áp dụng</option>
-                                <option [disabled]="questionChoose.status != 1 && questionChoose.status != 3" value="4">Trả về</option>
+                                <option [disabled]="questionChoose.status != 1 && questionChoose.status != 3 && questionChoose.status != 4  " value="4">Trả về</option>
                             </select>
                             
                             
                         </div>
                     </div>
-                    <div class="datePicker">
-                        <app-date-picker [(ngModel)]="selectedDateShow"></app-date-picker>
-                    </div>
+
              
                 </form>
-
-                
+                <div class="datePicker">
+                    <input value="{{vari}}" type="text"/>
+                    <app-date-picker [(ngModel)]="vari"></app-date-picker>
+                </div>
                 <div class="btn-area">
                     <div (click)="closeSidbar()" class="btn-close">Đóng</div>
                     <div [ngStyle]="{'pointer-events': 'none', 'background-color': 'gray'}" *ngIf="isDisabledMethod == 2" (click)="updateQuestion()" class="btn-add">Cập nhật</div>
@@ -149,8 +149,40 @@
     </div>
 
 
+    <!-- <app-toggle *ngIf="isPopDelete" class="popUpDetele">
+            <i icon-title class="fa-solid fa-triangle-exclamation"></i>
+            <p text-title>{{ 'Xóa câu hỏi' | uppercase }}</p>
+        <div class="content" content>
+            <div class="title-contet">Bạn chắc chắn muốn xóa phân nhóm</div>
+            <div class="parentList" *ngFor="let title of listItemDelete.slice(0, 3)">
+                <div class="group">{{ title.question.slice(0, 20) + '...' }}</div>
+            </div>
+            <div class="three-dot" *ngIf="listItemDelete.length > 3">...</div>
+            <div class="under-title">Đơn vị xóa sẽ &nbsp; <span [ngStyle]="{'color': '#FD7676'}">KHÔNG</span>&nbsp;  thể khôi phục lại.</div>
+        </div>
+        <div class="btn" buttons>
+             <div text-btn-left (click)="isPopDelete = false; listItemDelete = []" class="btn-cancel">{{'Không xóa' | uppercase}}</div>
+             <div (click)="handleDeleteItem(listItemDelete)" class="btn-delete">
+                 <i icon-btn-right class="fa-solid fa-trash-can"></i>
+                 <div text-btn-right>{{'xóa' | uppercase}}</div>
+             </div>
+         </div>
+     </app-toggle> -->
+
+            <!-- <app-toggle>
+                <p question>
+                    Is content projection cool?
+                  </p>
+                  <p>Let's learn about content projection!</p>
+            </app-toggle> -->
+
+
+    
+
+
     <div class="header-two" [ngStyle]="{'pointer-events': listItemChecked.length > 0 ? 'none': ''} ">
         <div class="checkbox-header">
+
             <div [ngStyle]="{'borderColor': isCheckDraft == true ? '#008000' : ''}" (click)="handlCheckItem('draft')" class="check-item" id="checkDraft">
                 <p>Đang soạn thảo</p>
                 <input [checked]="isCheckDraft" type="checkbox"/>
@@ -229,6 +261,7 @@
         </div>
 
         <div class="listQuestion">
+
             <div *ngIf="isLoading" class="loading">
                 <div class="loader"></div>
             </div>
