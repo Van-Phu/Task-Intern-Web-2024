@@ -3,7 +3,7 @@
     <div  class="input-datePicker">
         <div class="datePicker">
             <i  (click)="showTablePicker()" class="fa-regular fa-calendar"></i>
-            <input (click)="focus($event)" (input)="change()" type="date"  placeholder="dd/mm/yyyy" (blur)="changeDataDate(selectedDateShow.toString())" class="input" [(ngModel)]="selectedDateShow" [value]="selectedDateShow" selectedDate [formControl]="formControl"/>
+            <input #inputDate (click)="focus($event)" (input)="change()" type="date"  placeholder="dd/mm/yyyy" (blur)="changeDataDate(selectedDateShow.toString())" class="input" [(ngModel)]="selectedDateShow" [value]="selectedDateShow" selectedDate [formControl]="formControl" />
         </div>
     </div>
 

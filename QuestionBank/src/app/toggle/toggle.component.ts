@@ -1,4 +1,4 @@
-import { Component, ContentChildren, QueryList, AfterContentInit, Input } from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterContentInit, Input, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-toggle',
@@ -6,12 +6,10 @@ import { Component, ContentChildren, QueryList, AfterContentInit, Input } from '
   styleUrl: './toggle.component.scss'
 })
 export class ToggleComponent  {
-
- 
-
-
   @Input() mainColor: string = 'white';
   @Input() isVisibleShow:boolean = false
+  @Output() myEvent = new EventEmitter<void>();
+  @Output() cancelEvent = new EventEmitter<void>();
 
   constructor() { }
 
@@ -19,4 +17,11 @@ export class ToggleComponent  {
     this.isVisibleShow = false
   }
 
+  emitEvent():void {
+    this.myEvent.emit();
+  }
+
+  emitEventCancel():void{
+    this.cancelEvent.emit()
+  }
 }

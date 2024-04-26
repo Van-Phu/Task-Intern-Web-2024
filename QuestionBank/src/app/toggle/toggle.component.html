@@ -7,7 +7,6 @@
             <div>
                 <ng-content select="[text-title]"></ng-content>
             </div>
-
         </div>
         <div class="underline"></div>
         <div class="content">
@@ -15,10 +14,10 @@
         </div>
         <div class="underline2"></div>
         <div class="btn">
-            <div  class="btn-cancel">
+            <div (click)="emitEventCancel()"  class="btn-cancel">
                 <ng-content select="[title-btn-cancel]"></ng-content>
             </div>
-            <div [ngStyle]="{'color': 'white', 'background-color': mainColor}" class="btn-delete">
+            <div (click)="emitEvent()" [ngStyle]="{'color': 'white', 'background-color': mainColor}" class="btn-delete">
                 <div class="icon">
                     <ng-content  select="[icon-btn-right]"></ng-content>
                 </div>

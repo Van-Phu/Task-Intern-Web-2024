@@ -1,45 +1,35 @@
 
 
 <div class="content-projection">
-    <app-toggle [mainColor]="'#FD7676'" class="popUpDetele">
+    <app-toggle (myEvent)="handleEvent()" (cancelEvent)="handleCancelEvent()" [mainColor]="'#FD7676'" class="popUpDetele">
         <i icon-title class="fa-solid fa-triangle-exclamation"></i>
         <p text-title>{{ 'Xóa câu hỏi' | uppercase }}</p>
-
-
         <p title-btn-cancel>{{'Không xóa' | uppercase}}</p>
-
         <i icon-btn-right class="fa-solid fa-trash"></i>
         <p text-btn-right>{{'xóa' | uppercase}}</p>
-
         <div content>
             <div class="title-contet">Bạn chắc chắn muốn xóa phân nhóm</div>
             <div class="under-title">Đơn vị xóa sẽ &nbsp; <span [ngStyle]="{'color': '#FD7676'}">KHÔNG</span>&nbsp;  thể khôi phục lại.</div>
         </div>
      </app-toggle>
 
-     <app-toggle  [mainColor]="'#ffa500'" class="popUpDetele">
+     <app-toggle (myEvent)="handleWarningEvent()" (cancelEvent)="handleCancelEvent()" [mainColor]="'#ffa500'" class="popUpDetele">
         <i icon-title class="fa-solid fa-exclamation"></i>
         <p text-title>{{ 'Cảnh báo' | uppercase }}</p>
-
         <p title-btn-cancel>{{'Tắt' | uppercase}}</p>
-
         <i icon-btn-right class="fa-solid fa-check"></i>
         <p text-btn-right>{{'OK' | uppercase}}</p>
-
         <div content>
             <div>Cảnh báo bạn !!!!</div>
         </div>
      </app-toggle>
 
-     <app-toggle [mainColor]="'#0D8D00'" class="popUpDetele">
+     <app-toggle (myEvent)="handleSuccessEvent()" (cancelEvent)="handleCancelEvent()" [mainColor]="'#0D8D00'" class="popUpDetele">
         <i icon-title class="fa-solid fa-check"></i>
         <p text-title>{{ 'thành công' | uppercase }}</p>
-
         <p title-btn-cancel>{{'Tắt' | uppercase}}</p>
-
         <i icon-btn-right class="fa-solid fa-check"></i>
         <p text-btn-right>{{'OK' | uppercase}}</p>
-
         <div content>
             <div>Thực hiện thành công !!!!</div>
         </div>
@@ -49,7 +39,7 @@
 
      <div class="body">
         <div class="datePicker">
-            <input value="{{vari}}" type="text"/>
+            <input [(ngModel)]="vari" type="text"/>
             <app-date-picker [(ngModel)]="vari"></app-date-picker>
         </div>
      </div>

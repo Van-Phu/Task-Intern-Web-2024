@@ -10,7 +10,7 @@ export class InfoComponent {
   isShowWarningPop: boolean = false
   isShowSuccessPop: boolean = false
 
-  vari: any
+  vari: any = '2024-04-26'
 
   handleButtonClick() {
     console.log('Button clicked in parent component');
@@ -21,13 +21,27 @@ export class InfoComponent {
     this.isShowDeletePop = true
   }
   
-
-  
   handleWarningPop():void{
     this.isShowWarningPop = true
   }
 
   handleSuccessPop():void{
     this.isShowSuccessPop = true
+  }
+
+  handleEvent() {
+    alert("Delete")
+  }
+
+  handleWarningEvent() {
+    alert("Warning")
+  }
+
+  handleSuccessEvent() {
+    alert("Succes")
+  }
+
+  handleCancelEvent() {
+    alert("cancel")
   }
 }

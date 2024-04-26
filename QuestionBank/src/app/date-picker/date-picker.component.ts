@@ -6,7 +6,8 @@ import {
   forwardRef,
   DestroyRef,
   inject,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  ViewChild
   
 } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -61,10 +62,7 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
 
   miliSecondInDay = 86400000;
   numberDay: number = -1;
-  todayTimestamp =
-    Date.now() -
-    (Date.now() % this.miliSecondInDay) +
-    new Date().getTimezoneOffset() * 1000 * 60;
+
   selectedDateShow: string = new Date().toLocaleDateString('en-CA');
 
   selectDate: any = {
@@ -104,11 +102,18 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
     this.getListYear(this.yearNow,this.listYear);
     this.formControl.valueChanges
       .pipe(
-        debounceTime(200),
+        debounceTime(200),  
         tap(value => this.onChange(value)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
+    
+    // let newDate = new Date(
+    //   this.yearCache,
+    //   this.monthCache - 1,
+    //   this.dayCache
+    // );
+    // this.selectedDateShow = newDate.toLocaleDateString('en-CA');
   }
 
   formControl: FormControl = new FormControl<string>('');
@@ -139,7 +144,6 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
   }
 
   change(): void {
-    this.onChange(this.selectedDateShow)
     console.log(this.selectedDateShow);
   }
 
@@ -190,6 +194,8 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
 
   open(): void {
     this.isShowTable = true;
+    let dateSplit = this.selectedDateShow
+    this.changeDataDate(dateSplit)
     console.log('open');
   }
 
@@ -274,6 +280,7 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
 
   //get list item in date to show in table
   getListDay(numberDays: number): void {
+    this.listCurrentDays = []
     let numberDayAdd = this.getDayOfWeek(this.yearCache, this.monthCache);
     for (let i = 1; i <= numberDays; i++) {
       this.listCurrentDays.push(i);
@@ -411,7 +418,6 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
     let dayInput = Number(string[2]);
     let monthInput = Number(string[1]);
     let yearInput = Number(string[0]);
-
     if (
       dayInput >= 1 &&
       dayInput <= 31 &&
@@ -440,14 +446,15 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
       }
     }
 
-    if (string[0] == '') {
-      this.listCurrentDays = [];
-      this.getSelectDate(this.dayNow, this.mothNow, this.yearNow);
-      this.dayCache = Number(this.dayNow);
-      this.monthCache = Number(this.mothNow);
-      this.yearCache = Number(this.yearNow);
-      this.getNumberDay(this.selectedMonth, this.selectedYear);
-      this.getListDay(this.numberDay);
-    }
+    // if (string[0] == '') {
+    //   console.log(1);
+    //   this.listCurrentDays = [];
+    //   this.getSelectDate(this.dayNow, this.mothNow, this.yearNow);
+    //   this.dayCache = Number(this.dayNow);
+    //   this.monthCache = Number(this.mothNow);
+    //   this.yearCache = Number(this.yearNow);
+    //   this.getNumberDay(this.selectedMonth, this.selectedYear);
+    //   this.getListDay(this.numberDay);
+    // }
   }
 }
